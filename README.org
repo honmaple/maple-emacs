@@ -1,8 +1,10 @@
 * maple-emacs
+  my personal emacs configuration.
 
 ** screenshots
    [[https://github.com/honmaple/maple-emacs/blob/master/screenshot/example.png]]
    [[https://github.com/honmaple/maple-emacs/blob/master/screenshot/example1.png]]
+   [[https://github.com/honmaple/maple-emacs/blob/master/screenshot/example2.png]]
 
 ** How to use
    #+begin_src bash

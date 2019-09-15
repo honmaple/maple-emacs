@@ -1,0 +1,13 @@
+* maple-emacs
+
+** screenshots
+   [[https://github.com/honmaple/maple-emacs/blob/master/screenshot/example.png]]
+   [[https://github.com/honmaple/maple-emacs/blob/master/screenshot/example1.png]]
+
+** How to use
+   #+begin_src bash
+   cd ~
+   mv .emacs.d emacs.d.bak
+   git clone https://github.com/honmaple/maple-emacs ~/.emacs.d
+   #+end_src
+

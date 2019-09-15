@@ -1,11 +1,19 @@
-# Compiled
 *.elc
-
-# Packaging
 .cask
-
-# Backup files
 *~
-
-# Undo-tree save-files
 *.~undo-tree
+auto-save-list/
+elpa/
+quelpa/
+.cache/
+cache/
+projectile*
+recentf
+srecode-map.el
+.bookmarks.el
+image-dired/
+init.el~
+newsticker/
+recentf~
+url/
+tramp

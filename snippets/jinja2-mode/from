@@ -1,0 +1,1 @@
+{% from ${1:lib} import ${2:funs} %}

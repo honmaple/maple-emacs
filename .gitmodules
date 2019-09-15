@@ -40,3 +40,6 @@
 [submodule "site-lisp/maple-env"]
 	path = site-lisp/maple-env
 	url = git@github.com:honmaple/emacs-maple-env.git
+[submodule "site-lisp/maple-run"]
+	path = site-lisp/maple-run
+	url = git@github.com:honmaple/emacs-maple-run.git

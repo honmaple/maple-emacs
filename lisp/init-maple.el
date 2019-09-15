@@ -32,7 +32,7 @@
   :hook (maple-init . maple-search-init))
 
 (use-package maple-run
-  :ensure nil
+  :quelpa (:fetcher github :repo "honmaple/emacs-maple-run")
   :commands (maple-run))
 
 (use-package maple-preview

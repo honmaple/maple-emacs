@@ -1,6 +1,6 @@
 [submodule "site-lisp/maple-preview"]
-	path = site-lisp/maple-preview
-	url = git@github.com:honmaple/emacs-maple-preview.git
+    path = site-lisp/maple-preview
+    url = git@github.com:honmaple/emacs-maple-preview.git
 [submodule "site-lisp/maple-modeline"]
     path = site-lisp/maple-modeline
     url = git@github.com:honmaple/emacs-maple-modeline.git
@@ -26,14 +26,17 @@
     path = site-lisp/maple-xpm
     url = git@github.com:honmaple/emacs-maple-xpm.git
 [submodule "site-lisp/maple-tabbar"]
-	path = site-lisp/maple-tabbar
-	url = git@github.com:honmaple/emacs-maple-tabbar.git
+    path = site-lisp/maple-tabbar
+    url = git@github.com:honmaple/emacs-maple-tabbar.git
 [submodule "site-lisp/maple-line"]
     path = site-lisp/maple-line
     url = git@github.com:honmaple/emacs-maple-line.git
 [submodule "site-lisp/maple-iedit"]
-	path = site-lisp/maple-iedit
-	url = git@github.com:honmaple/emacs-maple-iedit.git
+    path = site-lisp/maple-iedit
+    url = git@github.com:honmaple/emacs-maple-iedit.git
 [submodule "site-lisp/maple-minibuffer"]
     path = site-lisp/maple-minibuffer
     url = git@github.com:honmaple/emacs-maple-minibuffer.git
+[submodule "site-lisp/maple-env"]
+	path = site-lisp/maple-env
+	url = git@github.com:honmaple/emacs-maple-env.git

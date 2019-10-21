@@ -38,7 +38,10 @@
       (python-shell-send-buffer t)))
 
   (use-package pip-requirements)
-  (use-package pyvenv)
+  (use-package pyvenv
+    :commands (pyvenv-activate))
+  (use-package pyenv-mode
+    :commands (pyenv-mode-set))
   (use-package py-isort
     :commands (py-isort-buffer))
   (use-package yapfify
@@ -49,9 +52,6 @@
    "python-mode"
    :run      'maple/run-python
    :indent   'yapfify-buffer))
-
-(use-package pyenv-mode
-  :hook (python-mode . pyenv-mode))
 
 (provide 'init-python)
 

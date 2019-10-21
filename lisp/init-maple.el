@@ -24,6 +24,12 @@
 ;;
 
 ;;; Code:
+
+;; There are dependencies
+(use-package iedit)
+(use-package simple-httpd)
+(use-package websocket)
+
 (use-package maple-use-package
   :ensure nil :demand)
 
@@ -71,11 +77,16 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
   :hook (maple-theme . maple-modeline-init)
   :config
+  (setq maple-modeline-message-p nil)
+
   (maple/add-hook 'neotree-mode-hook
     (setq-local maple-modeline-style 'sidebar))
 
   (maple/add-hook 'maple-imenu-mode-hook
     (setq-local maple-modeline-style 'sidebar))
+
+  (add-hook 'maple-imenu-mode-hook
+            (lambda() (setq-local maple-modeline-style 'sidebar)))
 
   (when (and (display-graphic-p) *icon*)
     (require 'maple-modeline-icon))

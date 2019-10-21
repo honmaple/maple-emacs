@@ -42,11 +42,6 @@
            (end (if p (region-end) (point-max))))
       (pangu-spacing-search-buffer regexp start end (replace-match match nil nil)))))
 
-(use-package quickrun
-  :hook (quickrun--mode . maple/truncate-lines)
-  :config
-  (maple/evil-map quickrun--mode-map))
-
 (use-package youdao-dictionary
   :config
   (setq url-automatic-caching t

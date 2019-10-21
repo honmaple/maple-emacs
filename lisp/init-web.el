@@ -24,7 +24,6 @@
 ;;
 
 ;;; Code:
-
 (use-package web-mode
   :mode ("\\.\\(vue\\|html?\\)$")
   :config
@@ -52,14 +51,14 @@
       (web-mode-fold-or-unfold)))
   (maple/add-hook 'web-mode-hook
     (setq electric-pair-pairs '((?\' . ?\'))))
+
+  (use-package company-web)
   :custom
   (:language
    "web-mode"
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
    :complete '(company-web-html company-css company-tern :with company-yasnippet)))
-
-(use-package company-web)
 
 (use-package web-beautify
   :commands (web-beautify-html web-beautify-css web-beautify-js))
@@ -85,15 +84,13 @@
    "css-mode"
    :complete '(company-css :with company-yasnippet)))
 
-(use-package sass-mode
-  :mode ("\\.sass\\'" . sass-mode))
+(use-package less-css-mode)
 
-(use-package scss-mode
-  :mode ("\\.scss\\'" . scss-mode)
-  :config (setq scss-compile-at-save nil))
+(use-package sass-mode)
 
-(use-package less-css-mode
-  :mode ("\\.less\\'" . less-css-mode))
+(use-package scss-mode)
+
+(use-package coffee-mode)
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)
@@ -115,11 +112,6 @@
   (:language
    "js2-mode"
    :complete '(company-tern)))
-
-(use-package coffee-mode
-  :mode ("\\.coffee\\.erb\\'" . coffee-mode)
-  :config
-  (setq coffee-tab-width 4))
 
 (use-package npm-mode
   :hook (js2-mode . npm-mode))

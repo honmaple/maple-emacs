@@ -60,7 +60,5 @@
   (setq comint-output-filter-functions
         (remove 'ansi-color-process-output comint-output-filter-functions)))
 
-
 (provide 'init-shell)
-
 ;;; init-shell.el ends here

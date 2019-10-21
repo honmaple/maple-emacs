@@ -160,9 +160,10 @@
   :hook (ivy-mode . counsel-mode)
   :config
   (setq counsel-preselect-current-file t
-        counsel-more-chars-alist '((t . 1)))
+        counsel-more-chars-alist '((t . 1))
+        counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
 
-  (setq counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
+  (setq ivy-initial-inputs-alist '((t . maple/region-string)))
 
   (defun maple/counsel-ag-directory()
     (interactive)

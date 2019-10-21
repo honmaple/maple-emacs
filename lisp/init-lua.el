@@ -32,7 +32,6 @@
         lua-indent-string-contents t)
 
   (use-package company-lua)
-
   :custom
   (:language
    "lua-mode"

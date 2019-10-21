@@ -126,7 +126,5 @@
         projectile-known-projects-file
         (expand-file-name "projectile-bookmarks.eld" maple-cache-directory)))
 
-
 (provide 'init-editor)
-
 ;;; init-editor.el ends here

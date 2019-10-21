@@ -55,7 +55,7 @@
       indicate-empty-lines t
       transient-mark-mode nil
       create-lockfiles nil
-      backup-directory-alist `(("." . ,(concat maple-cache-directory "auto-save")))
+      backup-directory-alist `(("." . ,(expand-file-name "auto-save" maple-cache-directory)))
       select-enable-clipboard t ;;激活粘贴板
       frame-title-format
       '("Happy Hacking - Emacs ♥ You" " "

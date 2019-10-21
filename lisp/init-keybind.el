@@ -78,9 +78,9 @@
     )
 
   (evil-leader/set-key
-    "h" 'help
+    "h"  'help
     "rc" 'recentf-cleanup
-    "rr" 'quickrun
+    "rr" 'maple-run
     )
 
   (evil-leader/set-key
@@ -280,10 +280,10 @@
     (kbd "za") 'maple-language:call-fold)
 
   (maple/define-key evil-insert-state-map
-    (kbd "C-h") (kbd "<left>")
-    (kbd "C-l") (kbd "<right>")
-    (kbd "C-j") (kbd "<down>")
-    (kbd "C-k") (kbd "<up>"))
+    (kbd "C-h") 'left-char
+    (kbd "C-l") 'right-char
+    (kbd "C-j") 'next-line
+    (kbd "C-k") 'previous-line)
 
   (maple/define-key evil-visual-state-map
     (kbd "H") (kbd "^")

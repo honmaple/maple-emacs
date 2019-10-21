@@ -29,7 +29,6 @@
 (eval-and-compile
   (defvar user-handler-alist file-name-handler-alist)
   (defvar user-default-theme nil)
-  (defvar *lsp* t)
   (defvar *icon* t)
   (defvar *develop* t)
   (defvar *python3* t)
@@ -83,13 +82,10 @@
   (maple/require 'init-sql)
   (maple/require 'init-text)      ;; markdown rst
   (maple/require 'init-org)
-  (maple/require 'init-tool))
-
-(when *lsp*
+  (maple/require 'init-tool)
   (maple/require 'init-lsp))
 
 (maple/require 'init-keybind)
-
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------

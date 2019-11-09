@@ -78,8 +78,6 @@ the current state and point position."
                 ("v" . er/expand-region)
                 ("V" . er/contract-region)))
 
-  :custom-face
-  (region ((t (:background "#66d9ef" :foreground "#272822"))))
   :bind (:map evil-normal-state-map
               ("C-k" . evil-scroll-up)
               ("C-j" . evil-scroll-down)))

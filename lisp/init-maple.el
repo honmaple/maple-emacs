@@ -27,8 +27,8 @@
 
 ;; There are dependencies
 (use-package iedit)
-(use-package simple-httpd)
 (use-package websocket)
+(use-package simple-httpd :pin melpa-stable)
 
 (use-package maple-use-package
   :ensure nil :demand)
@@ -78,15 +78,6 @@
   :hook (maple-theme . maple-modeline-init)
   :config
   (setq maple-modeline-message-p nil)
-
-  (maple/add-hook 'neotree-mode-hook
-    (setq-local maple-modeline-style 'sidebar))
-
-  (maple/add-hook 'maple-imenu-mode-hook
-    (setq-local maple-modeline-style 'sidebar))
-
-  (add-hook 'maple-imenu-mode-hook
-            (lambda() (setq-local maple-modeline-style 'sidebar)))
 
   (when (and (display-graphic-p) *icon*)
     (require 'maple-modeline-icon))
@@ -164,6 +155,13 @@
 (use-package maple-tabbar
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-tabbar")
   :commands (maple-tabbar-mode))
+
+(use-package maple-explorer
+  :quelpa (:fetcher github :repo "honmaple/emacs-maple-explorer")
+  :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf)
+  :config
+  (when (and (display-graphic-p) *icon*) (maple-explorer-icon-mode))
+  (setq maple-explorer-file-display-alist '((side . left) (slot . -1))))
 
 (use-package maple-env
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-env")

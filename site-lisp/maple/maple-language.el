@@ -39,7 +39,7 @@
   :type 'function
   :group 'maple-language)
 
-(defcustom maple-language:indent 'maple-language:default-indent
+(defcustom maple-language:format 'maple-language:default-format
   "Language call indent format."
   :type 'function
   :group 'maple-language)
@@ -112,7 +112,7 @@
   (declare (indent defun))
   (let ((run (plist-get args :run))
         (fold (plist-get args :fold))
-        (indent (plist-get args :indent))
+        (forma (plist-get args :format))
         (complete (plist-get args :complete))
         (definition (plist-get args :definition))
         (references (plist-get args :references))
@@ -123,7 +123,7 @@
         forms)
     (when run (push `(setq-local maple-language:run ,run) forms))
     (when fold (push `(setq-local maple-language:fold ,fold) forms))
-    (when indent (push `(setq-local maple-language:indent ,indent) forms))
+    (when forma (push `(setq-local maple-language:format ,forma) forms))
     (when definition (push `(setq-local maple-language:definition ,definition) forms))
     (when references (push `(setq-local maple-language:references ,references) forms))
     (when documentation (push `(setq-local maple-language:documentation ,documentation) forms))
@@ -134,8 +134,8 @@
              (fns (cl-loop for hook in hooks collect `(add-hook ',hook ,fn))))
         `(progn ,@fns)))))
 
-(defun maple-language:default-indent()
-  "Call default indent."
+(defun maple-language:default-format()
+  "Call default indent format."
   (interactive)
   (save-excursion (indent-region (point-min) (point-max) nil)))
 
@@ -165,10 +165,10 @@
   (interactive)
   (call-interactively maple-language:fold))
 
-(defun maple-language:call-indent()
-  "Call indent."
+(defun maple-language:call-format()
+  "Call indent format."
   (interactive)
-  (call-interactively maple-language:indent))
+  (call-interactively maple-language:format))
 
 (defun maple-language:call-definition()
   "Call definition."
@@ -195,9 +195,9 @@
       "gd" 'maple-language:call-definition))
   (with-eval-after-load 'evil-leader
     (evil-leader/set-key
-      "=" 'maple-language:call-indent))
+      "=" 'maple-language:call-format))
   (global-set-key [f5] 'maple-language:call-run)
-  (global-set-key [f6] 'maple-language:call-indent))
+  (global-set-key [f6] 'maple-language:call-format))
 
 (provide 'maple-language)
 ;;; maple-language.el ends here

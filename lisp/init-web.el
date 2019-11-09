@@ -25,7 +25,7 @@
 
 ;;; Code:
 (use-package web-mode
-  :mode ("\\.\\(vue\\|html?\\)$")
+  :mode ("\\.\\(xml\\|vue\\|html?\\)$")
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-enable-auto-closing t ; enable auto close tag in text-mode

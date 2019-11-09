@@ -51,7 +51,7 @@
   (:language
    "python-mode"
    :run      'maple/run-python
-   :indent   'yapfify-buffer))
+   :format   'yapfify-buffer))
 
 (provide 'init-python)
 

@@ -32,7 +32,7 @@
 (use-package go-mode
   :config
   (setq gofmt-show-errors nil
-        go-packages-function 'maple/go-packages-function)
+        go-packages-function 'go-packages-go-list)
 
   (defun maple/go-packages-function()
     "Return a list of all Go packages, using `gopkgs'."
@@ -64,8 +64,7 @@
   :custom
   (:language
    "go-mode"
-   :indent     'gofmt
-   :definition 'godef-jump))
+   :format     'gofmt))
 
 (provide 'init-go)
 ;;; init-go.el ends here

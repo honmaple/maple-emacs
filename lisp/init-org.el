@@ -25,6 +25,9 @@
 
 ;;; Code:
 (use-package org-plus-contrib)
+(use-package ox-confluence
+  :ensure nil
+  :commands (org-confluence-export-as-confluence))
 
 (use-package org
   :ensure nil

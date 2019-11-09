@@ -51,7 +51,7 @@
     "cC" 'maple/copy-and-comment
     "u"  'undo-tree-visualize
     "'" 'shell-pop
-    "=" 'maple-language:call-indent
+    "=" 'maple-language:call-format
     "se" 'maple-iedit-match-all
     "ss" 'anzu-query-replace-regexp
     "sd" 'delete-matching-lines
@@ -173,7 +173,7 @@
     "bp" 'evil-prev-buffer
     "bn" 'evil-next-buffer
     "bl" 'maple-note
-    "bi" 'maple-imenu
+    "bi" 'maple-explorer-file
     )
 
   (evil-leader/set-key
@@ -248,7 +248,7 @@
   ;; ivy
   (evil-leader/set-key
     "," 'counsel-M-x
-    "/" 'maple/swiper ;;当前文件内容
+    "/" 'swiper ;;当前文件内容
     "ff" 'find-file
     "fF" 'counsel-file-jump
     "fr" 'counsel-recentf
@@ -256,7 +256,6 @@
     "fW" 'maple/counsel-ag-directory
     "sj" 'counsel-semantic-or-imenu
     "bb" 'ivy-switch-buffer  ;;显示缓冲区(已经打开的文件)
-    "bi" 'maple-sidebar
     "ph" 'counsel-projectile ;;在工程内查找
     "pw" 'counsel-projectile-ag
     "pb" 'counsel-projectile-switch-to-buffer))
@@ -309,15 +308,9 @@
         ((or defining-kbd-macro executing-kbd-macro) nil)
         ((keyboard-quit))))
 
-(defun maple-sidebar()
-  "Toggle sidebar."
-  (interactive)
-  (maple-imenu)
-  (neotree-toggle))
-
 (global-set-key [remap keyboard-quit] 'maple/escape)
 (global-set-key [f5] 'maple-language:call-run)
-(global-set-key [f6] 'maple-language:call-indent)
+(global-set-key [f6] 'maple-language:call-format)
 (global-set-key [tab] 'maple/company-or-indent)
 
 (when maple-system-is-mac

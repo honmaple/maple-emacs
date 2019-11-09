@@ -123,10 +123,6 @@
     (run-with-idle-timer 0 nil 'ivy-wgrep-change-to-wgrep-mode)
     (ivy-occur))
 
-  (defun maple/ivy-search-at-point (func)
-    (let ((ivy-initial-inputs-alist (list (cons func (maple/region-string)))))
-      (funcall func)))
-
   (defun maple/ivy-make-directory-maybe ()
     "Create parent directory if not exists while visiting file."
     (let ((dir (file-name-directory buffer-file-name)))
@@ -163,7 +159,7 @@
         counsel-more-chars-alist '((t . 1))
         counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
 
-  (setq ivy-initial-inputs-alist '((t . maple/region-string)))
+  (setq ivy-initial-inputs-alist '((counsel-M-x . "") (t . maple/region-string)))
 
   (defun maple/counsel-ag-directory()
     (interactive)
@@ -225,7 +221,12 @@
       :demand
       :config
       (setq all-the-icons-spacer " "
-            all-the-icons-scale-factor 1.15))
+            all-the-icons-scale-factor 1.15)
+
+      (setq all-the-icons-icon-alist
+            (append
+             (butlast all-the-icons-icon-alist)
+             (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
     (add-to-list 'all-the-icons-ivy-buffer-commands 'counsel-recentf)
 
@@ -244,18 +245,19 @@
              candidate))
         candidate))
 
+    (defun maple/counsel-M-x-transformer(str)
+      (let ((icon (all-the-icons-faicon "cube" :height 0.9 :v-adjust -0.05 :face 'all-the-icons-purple)))
+        (format "%s %s" (propertize "\t" 'display icon) str)))
+
     (with-eval-after-load 'projectile
       (ivy-set-display-transformer
        'projectile-completing-read 'all-the-icons-ivy-file-transformer))
 
+    (advice-add 'counsel-M-x-transformer :filter-return #'maple/counsel-M-x-transformer)
     (advice-add 'ivy-rich-candidate :override #'maple/ivy-rich-candidate)
     (advice-add 'ivy-read-file-transformer :override #'maple/ivy-read-file-transformer)))
 
-(use-package swiper
-  :config
-  (defun maple/swiper()
-    (interactive)
-    (maple/ivy-search-at-point 'swiper)))
+(use-package swiper)
 
 (use-package ivy-posframe
   :disabled

@@ -43,3 +43,6 @@
 [submodule "site-lisp/maple-run"]
 	path = site-lisp/maple-run
 	url = git@github.com:honmaple/emacs-maple-run.git
+[submodule "site-lisp/maple-explorer"]
+	path = site-lisp/maple-explorer
+	url = git@github.com:honmaple/emacs-maple-explorer.git

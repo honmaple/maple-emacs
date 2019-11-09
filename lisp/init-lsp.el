@@ -33,7 +33,7 @@
         lsp-restart 'ignore
         lsp-enable-snippet nil
         lsp-enable-symbol-highlighting nil
-        lsp-session-file (concat maple-cache-directory "lsp-session-v1"))
+        lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
 
   (defun maple/lsp-message(func &rest args)
     (if (car args)
@@ -73,7 +73,8 @@
   :custom
   (:language
    "lsp-mode"
-   :complete '(company-lsp :with company-yasnippet)))
+   :definition 'lsp-find-definition
+   :complete   '(company-lsp :with company-yasnippet)))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)

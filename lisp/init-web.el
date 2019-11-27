@@ -32,7 +32,7 @@
         web-mode-enable-current-element-highlight t
         web-mode-enable-auto-indentation nil
         web-mode-enable-css-colorization nil
-        web-mode-engines-alist '(("django" . "\\.\\(vue\\|html?\\)$"))
+        web-mode-engines-alist '(("django" . "\\.\\(xml\\|vue\\|html?\\)$"))
         web-mode-engines-auto-pairs '(("django" . (("{{ " . " }")
                                                    ("{% " . " %")
                                                    ("{%-" . " | %")

@@ -35,15 +35,6 @@
         lsp-enable-symbol-highlighting nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
 
-  (defun maple/lsp-message(func &rest args)
-    (if (car args)
-        (let ((str (apply 'format-message args)))
-          (unless (string-match "\\(no identifier found\\|no object for ident\\)" str)
-            (funcall func str)))
-      (apply func args)))
-
-  (advice-add 'message :around 'maple/lsp-message)
-
   (setq lsp-auto-guess-root t)
 
   (defun maple/lsp--calculate-root(session file-name)

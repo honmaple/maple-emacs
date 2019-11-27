@@ -64,7 +64,8 @@
            (maple/insert-string) "\n")
           ((go-mode . "Go program") nil
            "/*"
-           (string-trim-left (maple/insert-string " ")) "*/\n"))))
+           (string-trim-left (maple/insert-string " ")) "*/\n"
+           "package main\n"))))
 
 (use-package maple-header
   :ensure nil

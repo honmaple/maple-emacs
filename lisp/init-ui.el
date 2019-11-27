@@ -158,7 +158,7 @@
 
 (use-package whitespace
   :ensure nil
-  :hook ((prog-mode conf-mode) . whitespace-mode)
+  :hook ((prog-mode conf-mode yaml-mode) . whitespace-mode)
   :config
   (setq whitespace-action '(auto-cleanup)
         whitespace-style '(face

@@ -195,20 +195,20 @@
          :map ivy-minibuffer-map
          ("C-j" . ivy-next-line)
          ("C-k" . ivy-previous-line)
-         ("<tab>" . maple/ivy-done)
-         ("TAB" . maple/ivy-done)
-         ("C-c C-e" . maple/ivy-edit)
          ("C-h" . maple/ivy-c-h)
+         ("C-c C-e" . maple/ivy-edit)
+         ([tab] . maple/ivy-done)
          ([escape] . minibuffer-keyboard-quit)
          ([backspace] . maple/ivy-backward-delete-char)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
          :map counsel-find-file-map
-         ([backspace] . maple/ivy-backward-delete-char)
-         ("<tab>" . maple/ivy-done)
-         ("TAB" . maple/ivy-done)
          ("C-<return>" . ivy-immediate-done)
          ("C-c C-e" . maple/ivy-dired-occur)
+         ([tab] . maple/ivy-done)
+         ([backspace] . maple/ivy-backward-delete-char)
          :map counsel-ag-map
-         ("<tab>" . ivy-call)))
+         ([tab] . ivy-call)))
 
 (use-package ivy-rich
   :hook (counsel-mode . ivy-rich-mode)

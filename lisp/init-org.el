@@ -48,6 +48,9 @@
           (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
           (sequence "WAITING(w@/!)" "HOLD(h)" "|" "CANCELLED(c@/!)")))
 
+  (advice-add 'org-todo :after 'org-save-all-org-buffers)
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
   (when (display-graphic-p)
     ;; (set-face-attribute 'org-table nil :font "-Misc-Fixed-normal-normal-normal-*-18-*-*-*-c-90-iso10646-1")
     (set-face-attribute 'org-table nil :font "Inconsolata 12")
@@ -97,27 +100,10 @@
     (add-to-list 'org-babel-default-header-args:python
                  '(:results . "output"))))
 
-
 (use-package org-capture
   :ensure nil
   :config
-
-  (use-package maple-org
-    :ensure nil
-    :demand
-    :defines maple/org-capture-templates
-    :config
-    (setq org-capture-templates maple/org-capture-templates)
-
-    (maple/org-capture-snip "sp" "python" '("Tool" "Flask" "Tornado"))
-    (maple/org-capture-snip "sl" "lua" '("Tool" "Nginx"))
-    (maple/org-capture-snip "sg" "golang" '("Tool")))
-
-  (setq org-refile-targets
-        (quote (("~/org-mode/gtd.org" :level . 1)
-                ("~/org-mode/summary.org" :maxlevel . 4))))
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
-  (advice-add 'org-todo :after 'org-save-all-org-buffers))
+  (use-package maple-org :ensure nil :demand))
 
 (use-package org-agenda
   :ensure nil
@@ -126,15 +112,12 @@
         org-agenda-window-setup 'current-window
         org-agenda-inhibit-startup t   ;; ~50x speedup
         org-agenda-use-tag-inheritance nil ;; 3-4x speedup
-        org-log-done t
-        org-agenda-files '("~/org-mode" )
-        org-default-notes-file "~/org-mode/gtd.org")
+        org-log-done t)
   (setq org-agenda-custom-commands
-        '(("b"  "博客" tags-todo "blog")
+        '(("b"  "博客" tags-todo "Blog")
           ("p"  "项目" tags-todo "@Office")
           ("w" "Weekly Review"
-           ((stuck "")
-            (tags-todo "project")))))
+           ((stuck "") (tags-todo "Project")))))
   (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers)
   :bind (:map org-agenda-mode-map
               ("j" . org-agenda-next-line)

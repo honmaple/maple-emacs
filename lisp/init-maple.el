@@ -53,13 +53,6 @@
         maple-note-draft-path "content/draft")
   (maple/evil-map maple-note-mode-map))
 
-(use-package maple-imenu
-  :quelpa (:fetcher github :repo "honmaple/emacs-maple-imenu")
-  :commands (maple-imenu)
-  :config
-  (maple/evil-map maple-imenu-mode-map)
-  (setq maple-imenu-display-alist '((side . left) (slot . 1))))
-
 (use-package maple-line
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-line")
   :commands (maple-line-mode))

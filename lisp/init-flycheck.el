@@ -89,7 +89,10 @@
 (use-package flycheck-pos-tip
   :hook (flycheck-mode . flycheck-pos-tip-mode)
   :config
-  (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+  (setq pos-tip-background-color (face-attribute 'default :background nil t)
+        pos-tip-foreground-color (face-attribute 'default :foreground nil t)
+        pos-tip-internal-border-width 5
+        flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (provide 'init-flycheck)
 

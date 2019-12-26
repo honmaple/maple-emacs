@@ -42,7 +42,9 @@
   :hook (maple-init . zoom-mode)
   :config
   (setq zoom-size '(0.618 . 0.618)
-        zoom-ignored-major-modes '(term-mode flycheck-error-list-mode ediff-mode))
+        zoom-ignored-major-modes
+        '(term-mode shell-mode flycheck-error-list-mode ediff-mode)
+        zoom-ignored-buffer-names '(" *Org todo*"))
 
   (defun maple/balance-windows(func &optional window-or-frame)
     (unless (zoom--window-ignored-p)
@@ -80,6 +82,7 @@
           (flycheck-error-list-mode :select t :align 'below :autoclose t)
           (inferior-python-mode :select t)
           (comint-mode :align 'below)
+          (term-mode :align 'below :select t :size 15)
           (process-menu-mode :select t :align 'below :autoclose t))))
 
 (provide 'init-window)

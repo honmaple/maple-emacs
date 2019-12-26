@@ -27,40 +27,59 @@
 
 (use-package lsp-mode
   :diminish lsp-mode
-  :hook ((python-mode go-mode) . lsp)
+  :hook ((python-mode go-mode yaml-mode) . lsp)
   :config
-  (setq lsp-prefer-flymake :none
-        lsp-restart 'ignore
+  (setq lsp-restart 'ignore
+        lsp-auto-guess-root t
+        lsp-prefer-flymake :none
+        lsp-signature-auto-activate nil
         lsp-enable-snippet nil
         lsp-enable-symbol-highlighting nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
 
-  (setq lsp-auto-guess-root t)
+  (defun maple/lsp-project-root(func session file-name)
+    (let ((result (funcall func session file-name)))
+      (if result (or (lsp-find-session-folder session file-name) result)
+        (lsp--find-root-interactively session))))
 
-  (defun maple/lsp--calculate-root(session file-name)
-    (ignore file-name)
-    (lsp--find-root-interactively session))
-  (advice-add 'lsp--calculate-root :after-until 'maple/lsp--calculate-root)
+  (advice-add 'lsp--calculate-root :around 'maple/lsp-project-root)
+
+  (defun maple/lsp-restart-workspace(&rest _)
+    (call-interactively 'lsp-restart-workspace))
 
   ;; pip install python-language-server
   (use-package lsp-pyls
     :ensure nil
-    :init
+    :config
     (setq lsp-pyls-plugins-pycodestyle-enabled nil
           lsp-pyls-plugins-pyflakes-enabled nil
           lsp-pyls-configuration-sources ["flake8"]
           lsp-clients-python-library-directories '("/usr/" "~/repo/python/lib/python3.7/"))
 
     (with-eval-after-load 'pyvenv
-      (add-hook 'pyvenv-post-activate-hooks 'lsp-restart-workspace)
-      (add-hook 'pyvenv-post-deactivate-hooks 'lsp-restart-workspace)))
+      (add-hook 'pyvenv-post-activate-hooks 'maple/lsp-restart-workspace)
+      (add-hook 'pyvenv-post-deactivate-hooks 'maple/lsp-restart-workspace))
+    (with-eval-after-load 'pyenv-mode
+      (advice-add 'pyenv-mode-set :after 'maple/lsp-restart-workspace)
+      (advice-add 'pyenv-mode-unset :after 'maple/lsp-restart-workspace)))
 
   ;; go get -u github.com/sourcegraph/go-langserver
-  ;; go get -u golang.org/x/tools/cmd/gopls
+  ;; go get golang.org/x/tools/cmd/gopls
   (use-package lsp-go
     :ensure nil)
 
-  (use-package company-lsp)
+  ;; npm install -g yaml-language-server
+  (use-package lsp-yaml
+    :ensure nil
+    :custom
+    (:language
+     "yaml-mode"
+     :format 'lsp-format-buffer))
+
+  (use-package company-lsp
+    :config
+    (setq company-lsp-cache-candidates 'auto))
+
   :custom
   (:language
    "lsp-mode"
@@ -71,8 +90,14 @@
   :hook (lsp-mode . lsp-ui-mode)
   :config
   (setq lsp-ui-doc-enable t
+        lsp-ui-doc-border (face-foreground 'default)
         lsp-ui-imenu-enable nil
         lsp-ui-sideline-enable nil)
+
+  (defun maple/lsp-ui-doc-format(func string symbol)
+    (funcall func (replace-regexp-in-string "^\s*\n" "" string) symbol))
+
+  (advice-add 'lsp-ui-doc--render-buffer :around 'maple/lsp-ui-doc-format)
   :custom-face
   (lsp-ui-doc-background ((t (:background nil))))
   :bind

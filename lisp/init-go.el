@@ -40,31 +40,11 @@
 
   (use-package golint)
   (use-package go-rename)
-
-  (defun maple/go-add-comment(items &optional name)
-    (dolist (item items)
-      (if (listp (cdr item))
-          (maple/go-add-comment (cdr item) (car item))
-        (let ((func (car item))
-              (point (cdr item)))
-          (string-match "\\(.*?\\)(\\(.*\\))$" func)
-          (unless (string= (match-string 1 func) "")
-            (setq name (match-string 1 func)))
-          (unless (string= (match-string 2 func) "Field")
-            (save-excursion
-              (goto-char point) (forward-line -1) (end-of-line)
-              (unless (nth 4 (syntax-ppss))
-                (newline-and-indent)
-                (insert (concat "// " (string-trim name) " ..")))))))))
-
-  (defun maple/go-auto-comment()
-    (interactive)
-    (maple/go-add-comment (maple-language:imenu-items)))
-
+  (use-package go-add-tags)
   :custom
   (:language
    "go-mode"
-   :format     'gofmt))
+   :format 'gofmt))
 
 (provide 'init-go)
 ;;; init-go.el ends here

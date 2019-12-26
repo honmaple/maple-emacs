@@ -47,10 +47,10 @@
     )
 
   (evil-leader/set-key
-    "cc" 'maple/comment-or-uncomment
-    "cC" 'maple/copy-and-comment
+    "cc" 'maple-language:comment
+    "cC" 'maple-language:copy-and-comment
     "u"  'undo-tree-visualize
-    "'" 'shell-pop
+    "'" 'maple/shell
     "=" 'maple-language:call-format
     "se" 'maple-iedit-match-all
     "ss" 'anzu-query-replace-regexp
@@ -154,6 +154,7 @@
     "pr"  'projectile-recentf
     "pi"  'projectile-invalidate-cache
     "pc"  'projectile-cleanup-known-projects
+    "pa"  'projectile-add-known-project
     )
 
   (evil-leader/set-key
@@ -228,6 +229,7 @@
     "rI" 'go-remove-unused-imports
     "ra" 'go-import-add
     "rd" 'godef-describe
+    "rt" 'go-add-tags
     )
 
   (evil-leader/set-key-for-mode 'org-mode

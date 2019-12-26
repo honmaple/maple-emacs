@@ -28,10 +28,7 @@
   :config
   (use-package org-table
     :ensure nil
-    :diminish orgtbl-mode
-    :hook (markdown-mode . orgtbl-mode)
-    :config
-    (when (display-graphic-p) (set-face-attribute 'org-table nil :font "Inconsolata 12")))
+    :hook (markdown-mode . orgtbl-mode))
 
   (defun cleanup-org-tables ()
     (save-excursion
@@ -48,9 +45,9 @@
    :run 'markdown-toggle-markup-hiding))
 
 (use-package vimrc-mode)
-(use-package yaml-mode)
 (use-package json-mode)
 (use-package nginx-mode)
+(use-package yaml-mode)
 
 (use-package origami
   :diminish origami-mode

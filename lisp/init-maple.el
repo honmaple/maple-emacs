@@ -33,13 +33,19 @@
 (use-package maple-use-package
   :ensure nil :demand)
 
+(use-package maple-package
+  :ensure nil
+  :commands (maple-package-upgrade))
+
 (use-package maple-search
   :ensure nil
   :hook (maple-init . maple-search-init))
 
 (use-package maple-run
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-run")
-  :commands (maple-run))
+  :commands (maple-run)
+  :config
+  (setq maple-run:auto-clear t))
 
 (use-package maple-preview
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-preview" :files ("*.el" "index.html" "static"))
@@ -71,9 +77,7 @@
   :hook (maple-theme . maple-modeline-init)
   :config
   (setq maple-modeline-message-p nil)
-
-  (when (and (display-graphic-p) *icon*)
-    (require 'maple-modeline-icon))
+  (setq maple-modeline-icon (and (display-graphic-p) *icon*))
 
   (defun maple-modeline-reset-face(color &optional frame)
     "Reset face when theme change with FRAME."
@@ -91,14 +95,7 @@
       (_
        (maple-modeline-reset-face (if (display-graphic-p) "#35331D" "#333333")))))
 
-  ;; (use-package powerline :demand)
-
-  (if (not (featurep 'powerline))
-      (advice-add 'load-theme :after #'maple/modeline-theme)
-    (put 'maple-modeline-active0 'face-alias 'powerline-active0)
-    (put 'maple-modeline-active1 'face-alias 'powerline-active1)
-    (put 'maple-modeline-inactive0 'face-alias 'powerline-inactive0)
-    (put 'maple-modeline-inactive1 'face-alias 'powerline-inactive1))
+  (advice-add 'load-theme :after #'maple/modeline-theme)
   :custom-face
   (mode-line ((t (:box nil))))
   (mode-line-inactive ((t (:box nil)))))
@@ -130,16 +127,11 @@
   :hook (window-setup . maple-scratch-mode)
   :config
   (maple/evil-map maple-scratch-mode-map)
-  (setq maple-scratch-alist
-        (append (butlast maple-scratch-alist)
-                '(("Init"
-                   :action 'maple-file/open-init
-                   :desc "Open Init File")
-                  ("Test"
-                   :action 'maple-file/open-test
-                   :desc "Open Test File"))
-                (last maple-scratch-alist))
-        maple-scratch-source nil))
+  (setq maple-scratch-source nil
+        maple-scratch-items '(maple-scratch-banner
+                              maple-scratch-navbar
+                              maple-scratch-default
+                              maple-scratch-startup)))
 
 (use-package maple-echoarea
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-echoarea")
@@ -151,7 +143,7 @@
 
 (use-package maple-explorer
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-explorer")
-  :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf)
+  :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf maple-explorer-search)
   :config
   (when (and (display-graphic-p) *icon*) (maple-explorer-icon-mode))
   (setq maple-explorer-file-display-alist '((side . left) (slot . -1))))
@@ -173,9 +165,10 @@
           "github.com/rogpeppe/godef"
           "github.com/golang/lint/golint"
           "github.com/haya14busa/gopkgs/cmd/gopkgs"
-          "golang.org/x/tools/cmd/gopls")
+          "golang.org/x/tools/cmd/gopls"
+          "github.com/cweill/gotests/...")
         maple-env:npm-packages
-        '("js-beautify" "tern"))
+        '("js-beautify" "tern" "yaml-language-server"))
 
   (use-package exec-path-from-shell
     :if maple-system-is-mac

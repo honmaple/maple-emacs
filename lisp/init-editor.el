@@ -79,19 +79,6 @@
   :ensure nil
   :diminish eldoc-mode)
 
-(use-package comint
-  :ensure nil
-  :evil-state (comint-mode . insert)
-  :hook (comint-mode . maple/close-process)
-  :config
-  (setq comint-prompt-read-only t)
-  :bind
-  (:map comint-mode-map
-        ("<up>" . comint-previous-input)
-        ("<down>" . comint-next-input)
-        ("<escape>" . (lambda() (interactive)
-                        (goto-char (cdr comint-last-prompt))))))
-
 (use-package hideshow
   :ensure nil
   :diminish hs-minor-mode
@@ -116,6 +103,16 @@
   :bind (:map wgrep-mode-map
               ("C-c C-c" . wgrep-finish-edit)))
 
+(use-package string-inflection
+  :commands (maple/string-inflection-toggle)
+  :config
+  (defun maple/string-inflection-toggle()
+    (interactive)
+    (save-excursion (call-interactively 'string-inflection-toggle)))
+  :evil-bind
+  (:state normal ("gr" . maple/string-inflection-toggle))
+  (:state visual ("gr" . maple/string-inflection-toggle)))
+
 (use-package projectile
   :diminish projectile-mode "ⓟ"
   :hook (maple-init . projectile-mode)
@@ -124,7 +121,8 @@
         projectile-cache-file
         (expand-file-name "projectile.cache" maple-cache-directory)
         projectile-known-projects-file
-        (expand-file-name "projectile-bookmarks.eld" maple-cache-directory)))
+        (expand-file-name "projectile-bookmarks.eld" maple-cache-directory))
+  (add-to-list 'projectile-project-root-files-bottom-up "go.mod" t))
 
 (provide 'init-editor)
 ;;; init-editor.el ends here

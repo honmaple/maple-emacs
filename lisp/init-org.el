@@ -24,7 +24,15 @@
 ;;
 
 ;;; Code:
-(use-package org-plus-contrib)
+(use-package org-faces
+  :ensure org-plus-contrib
+  :config
+  (when (display-graphic-p)
+    ;; (set-face-attribute 'org-table nil :font "-Misc-Fixed-normal-normal-normal-*-18-*-*-*-c-90-iso10646-1")
+    ;; (set-face-attribute 'org-table nil :font "-jis-fixed-medium-r-normal--16-*-75-75-c-160-jisx0208.1983-0")
+    ;; (set-face-attribute 'org-table nil :font "-Sony-Sony Fixed-normal-normal-normal-*-16-*-*-*-c-80-iso10646-1")
+    (set-face-attribute 'org-table nil :font "Inconsolata 12")))
+
 (use-package ox-confluence
   :ensure nil
   :commands (org-confluence-export-as-confluence))
@@ -50,13 +58,6 @@
 
   (advice-add 'org-todo :after 'org-save-all-org-buffers)
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-  (when (display-graphic-p)
-    ;; (set-face-attribute 'org-table nil :font "-Misc-Fixed-normal-normal-normal-*-18-*-*-*-c-90-iso10646-1")
-    (set-face-attribute 'org-table nil :font "Inconsolata 12")
-    ;; (set-face-attribute 'org-table nil :font "-jis-fixed-medium-r-normal--16-*-75-75-c-160-jisx0208.1983-0")
-    ;; (set-face-attribute 'org-table nil :font "-Sony-Sony Fixed-normal-normal-normal-*-16-*-*-*-c-80-iso10646-1")
-    )
 
   (when (version< "9.1.4" (org-version))
     (add-to-list 'org-modules 'org-tempo)
@@ -100,10 +101,11 @@
     (add-to-list 'org-babel-default-header-args:python
                  '(:results . "output"))))
 
+(use-package maple-org
+  :ensure nil :demand)
+
 (use-package org-capture
-  :ensure nil
-  :config
-  (use-package maple-org :ensure nil :demand))
+  :ensure nil)
 
 (use-package org-agenda
   :ensure nil

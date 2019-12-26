@@ -111,6 +111,11 @@
   :hook (text-mode . visual-line-mode)
   :diminish visual-line-mode)
 
+(use-package adaptive-wrap
+  :hook (visual-line-mode . adaptive-wrap-prefix-mode)
+  :config
+  (setq-default adaptive-wrap-extra-indent 1))
+
 (use-package frame
   :ensure nil
   ;; blink-cursor-interval 0.4

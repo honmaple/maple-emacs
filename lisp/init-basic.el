@@ -95,37 +95,16 @@
          (funcall ',f))
        (add-hook ',hook ',func ,append ,local))))
 
-(defun maple/close-process ()
-  "Close current term buffer when `exit' from term buffer."
+(defun maple/process-exit-sentinel(process _event)
+  "Close current when PROCESS `exit'."
+  (when (memq (process-status process) '(exit stop))
+    (when (> (count-windows) 1) (delete-window))
+    (kill-buffer (process-buffer process))))
+
+(defun maple/process-exit()
+  "Process auto exit."
   (let ((process (get-buffer-process (current-buffer))))
-    (when process
-      (set-process-sentinel
-       process
-       (lambda (_proc change)
-         (when (and (string-match-p "\\(?:finished\\|exited\\)" change)
-                    (> (count-windows) 1))
-           (delete-window)))))))
-
-(defun maple/comment-or-uncomment (&optional paste)
-  "Comments or uncomments the region or the current line if there's no active region with no `PASTE`."
-  (interactive)
-  (save-excursion
-    (when (and (hs-minor-mode) (hs-already-hidden-p))
-      (set-mark (line-beginning-position))
-      (end-of-visual-line)
-      (activate-mark))
-    (let (beg end)
-      (if (region-active-p)
-          (setq beg (region-beginning) end (region-end))
-        (setq beg (line-beginning-position) end (line-end-position)))
-      (when paste (copy-region-as-kill beg end)
-            (goto-char end) (yank))
-      (comment-or-uncomment-region beg end))))
-
-(defun maple/copy-and-comment ()
-  "Copy and comment."
-  (interactive)
-  (maple/comment-or-uncomment t))
+    (when process (set-process-sentinel process 'maple/process-exit-sentinel))))
 
 (defun maple/toggle-indent-mode ()
   "Toggle indent tab mode."

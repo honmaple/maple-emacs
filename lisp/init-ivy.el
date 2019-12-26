@@ -159,7 +159,8 @@
         counsel-more-chars-alist '((t . 1))
         counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
 
-  (setq ivy-initial-inputs-alist '((counsel-M-x . "") (t . maple/region-string)))
+  (setq ivy-initial-inputs-alist '((counsel-ag . maple/region-string)
+                                   (swiper . maple/region-string)))
 
   (defun maple/counsel-ag-directory()
     (interactive)

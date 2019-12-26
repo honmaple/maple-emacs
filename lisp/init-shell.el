@@ -24,41 +24,56 @@
 ;;
 
 ;;; Code:
-
-(use-package multi-term
+(use-package comint
+  :ensure nil
+  :hook (comint-mode . maple/process-exit)
   :config
-  (add-to-list 'term-bind-key-alist '("<tab>" . term-send-tab)))
-
-(use-package shell-pop
-  :init
-  (setq shell-pop-window-position "bottom"
-        shell-pop-term-shell "/bin/bash"
-        shell-pop-full-span t
-        shell-pop-shell-type (if maple-system-is-windows
-                                 '("eshell" "*eshell*" (lambda () (eshell)))
-                               '("ansi-term" "*ansi-term*"
-                                 (lambda () (ansi-term shell-pop-term-shell)))))
-  (maple/add-hook 'term-mode-hook 'maple/close-process)
-  (defun term-send-tab ()
-    "Send tab in term mode."
-    (interactive)
-    (term-send-raw-string "\t"))
-  :evil-bind
-  (:state normal :map term-raw-map
-          ("p" . term-paste))
-  (:state insert :map term-raw-map
-          ("C-c C-d" . term-send-eof)
-          ("C-c C-z" . term-stop-subjob)
-          ("C-y" . term-paste)
-          ("<tab>" . term-send-tab)
-          ("C-k" . term-send-up)
-          ("C-j" . term-send-down)))
+  (setq comint-prompt-read-only t)
+  :bind
+  (:map comint-mode-map
+        ("<up>" . comint-previous-input)
+        ("<down>" . comint-next-input)
+        ("<escape>" . (lambda() (interactive) (goto-char (cdr comint-last-prompt))))))
 
 (use-package xterm-color
   :hook (comint-preoutput-filter-functions . xterm-color-filter)
   :config
   (setq comint-output-filter-functions
         (remove 'ansi-color-process-output comint-output-filter-functions)))
+
+(use-package term
+  :ensure nil
+  :commands (maple/shell)
+  :hook (term-mode . maple/process-exit)
+  :config
+  (defun term-send-tab ()
+    "Send tab in term mode."
+    (interactive)
+    (term-send-raw-string "\t"))
+
+  (defun term-kill-ring()
+    (interactive)
+    (if (use-region-p)
+        (call-interactively 'copy-region-as-kill)
+      (term-send-raw-string "y")))
+
+  (defun maple/shell()
+    (interactive)
+    (cl-letf (((symbol-function 'switch-to-buffer) 'pop-to-buffer))
+      (term "/bin/bash")))
+  :evil-bind
+  (:state insert :map term-raw-map
+          ("C-c C-d" . term-send-eof)
+          ("C-c C-z" . term-stop-subjob)
+          ("C-y" . term-paste)
+          ("y" . term-kill-ring)
+          ("<tab>" . term-send-tab)
+          ("C-k" . term-send-up)
+          ("C-j" . term-send-down)))
+
+(use-package multi-term
+  :config
+  (add-to-list 'term-bind-key-alist '("<tab>" . term-send-tab)))
 
 (provide 'init-shell)
 ;;; init-shell.el ends here

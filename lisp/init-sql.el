@@ -36,7 +36,7 @@
           (server :default "localhost")
           (port :default 5432)))
   (maple/add-hook 'sql-interactive-mode-hook
-    '(maple/truncate-lines maple/close-process))
+    '(maple/truncate-lines maple/process-exit))
   :evil-state (sql-interactive-mode . insert))
 
 (use-package sql-indent

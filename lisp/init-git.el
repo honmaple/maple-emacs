@@ -37,7 +37,10 @@
   (maple/evil-map git-timemachine-mode-map)
   (with-eval-after-load 'evil
     ;; force update evil keymaps after git-timemachine-mode loaded
-    (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)))
+    (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps))
+  :evil-bind
+  (:state normal :map git-timemachine-mode-map
+          ("gg" . evil-goto-first-line)))
 
 (use-package git-gutter-fringe
   :diminish git-gutter-mode

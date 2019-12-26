@@ -107,6 +107,26 @@
     (ignore imenu-auto-rescan-maxout)
     items))
 
+(defun maple-language:comment(&optional paste)
+  "Call comment.Yank selected region if PASTE."
+  (interactive)
+  (save-excursion
+    (when (and (bound-and-true-p hs-minor-mode) (hs-already-hidden-p))
+      (set-mark (line-beginning-position))
+      (end-of-visual-line)
+      (activate-mark))
+    (let (beg end)
+      (if (region-active-p)
+          (setq beg (region-beginning) end (region-end))
+        (setq beg (line-beginning-position) end (line-end-position)))
+      (when paste (copy-region-as-kill beg end) (goto-char end) (yank))
+      (comment-or-uncomment-region beg end))))
+
+(defun maple-language:copy-and-comment()
+  "Copy and comment."
+  (interactive)
+  (maple-language:comment t))
+
 (defmacro maple-language:define (mode &rest args)
   "Language define with MODE ARGS."
   (declare (indent defun))
@@ -149,11 +169,10 @@
 (defun maple-language:default-definition()
   "Call default definition."
   (interactive)
-  (call-interactively (cond ((bound-and-true-p lsp-mode)
-                             'lsp-find-definition)
-                            ((bound-and-true-p evil-mode)
-                             'evil-goto-definition)
-                            (t 'xref-find-definitions))))
+  (let (xref-prompt-for-identifier)
+    (ignore xref-prompt-for-identifier)
+    (call-interactively
+     (if (bound-and-true-p lsp-mode) 'lsp-find-definition #'xref-find-definitions))))
 
 (defun maple-language:call-run()
   "Call run."

@@ -96,13 +96,14 @@
         mac-function-modifier 'hyper)
 
   (defun maple/mac-switch-input-source ()
-    (shell-command
-     "osascript -e 'tell application \"System Events\" to tell process \"SystemUIServer\"
+    (let ((inhibit-message t))
+      (shell-command
+       "osascript -e 'tell application \"System Events\" to tell process \"SystemUIServer\"
       set currentLayout to get the value of the first menu bar item of menu bar 1 whose description is \"text input\"
       if currentLayout is not \"ABC\" then
         tell (1st menu bar item of menu bar 1 whose description is \"text input\") to {click, click (menu 1'\"'\"'s menu item \"ABC\")}
       end if
-    end tell' &>/dev/null"))
+    end tell' &>/dev/null")))
 
   (add-hook 'focus-in-hook 'maple/mac-switch-input-source))
 

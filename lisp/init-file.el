@@ -39,7 +39,8 @@
         recentf-exclude (list "\\.\\(png\\|jpg\\)\\'"
                               "COMMIT_EDITMSG\\'"
                               (expand-file-name maple-cache-directory)
-                              (expand-file-name package-user-dir))))
+                              ;; (expand-file-name package-user-dir)
+                              )))
 
 (use-package savehist
   :ensure nil

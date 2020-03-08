@@ -41,6 +41,13 @@
   :ensure nil
   :hook (maple-init . maple-search-init))
 
+(use-package maple-header
+  :ensure nil
+  :defines (maple-header:email-update-p)
+  :hook (maple-init . maple-header-mode)
+  :config
+  (setq maple-header:email-update-p nil))
+
 (use-package maple-run
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-run")
   :commands (maple-run)
@@ -55,8 +62,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
   :commands (maple-note)
   :config
-  (setq maple-note-root-path "~/git/pelican"
-        maple-note-draft-path "content/draft")
+  (setq maple-note-base-directory "~/Git/pelican/content")
   (maple/evil-map maple-note-mode-map))
 
 (use-package maple-line
@@ -152,14 +158,11 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-env")
   :hook (maple-init . maple-env-mode)
   :config
-  (with-eval-after-load 'pyvenv
-    (add-hook 'pyvenv-post-activate-hooks 'maple-env-mode-on)
-    (add-hook 'pyvenv-post-deactivate-hooks 'maple-env-mode-on))
-
   (setq maple-env:path (substitute-in-file-name "$HOME/repo")
         maple-env:python-command (if *python3* "pip3" "pip")
+        ;; https://github.com/davidhalter/jedi/issues/1423
         maple-env:python-packages
-        '("flake8" "isort" "yapf" "python-language-server[all]")
+        '("flake8" "isort" "yapf" "python-language-server[all]" "jedi==0.15.2")
         maple-env:golang-packages
         '("github.com/nsf/gocode"
           "github.com/rogpeppe/godef"

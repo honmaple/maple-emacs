@@ -118,6 +118,7 @@
   :hook (maple-init . projectile-mode)
   :config
   (setq projectile-sort-order 'recentf
+        projectile-current-project-on-switch 'keep
         projectile-cache-file
         (expand-file-name "projectile.cache" maple-cache-directory)
         projectile-known-projects-file

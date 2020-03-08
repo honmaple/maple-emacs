@@ -250,7 +250,7 @@
   ;; ivy
   (evil-leader/set-key
     "," 'counsel-M-x
-    "/" 'swiper ;;当前文件内容
+    "/" 'counsel-grep-or-swiper
     "ff" 'find-file
     "fF" 'counsel-file-jump
     "fr" 'counsel-recentf

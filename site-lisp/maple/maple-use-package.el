@@ -96,6 +96,7 @@
 (defun maple-use-package/custom-keyword(args)
   "Custom variable with ARGS."
   (pcase (car args)
+    (:variable `((setq ,@(cdr args))))
     (:default `((setq-default ,@(cdr args))))
     (:mode (let ((mode (cadr args)))
              (unless (featurep 'mode-local) (require 'mode-local))

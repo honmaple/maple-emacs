@@ -61,15 +61,6 @@
         ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
 
-  ;; (defun maple/ivy-set-display-transformer (cmd transformer)
-  ;;   "Advice ivy-set-display-transformer with `CMD` and `TRANSFORMER`."
-  ;;   (let* ((tf (plist-get ivy--display-transformers-list cmd))
-  ;;          (tf (if tf `(lambda(str) (,transformer (,tf str))) transformer)))
-  ;;     (setq ivy--display-transformers-list
-  ;;           (plist-put ivy--display-transformers-list cmd tf))))
-
-  ;; (advice-add 'ivy-set-display-transformer :override #'maple/ivy-set-display-transformer)
-
   ;; custom ivy display function
   (defvar ivy-format-padding nil)
 
@@ -190,6 +181,8 @@
   (use-package counsel-projectile
     :preface (setq projectile-keymap-prefix (kbd "C-c p")))
 
+  (use-package swiper)
+
   :bind (("M-x" . counsel-M-x)
          ("C-x C-m" . counsel-M-x)
          ("M-y" . counsel-yank-pop)
@@ -209,7 +202,9 @@
          ([tab] . maple/ivy-done)
          ([backspace] . maple/ivy-backward-delete-char)
          :map counsel-ag-map
-         ([tab] . ivy-call)))
+         ([tab] . ivy-call)
+         :map swiper-map
+         ([tab] . ivy-done)))
 
 (use-package ivy-rich
   :hook (counsel-mode . ivy-rich-mode)
@@ -217,48 +212,33 @@
   (setq ivy-rich-path-style 'abbrev
         ivy-rich-switch-buffer-align-virtual-buffer t)
 
-  (when (and (display-graphic-p) *icon*)
-    (use-package all-the-icons-ivy
-      :demand
-      :config
-      (setq all-the-icons-spacer " "
-            all-the-icons-scale-factor 1.15)
+  (defun ivy-rich-format (candidate columns &optional delimiter)
+    (mapconcat
+     (lambda (column)
+       (or (ivy-rich-format-column candidate column) ""))
+     columns " "))
 
-      (setq all-the-icons-icon-alist
-            (append
-             (butlast all-the-icons-icon-alist)
-             (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
+  (use-package all-the-icons-ivy-rich
+    :if (and (display-graphic-p) *icon*)
+    :demand
+    :config
+    (setq all-the-icons-scale-factor 1.15
+          all-the-icons-icon-alist
+          (append
+           (butlast all-the-icons-icon-alist)
+           (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan))))
 
-    (add-to-list 'all-the-icons-ivy-buffer-commands 'counsel-recentf)
-
-    (defun maple/ivy-rich-candidate (candidate)
-      "Advice ivy-rich-candidate with `CANDIDATE`."
-      (if (memq (ivy-state-caller ivy-last) all-the-icons-ivy-buffer-commands)
-          (all-the-icons-ivy-buffer-transformer candidate)
-        candidate))
-
-    (defun maple/ivy-read-file-transformer(candidate)
+    (defun maple/ivy-file-transformer(candidate)
       "Advice ivy-read-file-transformer with `CANDIDATE`."
-      (if (memq (ivy-state-caller ivy-last) all-the-icons-ivy-file-commands)
-          (all-the-icons-ivy-file-transformer
-           (if (ivy--dirname-p candidate)
-               (propertize candidate 'face 'ivy-subdir)
-             candidate))
-        candidate))
-
-    (defun maple/counsel-M-x-transformer(str)
-      (let ((icon (all-the-icons-faicon "cube" :height 0.9 :v-adjust -0.05 :face 'all-the-icons-purple)))
-        (format "%s %s" (propertize "\t" 'display icon) str)))
+      (format "%s %s" (propertize "\t" 'display (all-the-icons-ivy-rich-file-icon candidate)) candidate))
 
     (with-eval-after-load 'projectile
       (ivy-set-display-transformer
-       'projectile-completing-read 'all-the-icons-ivy-file-transformer))
+       'projectile-completing-read 'maple/ivy-file-transformer))
 
-    (advice-add 'counsel-M-x-transformer :filter-return #'maple/counsel-M-x-transformer)
-    (advice-add 'ivy-rich-candidate :override #'maple/ivy-rich-candidate)
-    (advice-add 'ivy-read-file-transformer :override #'maple/ivy-read-file-transformer)))
-
-(use-package swiper)
+    (advice-add 'all-the-icons-ivy-rich--format-icon :filter-return 'string-trim-left)
+    (advice-add 'ivy-rich-bookmark-type :override 'all-the-icons-ivy-rich-bookmark-type)
+    (setq ivy-rich-display-transformers-list all-the-icons-ivy-rich-display-transformers-list)))
 
 (use-package ivy-posframe
   :disabled

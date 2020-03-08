@@ -62,7 +62,6 @@
 (maple/require 'init-gui)         ;;ui设置 显示行号
 (maple/require 'init-ui)          ;; modeline,which-key
 (maple/require 'init-editor)      ;;自动补全括号等
-(maple/require 'init-auto-insert) ;;自动插入文件头
 (maple/require 'init-evil)
 (maple/require 'init-ivy)
 (maple/require 'init-dired)       ;;自带文件管理

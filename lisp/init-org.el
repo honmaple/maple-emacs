@@ -59,6 +59,12 @@
   (advice-add 'org-todo :after 'org-save-all-org-buffers)
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
+  (defun maple/org-as-html()
+    (interactive)
+    (let ((org-html-head-include-scripts nil)
+          (org-html-head-include-default-style nil))
+      (org-html-export-as-html nil nil nil t)))
+
   (when (version< "9.1.4" (org-version))
     (add-to-list 'org-modules 'org-tempo)
     ;; disable auto add comma prepended

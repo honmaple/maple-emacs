@@ -151,9 +151,10 @@
 ;; 显示缩进
 (use-package highlight-indent-guides
   :if (display-graphic-p)
-  :hook ((prog-mode) . highlight-indent-guides-mode)
+  :hook ((prog-mode yaml-mode) . highlight-indent-guides-mode)
   :config
-  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
 
 (use-package whitespace

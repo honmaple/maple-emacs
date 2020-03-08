@@ -83,7 +83,8 @@
 
 (use-package fullframe)
 (use-package restart-emacs
-  :init
+  :commands (maple/restart-emacs)
+  :config
   (defun maple/restart-emacs()
     "Restart Emacs."
     (interactive)

@@ -38,8 +38,6 @@
       (python-shell-send-buffer t)))
 
   (use-package pip-requirements)
-  (use-package pyvenv
-    :commands (pyvenv-activate))
   (use-package pyenv-mode
     :commands (pyenv-mode-set))
   (use-package py-isort

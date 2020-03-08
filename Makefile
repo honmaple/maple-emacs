@@ -1,4 +1,4 @@
-EMACS= /usr/bin/emacs --batch
+EMACS=emacs --batch
 INITFILE=~/.emacs.d/init.el
 EMACSPATH=~/.emacs.d
 

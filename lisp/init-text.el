@@ -47,7 +47,9 @@
 (use-package vimrc-mode)
 (use-package json-mode)
 (use-package nginx-mode)
-(use-package yaml-mode)
+(use-package yaml-mode
+  :config
+  (maple/add-hook 'yaml-mode-hook (setq tab-width 2)))
 
 (use-package origami
   :diminish origami-mode

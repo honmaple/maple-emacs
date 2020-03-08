@@ -33,8 +33,6 @@
   (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
         flycheck-idle-change-delay 0.8)
 
-  (when *python3* (setq flycheck-python-flake8-executable "python3"))
-
   (let ((govet (flycheck-checker-get 'go-vet 'command)))
     (when (equal (cadr govet) "tool")
       (setf (cdr govet) (cddr govet))))
@@ -75,6 +73,13 @@
       :overlay-category 'flycheck-info-overlay
       :fringe-bitmap bitmap
       :fringe-face 'flycheck-fringe-info))
+
+  (defun maple/flycheck-disable(func checker module)
+    (unless (memq checker '(python-pylint))
+      (funcall func checker module)))
+
+  (advice-add 'flycheck-python-find-module :around 'maple/flycheck-disable)
+
   :evil-bind
   (:state normal :map flycheck-error-list-mode-map
           ("q" . quit-window)

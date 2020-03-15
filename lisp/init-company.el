@@ -56,6 +56,30 @@
                                    shell-mode
                                    evil-command-window-mode))
   (setq company-backends maple-language:complete-backends)
+
+  (defun maple/company-yasnippet ()
+    (interactive)
+    (let ((backend company-backend))
+      (company-cancel)
+      (company-begin-backend
+       (if (eq backend 'company-yasnippet)
+           (car company-backends)
+         'company-yasnippet))))
+
+  (defun maple/company-yasnippet-advice (fun command &optional arg &rest ignore)
+    (if (eq command 'prefix)
+        (let ((prefix (funcall fun command)))
+          (unless (or (not prefix) (memq (char-before (- (point) (length prefix))) '(?. ?> ?\())) prefix))
+      (when (and arg (not (get-text-property 0 'yas-annotation-patch arg)))
+        (let* ((name (get-text-property 0 'yas-annotation arg))
+               (snip (format "%s (Snip)" name))
+               (leng (length arg)))
+          (put-text-property 0 leng 'yas-annotation snip arg)
+          (put-text-property 0 leng 'yas-annotation-patch t arg)))
+      (funcall fun command arg ignore)))
+
+  (advice-add 'company-yasnippet :around 'maple/company-yasnippet-advice)
+
   :custom-face
   (company-tooltip-common
    ((t (:inherit company-tooltip :weight bold :underline nil))))
@@ -65,14 +89,15 @@
               ("C-d" . company-show-doc-buffer)
               ("C-j" . company-select-next)
               ("C-k" . company-select-previous)
+              ("<backtab>" . maple/company-yasnippet)
               ("TAB" . company-complete-common-or-cycle)
               ("<tab>" . company-complete-common-or-cycle)
               ("<RET>" . company-complete-selection)))
 
-(use-package company-statistics
-  :hook (company-mode . company-statistics-mode)
+(use-package company-prescient
+  :hook (company-mode . company-prescient-mode)
   :config
-  (setq company-statistics-file (expand-file-name "company-statistics.el" maple-cache-directory)))
+  (setq prescient-save-file (expand-file-name "prescient-save.el" maple-cache-directory)))
 
 (use-package company-box
   :disabled

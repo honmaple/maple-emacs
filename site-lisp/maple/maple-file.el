@@ -65,28 +65,20 @@
          ((eq system-type 'windows-nt) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\\\" file-path)))
          ((eq system-type 'darwin) (shell-command (format "open \"%s\"" file-path)))
          ((eq system-type 'gnu/linux) (let ((process-connection-type nil))
-                                  (start-process "" nil "xdg-open" file-path))))
+                                        (start-process "" nil "xdg-open" file-path))))
       (message "No file associated to this buffer."))))
 
-(defun maple-file/sudo-edit (&optional arg)
-  "Edit file with sudo ARG."
-  (interactive "p")
-  (let ((fname (if (or arg (not buffer-file-name))
-                   (read-file-name "File: ")
-                 buffer-file-name)))
+(defun maple-file/sudo-edit (&optional file)
+  "Edit FILE with sudo user."
+  (interactive "P")
+  (let* ((file (or file (read-file-name "File: " nil nil nil (file-name-nondirectory (buffer-file-name)))))
+         (host (or (file-remote-p file 'host) "localhost")))
     (find-file
-     (cond ((string-match-p "^/ssh:" fname)
-            (with-temp-buffer
-              (insert fname)
-              (search-backward ":")
-              (let ((last-match-end nil)
-                    (last-ssh-hostname nil))
-                (while (string-match "@\\\([^:|]+\\\)" fname last-match-end)
-                  (setq last-ssh-hostname (or (match-string 1 fname) last-ssh-hostname))
-                  (setq last-match-end (match-end 0)))
-                (insert (format "|sudo:%s" (or last-ssh-hostname "localhost"))))
-              (buffer-string)))
-           (t (concat "/sudo:root@localhost:" fname))))))
+     (concat "/" (when (file-remote-p file)
+                   (concat (file-remote-p file 'method) ":"
+                           (let ((user (file-remote-p file 'user)))
+                             (if user (concat user "@" host) host)) "|"))
+             "sudo:root@" host ":" (or (file-remote-p file 'localname) file)))))
 
 (defun maple-file/delete ()
   "Remove file connected to current buffer and kill buffer."

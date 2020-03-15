@@ -48,6 +48,11 @@
   (defun maple/lsp-restart-workspace(&rest _)
     (call-interactively 'lsp-restart-workspace))
 
+  (defun maple/lsp-configure-complete(&rest _)
+    (setq company-backends (cdr company-backends)))
+
+  (advice-add 'lsp--auto-configure :after 'maple/lsp-configure-complete)
+
   ;; pip install python-language-server
   (use-package lsp-pyls
     :ensure nil
@@ -91,7 +96,7 @@
 
   :custom
   (:language
-   "yaml-mode"
+   ("yaml-mode" "python-mode")
    :format 'lsp-format-buffer)
   (:language
    "lsp-mode"

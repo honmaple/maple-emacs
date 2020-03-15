@@ -42,14 +42,11 @@
     :commands (pyenv-mode-set))
   (use-package py-isort
     :commands (py-isort-buffer))
-  (use-package yapfify
-    :commands (yapfify-buffer))
 
   :custom
   (:language
    "python-mode"
-   :run      'maple/run-python
-   :format   'yapfify-buffer))
+   :run 'maple/run-python))
 
 (provide 'init-python)
 

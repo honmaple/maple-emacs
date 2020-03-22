@@ -46,7 +46,8 @@
   :custom
   (:language
    "python-mode"
-   :run 'maple/run-python))
+   :run 'maple/run-python
+   :checker '(:disable python-pylint)))
 
 (provide 'init-python)
 

@@ -25,42 +25,46 @@
 
 ;;; Code:
 
-;; (defvar  maple/theme-alist (mapcar 'symbol-name (custom-available-themes)))
-;; (defvar  maple/theme-alist (delete "doom-one-light"
+;; (defvar  maple-theme:alist (mapcar 'symbol-name (custom-available-themes)))
+;; (defvar  maple-theme:alist (delete "doom-one-light"
 ;;                                  (mapcar 'symbol-name (custom-available-themes))))
-(defvar maple-theme/alist '(monokai
+(defvar maple-theme:alist '(monokai
                             spacemacs-dark
                             solarized-light
                             solarized-dark
                             doom-molokai
                             doom-one
+                            doom-horizon
                             doom-peacock
                             doom-vibrant))
 
-(defun maple-theme/cycle (&optional backward)
+(defun maple-theme:cycle (&optional backward)
   "Theme switch with BACKWARD."
-  (let* ((themes (if backward (reverse maple-theme/alist) maple-theme/alist))
-         (next-theme (car (or (cdr (memq (car custom-enabled-themes) themes)) themes))))
+  (let* ((themes (if backward (reverse maple-theme:alist) maple-theme:alist))
+         (theme  (car custom-enabled-themes))
+         (index  (cl-loop for i in themes and index from 0
+                          when (eq i theme) return index))
+         (ntheme (nth (if (= index (- (length themes) 1)) 0 (+ index 1)) themes)))
     (mapc 'disable-theme custom-enabled-themes)
     (let ((progress-reporter
            (make-progress-reporter
-            (format "Loading theme %s..." next-theme))))
-      (load-theme next-theme t)
+            (format "Loading theme %s..." ntheme))))
+      (load-theme ntheme t)
       (with-eval-after-load 'powerline
         (powerline-reset))
       (progress-reporter-done progress-reporter))))
 
 ;;;###autoload
-(defun maple-theme/next()
+(defun maple-theme:next()
   "Next theme."
   (interactive)
-  (maple-theme/cycle))
+  (maple-theme:cycle))
 
 ;;;###autoload
-(defun maple-theme/previous()
+(defun maple-theme:previous()
   "Previous theme."
   (interactive)
-  (maple-theme/cycle t))
+  (maple-theme:cycle t))
 
 (provide 'maple-theme)
 ;;; maple-theme.el ends here

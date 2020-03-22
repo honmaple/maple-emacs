@@ -96,8 +96,8 @@
   :mode ("\\.js\\'" . js2-mode)
   :hook (js2-mode . js2-imenu-extras-mode)
   :config
-  (setq js2-basic-offset 4
-        js-indent-level 4
+  (setq js-indent-level 4
+        js2-basic-offset 4
         js2-bounce-indent-p nil
         js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil)

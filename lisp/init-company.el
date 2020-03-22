@@ -43,8 +43,8 @@
         company-tooltip-limit 15
         company-minimum-prefix-length 1
         company-tooltip-align-annotations t ;; 提示右对齐
+        company-tooltip-offset-display 'lines
         company-dabbrev-downcase nil
-        ;; company-transformers '(company-sort-by-occurrence) ;; 按使用频次排序
         company-begin-commands '(self-insert-command)
         company-global-modes '(not comint-mode
                                    erc-mode
@@ -55,7 +55,10 @@
                                    inferior-python-mode
                                    shell-mode
                                    evil-command-window-mode))
-  (setq company-backends maple-language:complete-backends)
+
+  (setq company-yasnippet-annotation-fn
+        (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
+        company-backends maple-language:complete-backends)
 
   (defun maple/company-yasnippet ()
     (interactive)
@@ -70,12 +73,6 @@
     (if (eq command 'prefix)
         (let ((prefix (funcall fun command)))
           (unless (or (not prefix) (memq (char-before (- (point) (length prefix))) '(?. ?> ?\())) prefix))
-      (when (and arg (not (get-text-property 0 'yas-annotation-patch arg)))
-        (let* ((name (get-text-property 0 'yas-annotation arg))
-               (snip (format "%s (Snip)" name))
-               (leng (length arg)))
-          (put-text-property 0 leng 'yas-annotation snip arg)
-          (put-text-property 0 leng 'yas-annotation-patch t arg)))
       (funcall fun command arg ignore)))
 
   (advice-add 'company-yasnippet :around 'maple/company-yasnippet-advice)

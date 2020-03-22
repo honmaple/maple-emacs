@@ -8,11 +8,11 @@
 (use-package magit
   :commands (magit-status)
   :config
-  (setq magit-completing-read-function 'magit-builtin-completing-read
-        magit-revision-show-gravatars '("^Author:     " . "^Commit:     ")
+  (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     ")
         magit-process-popup-time 3
         magit-diff-refine-hunk t
         magit-section-visibility-indicator nil)
+
   (use-package evil-magit
     :demand)
   ;; https://github.com/magit/transient/issues/18
@@ -21,11 +21,8 @@
     (transient-bind-q-to-quit)
     (setq transient-mode-line-format nil))
 
-  (with-eval-after-load 'fullframe
-    (fullframe magit-status magit-mode-quit-window))
   :bind
   (:map magit-mode-map
-        ("C-M-<up>" . magit-section-up)
         ("<tab>" . magit-section-cycle)
         ("C-<tab>" . magit-section-toggle)))
 

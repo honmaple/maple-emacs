@@ -34,30 +34,42 @@
   :type 'function
   :group 'maple-language)
 
+(make-variable-buffer-local 'maple-language:run)
+
 (defcustom maple-language:fold 'maple-language:default-fold
   "Language toggle fold."
   :type 'function
   :group 'maple-language)
+
+(make-variable-buffer-local 'maple-language:fold)
 
 (defcustom maple-language:format 'maple-language:default-format
   "Language call indent format."
   :type 'function
   :group 'maple-language)
 
+(make-variable-buffer-local 'maple-language:format)
+
 (defcustom maple-language:definition 'maple-language:default-definition
   "Language find definition."
   :type 'function
   :group 'maple-language)
+
+(make-variable-buffer-local 'maple-language:definition)
 
 (defcustom maple-language:references 'xref-find-references
   "Language find references."
   :type 'function
   :group 'maple-language)
 
+(make-variable-buffer-local 'maple-language:references)
+
 (defcustom maple-language:documentation nil
   "Language find documentation."
   :type 'function
   :group 'maple-language)
+
+(make-variable-buffer-local 'maple-language:documentation)
 
 (defcustom maple-language:complete-enable-snippet t
   "Language auto completion enable company-yasnippet."
@@ -92,6 +104,16 @@
       backend
     (append (if (consp backend) backend (list backend))
             '(:with company-yasnippet))))
+
+(defun maple-language:checker-backend(backend)
+  "Return BACKEND."
+  (cl-loop for checker in backend
+           if (eq checker :disable)
+           collect t into tmp
+           else if tmp
+           collect checker into b
+           else collect checker into a
+           finally (return (cons a b))))
 
 (defun maple-language:imenu-items()
   "Get all definition with imenu."
@@ -130,29 +152,26 @@
 (defmacro maple-language:define (mode &rest args)
   "Language define with MODE ARGS."
   (declare (indent defun))
-  (let ((run (plist-get args :run))
-        (fold (plist-get args :fold))
-        (forma (plist-get args :format))
-        (complete (plist-get args :complete))
-        (definition (plist-get args :definition))
-        (references (plist-get args :references))
-        (documentation (plist-get args :documentation))
-        (hooks (if (listp mode)
-                   (mapcar (lambda(x) (intern (format "%s-hook" x))) mode)
-                 (list (intern (format "%s-hook" mode)))))
-        forms)
-    (when run (push `(setq-local maple-language:run ,run) forms))
-    (when fold (push `(setq-local maple-language:fold ,fold) forms))
-    (when forma (push `(setq-local maple-language:format ,forma) forms))
-    (when definition (push `(setq-local maple-language:definition ,definition) forms))
-    (when references (push `(setq-local maple-language:references ,references) forms))
-    (when documentation (push `(setq-local maple-language:documentation ,documentation) forms))
-    (when complete
-      (push `(setq-local company-backends (maple-language:complete-backend ,complete)) forms))
-    (when forms
-      (let* ((fn `(lambda() ,@forms))
-             (fns (cl-loop for hook in hooks collect `(add-hook ',hook ,fn))))
-        `(progn ,@fns)))))
+  (cl-destructuring-bind (&key run fold format checker complete definition references documentation) args
+    (let ((forms (list (when run `(setq maple-language:run ,run))
+                       (when fold  `(setq maple-language:fold ,fold))
+                       (when format `(setq maple-language:format ,format))
+                       (when definition `(setq maple-language:definition ,definition))
+                       (when references `(setq maple-language:references ,references))
+                       (when documentation `(setq maple-language:documentation ,documentation))
+                       (when complete
+                         `(with-eval-after-load 'company
+                            (setq-local company-backends (maple-language:complete-backend ,complete))))
+                       (when checker
+                         `(with-eval-after-load 'flycheck
+                            (let ((checkers (maple-language:checker-backend ,checker)))
+                              (setq-local flycheck-disabled-checkers (cdr checkers))))))))
+      (when forms
+        (let* ((fn `(lambda() ,@(cl-loop for form in forms when form collect form)))
+               (hooks (if (listp mode)
+                          (cl-loop for m in mode collect (intern (format "%s-hook" m)))
+                        (list (intern (format "%s-hook" mode))))))
+          `(progn ,@(cl-loop for hook in hooks collect `(add-hook ',hook ,fn))))))))
 
 (defun maple-language:default-format()
   "Call default indent format."

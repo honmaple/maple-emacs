@@ -92,7 +92,7 @@
     "tn" 'display-line-numbers-mode
     "tv" 'smooth-scrolling-mode
     "tV" 'visual-line-mode
-    "th" 'maple-theme/switch/body
+    "th" 'maple-theme:switch/body
     )
 
   (evil-leader/set-key

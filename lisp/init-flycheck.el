@@ -74,12 +74,6 @@
       :fringe-bitmap bitmap
       :fringe-face 'flycheck-fringe-info))
 
-  (defun maple/flycheck-disable(func checker module)
-    (unless (memq checker '(python-pylint))
-      (funcall func checker module)))
-
-  (advice-add 'flycheck-python-find-module :around 'maple/flycheck-disable)
-
   :evil-bind
   (:state normal :map flycheck-error-list-mode-map
           ("q" . quit-window)

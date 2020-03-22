@@ -25,6 +25,13 @@
 ;;
 
 ;;; Code:
+(setq package-archives '(("gnu"   . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                         ("org"   . "https://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+                         ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
+      package-enable-at-startup nil
+      package--init-file-ensured t)
+
 ;; (setq package-archives '(("melpa" . "https://melpa.org/packages/")
 ;;                          ("org"   . "https://orgmode.org/elpa/")
 ;;                          ("gnu"   . "https://elpa.gnu.org/packages/")))
@@ -33,13 +40,6 @@
 ;;                          ("melpa" . "https://elpa.emacs-china.org/melpa/")
 ;;                          ("org"   . "https://elpa.emacs-china.org/org/")
 ;;                          ("melpa-stable" . "https://elpa.emacs-china.org/melpa-stable/")))
-
-(setq package-archives '(("gnu"   . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                         ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                         ("org"   . "https://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-                         ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/"))
-      package-enable-at-startup nil
-      package--init-file-ensured t)
 
 (eval-when-compile
   ;; (require 'maple-package)
@@ -59,7 +59,7 @@
         use-package-minimum-reported-time 0.01))
 
 (use-package quelpa
-  :demand
+  :commands (quelpa)
   :config
   (setq quelpa-verbose nil
         quelpa-checkout-melpa-p nil

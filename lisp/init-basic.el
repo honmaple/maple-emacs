@@ -150,24 +150,10 @@
   (with-eval-after-load 'evil
     (evil-make-overriding-map map (or state 'normal))))
 
-(defun maple/disable-line-numbers()
-  "Disable line-numbers."
-  (interactive)
-  (display-line-numbers-mode -1))
-
 (defun maple/kill-emacs ()
   "Like `kill-emacs', but ignore `kill-emacs-hook'."
   (interactive)
   (let (kill-emacs-hook) (kill-emacs)))
-
-(defun maple/compile-emacs ()
-  "Compile el files."
-  (interactive)
-  (let* ((dir (expand-file-name (concat user-emacs-directory "lisp/")))
-         (compile-files (nreverse (directory-files-recursively dir "\\.el$"))))
-    (dolist (file compile-files)
-      (message file)
-      (byte-compile-dest-file file))))
 
 (defadvice load-theme (after run-maple-theme-hook activate)
   "Run `maple-theme-hook'."

@@ -43,5 +43,4 @@
   :hook (sql-mode-hook .  sqlind-minor-mode))
 
 (provide 'init-sql)
-
 ;;; init-sql.el ends here

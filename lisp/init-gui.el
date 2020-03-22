@@ -107,6 +107,16 @@
 
   (add-hook 'focus-in-hook 'maple/mac-switch-input-source))
 
+;; (setq font-use-system-font t)
+(prefer-coding-system 'utf-8)
+
+(use-package fontawesome
+  :commands (counsel-fontawesome))
+
+(use-package default-text-scale
+  :bind (("C-M-=" . default-text-scale-increase)
+         ("C-M--" . default-text-scale-decrease)))
+
 (use-package simple
   :ensure nil
   :hook (text-mode . visual-line-mode)
@@ -153,5 +163,4 @@
         bookmark-save-flag 1))
 
 (provide 'init-gui)
-
 ;;; init-gui.el ends here

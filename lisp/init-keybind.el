@@ -62,7 +62,6 @@
     "Sh" 'maple/search-github
     )
 
-
   (evil-leader/set-key
     "el" 'flycheck-list-errors
     "ec" 'flycheck-clear
@@ -94,13 +93,6 @@
     "tV" 'visual-line-mode
     "th" 'maple-theme:switch/body
     )
-
-  (evil-leader/set-key
-    "jb" 'avy-pop-mark
-    "jj" 'evil-avy-goto-char
-    "jJ" 'evil-avy-goto-char-2
-    "jl" 'evil-avy-goto-line
-    "jw" 'evil-avy-goto-word-or-subword-1)
 
   (evil-leader/set-key
     "gi" 'magit-init

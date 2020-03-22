@@ -32,6 +32,8 @@
   :config
   (setq smex-save-file (concat maple-cache-directory "smex-items")))
 
+(use-package swiper)
+
 (use-package ivy
   :diminish (ivy-mode)
   :hook (maple-init . ivy-mode)
@@ -177,12 +179,6 @@
        (when (bound-and-true-p evil-local-mode) (evil-normal-state)))))
 
   (advice-add 'counsel-ag :around #'maple/counsel-ag)
-
-  (use-package counsel-projectile
-    :preface (setq projectile-keymap-prefix (kbd "C-c p")))
-
-  (use-package swiper)
-
   :bind (("M-x" . counsel-M-x)
          ("C-x C-m" . counsel-M-x)
          ("M-y" . counsel-yank-pop)
@@ -239,21 +235,6 @@
     (advice-add 'all-the-icons-ivy-rich--format-icon :filter-return 'string-trim-left)
     (advice-add 'ivy-rich-bookmark-type :override 'all-the-icons-ivy-rich-bookmark-type)
     (setq ivy-rich-display-transformers-list all-the-icons-ivy-rich-display-transformers-list)))
-
-(use-package ivy-posframe
-  :disabled
-  :hook (ivy-mode . ivy-posframe-mode)
-  :config
-  (defun ivy-posframe-get-size ()
-    (list
-     :height (or ivy-posframe-height (+ ivy-height 1))
-     :width (or ivy-posframe-width (window-pixel-width))))
-
-  (setq ivy-posframe-style 'window-bottom-left
-        ivy-posframe-parameters
-        '((left-fringe . 5)
-          (right-fringe . 5)
-          (minibuffer . only))))
 
 (provide 'init-ivy)
 ;;; init-ivy.el ends here

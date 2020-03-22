@@ -36,19 +36,19 @@
     (if (use-region-p)
         (python-shell-send-region (region-beginning) (region-end) t)
       (python-shell-send-buffer t)))
-
-  (use-package pip-requirements)
-  (use-package pyenv-mode
-    :commands (pyenv-mode-set))
-  (use-package py-isort
-    :commands (py-isort-buffer))
-
   :custom
   (:language
    "python-mode"
    :run 'maple/run-python
    :checker '(:disable python-pylint)))
 
-(provide 'init-python)
+(use-package pyenv-mode
+  :commands (pyenv-mode-set))
 
+(use-package py-isort
+  :commands (py-isort-buffer))
+
+(use-package pip-requirements)
+
+(provide 'init-python)
 ;;; init-python.el ends here

@@ -47,30 +47,28 @@
         dired-recursive-deletes 'always
         dired-dwim-target t)
   (put 'dired-find-alternate-file 'disabled nil)  ;; 只有一个buffer
-
-  (use-package dired-async
-    :ensure async
-    :diminish dired-async-mode
-    :hook (dired-mode-hook . dired-async-mode))
-
-  (use-package dired-x
-    :ensure nil
-    :demand
-    :hook (dired-mode . dired-omit-mode)
-    :config
-    (setq dired-omit-verbose nil
-          dired-omit-files
-          (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$")))
-
-  (use-package all-the-icons-dired
-    :defines *icon*
-    :if (and (display-graphic-p) *icon*)
-    :hook (dired-mode . all-the-icons-dired-mode))
-
   :bind (:map dired-mode-map
               ("H" . dired-omit-mode)
               ("RET" . dired-find-alternate-file)
               ("C-c C-e" . wdired-change-to-wdired-mode)))
+
+(use-package dired-async
+  :ensure async
+  :diminish dired-async-mode
+  :hook (dired-mode-hook . dired-async-mode))
+
+(use-package dired-x
+  :ensure nil
+  :hook (dired-mode . dired-omit-mode)
+  :config
+  (setq dired-omit-verbose nil
+        dired-omit-files
+        (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$")))
+
+(use-package all-the-icons-dired
+  :defines *icon*
+  :if (and (display-graphic-p) *icon*)
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package image-dired
   :ensure nil
@@ -98,5 +96,4 @@
           ("q" . quit-window)))
 
 (provide 'init-dired)
-
 ;;; init-dired.el ends here

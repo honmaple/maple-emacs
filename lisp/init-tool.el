@@ -50,12 +50,6 @@
         youdao-dictionary-use-chinese-word-segmentation t)
   (maple/evil-map youdao-dictionary-mode-map))
 
-(use-package avy
-  :commands (avy-pop-mark)
-  :config
-  (setq avy-all-windows 'all-frames
-        avy-background t))
-
 (use-package figlet)
 
 (use-package 2048-game

@@ -13,8 +13,6 @@
         magit-diff-refine-hunk t
         magit-section-visibility-indicator nil)
 
-  (use-package evil-magit
-    :demand)
   ;; https://github.com/magit/transient/issues/18
   (use-package transient
     :config
@@ -25,6 +23,9 @@
   (:map magit-mode-map
         ("<tab>" . magit-section-cycle)
         ("C-<tab>" . magit-section-toggle)))
+
+(use-package evil-magit
+  :after magit :demand)
 
 (use-package git-commit
   :hook (git-commit-mode . goto-address-mode))

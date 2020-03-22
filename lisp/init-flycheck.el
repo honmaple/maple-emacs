@@ -94,5 +94,4 @@
         flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (provide 'init-flycheck)
-
 ;;; init-flycheck.el ends here

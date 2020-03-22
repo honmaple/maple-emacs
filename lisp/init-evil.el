@@ -68,21 +68,23 @@ the current state and point position."
     (evil-previous-line count)
     (evil-escape))
 
-  (use-package evil-numbers
-    :bind (:map evil-normal-state-map
-                ("+" . evil-numbers/inc-at-pt)
-                ("-" . evil-numbers/dec-at-pt)))
-
-  (use-package expand-region
-    :bind (:map evil-visual-state-map
-                ("v" . er/expand-region)
-                ("V" . er/contract-region)))
-
   :custom-face
   (region ((t (:background "#66d9ef" :foreground "#272822"))))
   :bind (:map evil-normal-state-map
               ("C-k" . evil-scroll-up)
               ("C-j" . evil-scroll-down)))
+
+(use-package evil-numbers
+  :after evil
+  :bind (:map evil-normal-state-map
+              ("+" . evil-numbers/inc-at-pt)
+              ("-" . evil-numbers/dec-at-pt)))
+
+(use-package expand-region
+  :after evil
+  :bind (:map evil-visual-state-map
+              ("v" . er/expand-region)
+              ("V" . er/contract-region)))
 
 (use-package evil-leader
   :hook (maple-init . global-evil-leader-mode)
@@ -115,14 +117,9 @@ the current state and point position."
                                            shell-mode
                                            term-mode
                                            org-agenda-mode
-                                           undo-tree-visualizer-mode
-                                           newsticker-treeview-mode
-                                           newsticker-treeview-list-mode
-                                           newsticker-treeview-item-mode
-                                           imenu-list-major-mode)
+                                           undo-tree-visualizer-mode)
         evil-escape-inhibit-functions '(evil-visual-state-p
                                         evil-escape--is-magit-buffer)))
 
 (provide 'init-evil)
-
 ;;; init-evil.el ends here

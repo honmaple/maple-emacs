@@ -74,21 +74,21 @@
             (lambda (c)
               (if (char-equal c ?<) t (electric-pair-default-inhibit c))))))
 
-  (use-package org-crypt
-    :ensure nil
-    :demand
-    :config
-    (org-crypt-use-before-save-magic)
-    (setq org-crypt-tag-matcher "secret"
-          org-tags-exclude-from-inheritance (quote ("secret"))
-          org-crypt-key "21305E7E"))
-
   :evil-bind
   (:state normal :map org-mode-map
           ("RET" . org-open-at-point)
           ("t" . org-todo)
           ("TAB" . org-cycle)
           ("<tab>" . org-cycle)))
+
+(use-package org-crypt
+  :ensure nil
+  :after org :demand
+  :config
+  (org-crypt-use-before-save-magic)
+  (setq org-crypt-tag-matcher "secret"
+        org-tags-exclude-from-inheritance '("secret")
+        org-crypt-key "21305E7E"))
 
 (use-package ob
   :ensure nil
@@ -141,5 +141,4 @@
   (setq org-bullets-bullet-list '("①" "②" "③" "④" "⑤")))
 
 (provide 'init-org)
-
 ;;; init-org.el ends here

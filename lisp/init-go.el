@@ -38,13 +38,16 @@
     "Return a list of all Go packages, using `gopkgs'."
     (sort (process-lines "gopkgs") #'string<))
 
-  (use-package golint)
-  (use-package go-rename)
-  (use-package go-add-tags)
   :custom
   (:language
    "go-mode"
    :format 'gofmt))
+
+(use-package golint)
+
+(use-package go-rename)
+
+(use-package go-add-tags)
 
 (provide 'init-go)
 ;;; init-go.el ends here

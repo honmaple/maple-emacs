@@ -30,7 +30,6 @@
   (defvar user-handler-alist file-name-handler-alist)
   (defvar user-default-theme nil)
   (defvar *icon* t)
-  (defvar *develop* t)
   (defvar *python3* t)
 
   (setq user-full-name "jianglin"
@@ -48,43 +47,46 @@
 
   (add-hook 'emacs-startup-hook 'maple/finish))
 
-(defmacro maple/require (pkg)
-  "Load PKG."
-  `(require ,pkg (format "%s/%s.el" (expand-file-name "lisp" user-emacs-directory) ,pkg)))
+(defun maple/require (&rest pkgs)
+  "Load PKGS."
+  (mapc (lambda(pkg) (require `,pkg (format "%s/%s.el" (expand-file-name "lisp" user-emacs-directory) pkg))) pkgs))
 
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
-(maple/require 'init-basic)
-(maple/require 'init-elpa)        ;; Machinery for installing required packages
-(maple/require 'init-maple)
-(maple/require 'init-font)
-(maple/require 'init-gui)         ;;ui设置 显示行号
-(maple/require 'init-ui)          ;; modeline,which-key
-(maple/require 'init-editor)      ;;自动补全括号等
-(maple/require 'init-evil)
-(maple/require 'init-ivy)
-(maple/require 'init-dired)       ;;自带文件管理
-(maple/require 'init-file)        ;;文件操作
-(maple/require 'init-window)
+(defvar maple-packages
+  '(init-basic
+    init-elpa        ;; Machinery for installing required packages
+    init-maple
+    init-gui         ;;ui设置 显示行号
+    init-ui          ;; modeline,which-key
+    init-editor      ;;自动补全括号等
+    init-evil
+    init-ivy
+    init-dired       ;;自带文件管理
+    init-file        ;;文件操作
+    init-window
+    init-keybind))
 
-(when *develop*
-  (maple/require 'init-flycheck)
-  (maple/require 'init-company)
-  (maple/require 'init-git)
-  (maple/require 'init-shell)     ;;shell
-  (maple/require 'init-web)
-  (maple/require 'init-python)
-  (maple/require 'init-go)
-  (maple/require 'init-lua)
-  (maple/require 'init-c)
-  (maple/require 'init-sql)
-  (maple/require 'init-text)      ;; markdown rst
-  (maple/require 'init-org)
-  (maple/require 'init-tool)
-  (maple/require 'init-lsp))
+(defvar maple-develops
+  '(init-flycheck
+    init-company
+    init-git
+    init-shell     ;;shell
+    init-web
+    init-python
+    init-go
+    init-lua
+    init-c
+    init-sql
+    init-text      ;; markdown rst
+    init-org
+    init-tool
+    init-lsp))
 
-(maple/require 'init-keybind)
+(apply 'maple/require maple-packages)
+(apply 'maple/require maple-develops)
+
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------

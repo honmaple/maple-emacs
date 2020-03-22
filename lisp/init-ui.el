@@ -79,7 +79,7 @@
     ",b" "buffer"
     ",c" "comment"
     ",o" "orgmode"
-    ",e" "flycheck error"
+    ",e" "flycheck"
     ",j" "avy"
     ",g" "git"
     ",w" "window"
@@ -168,5 +168,4 @@
   :diminish whitespace-mode "ⓦ")
 
 (provide 'init-ui)
-
 ;;; init-ui.el ends here

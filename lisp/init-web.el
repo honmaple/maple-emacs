@@ -24,6 +24,11 @@
 ;;
 
 ;;; Code:
+
+(use-package company-web)
+
+(use-package company-tern)
+
 (use-package web-mode
   :mode ("\\.\\(xml\\|vue\\|html?\\)$")
   :config
@@ -51,14 +56,13 @@
       (web-mode-fold-or-unfold)))
   (maple/add-hook 'web-mode-hook
     (setq electric-pair-pairs '((?\' . ?\'))))
-
-  (use-package company-web)
   :custom
   (:language
    "web-mode"
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
    :complete '(company-web-html company-css company-tern :with company-yasnippet)))
+
 
 (use-package web-beautify
   :commands (web-beautify-html web-beautify-css web-beautify-js))
@@ -101,21 +105,19 @@
         js2-bounce-indent-p nil
         js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil)
-
-  (use-package tern
-    :diminish tern-mode
-    :hook (js2-mode . tern-mode)
-    :config (add-to-list 'tern-command "--no-port-file" 'append))
-
-  (use-package company-tern)
   :custom
   (:language
    "js2-mode"
    :complete '(company-tern)))
 
+(use-package tern
+  :diminish tern-mode
+  :hook (js2-mode . tern-mode)
+  :config
+  (add-to-list 'tern-command "--no-port-file" 'append))
+
 (use-package npm-mode
   :hook (js2-mode . npm-mode))
 
 (provide 'init-web)
-
 ;;; init-web.el ends here

@@ -24,6 +24,9 @@
 ;;
 
 ;;; Code:
+(use-package company-lsp
+  :config
+  (setq company-lsp-cache-candidates 'auto))
 
 (use-package lsp-mode
   :diminish lsp-mode
@@ -89,10 +92,6 @@
   ;; npm install -g yaml-language-server
   (use-package lsp-yaml
     :ensure nil)
-
-  (use-package company-lsp
-    :config
-    (setq company-lsp-cache-candidates 'auto))
 
   :custom
   (:language

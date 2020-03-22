@@ -30,12 +30,12 @@
   :config
   (setq lua-indent-level 4
         lua-indent-string-contents t)
-
-  (use-package company-lua)
   :custom
   (:language
    "lua-mode"
    :complete 'company-lua))
+
+(use-package company-lua)
 
 (provide 'init-lua)
 ;;; init-lua.el ends here

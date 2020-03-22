@@ -29,12 +29,12 @@
   :config
   (setq c-default-style "linux"
         c-basic-offset 4)
-
-  (use-package company-c-headers)
   :custom
   (:language
    "c-mode"
    :complete 'company-c-headers))
+
+(use-package company-c-headers)
 
 (provide 'init-c)
 ;;; init-c.el ends here

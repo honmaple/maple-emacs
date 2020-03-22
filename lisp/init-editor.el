@@ -91,7 +91,6 @@
         anzu-kode-lighter ""
         anzu-search-threshold 1000
         anzu-replace-to-string-separator " → ")
-  ;; (use-package evil-anzu :after evil :demand)
   :custom-face
   (anzu-replace-to ((t (:inherit query-replace))))
   :bind (:map query-replace-map
@@ -102,6 +101,17 @@
   (setq wgrep-auto-save-buffer t)
   :bind (:map wgrep-mode-map
               ("C-c C-c" . wgrep-finish-edit)))
+
+(use-package avy
+  :config
+  (setq avy-all-windows t
+        avy-background t)
+  :evil-bind
+  (:state normal ("f" . avy-goto-char))
+  (:state visual ("f" . avy-goto-char)))
+
+(use-package ace-pinyin
+  :hook (maple-init . ace-pinyin-global-mode))
 
 (use-package string-inflection
   :commands (maple/string-inflection-toggle)

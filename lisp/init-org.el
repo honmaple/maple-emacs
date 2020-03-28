@@ -47,10 +47,11 @@
               " \t\r\n,\"'" "." 1))
   :config
   (setq org-imenu-depth 5
-        org-image-actual-width '(600)
+        org-image-actual-width '(300)
         org-export-with-sub-superscripts '{}
         org-export-with-broken-links t
         org-descriptive-links nil ;; 不要锁定连接，保持原样
+        org-src-window-setup 'current-window
         org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
           (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
@@ -139,6 +140,30 @@
   :hook (org-mode . org-bullets-mode)
   :config
   (setq org-bullets-bullet-list '("①" "②" "③" "④" "⑤")))
+
+(use-package org-download
+  :commands
+  (org-download-image
+   org-download-delete
+   org-download-screenshot
+   maple/org-download-yank)
+  :config
+  (setq org-download-image-dir "images/"
+        org-download-screenshot-method (if maple-system-is-mac "screencapture -i %s" "scrot -s %s"))
+
+  (defun maple/org-download-yank()
+    (interactive)
+    (let ((file  org-download-screenshot-file)
+          (image (get-text-property 0 'display (current-kill 0))))
+      (if (or (not (consp image)) (not (eq (car image) 'image)))
+          (org-download-yank)
+        (with-temp-buffer
+          (insert (plist-get (cdr image) :data))
+          (let ((coding-system-for-write 'no-conversion))
+            (write-region nil nil file)))
+        (when (file-exists-p file)
+          (org-download-image file)
+          (delete-file file))))))
 
 (provide 'init-org)
 ;;; init-org.el ends here

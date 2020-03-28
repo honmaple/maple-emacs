@@ -91,6 +91,8 @@
       scroll-conservatively 101)
 
 (when maple-system-is-mac
+  (setq ns-use-native-fullscreen nil
+        ns-use-fullscreen-animation nil)
   (setq mac-option-modifier 'super
         mac-command-modifier 'meta
         mac-function-modifier 'hyper)

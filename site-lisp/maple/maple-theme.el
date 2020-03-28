@@ -50,7 +50,7 @@
            (make-progress-reporter
             (format "Loading theme %s..." ntheme))))
       (load-theme ntheme t)
-      (with-eval-after-load 'powerline
+      (when (featurep 'powerline)
         (powerline-reset))
       (progress-reporter-done progress-reporter))))
 

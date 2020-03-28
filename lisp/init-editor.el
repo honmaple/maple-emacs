@@ -107,8 +107,8 @@
   (setq avy-all-windows t
         avy-background t)
   :evil-bind
-  (:state normal ("f" . avy-goto-char))
-  (:state visual ("f" . avy-goto-char)))
+  (:state normal ("F" . avy-goto-char))
+  (:state visual ("F" . avy-goto-char)))
 
 (use-package ace-pinyin
   :hook (maple-init . ace-pinyin-global-mode))

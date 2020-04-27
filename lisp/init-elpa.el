@@ -78,6 +78,7 @@
   (setq async-bytecomp-allowed-packages '(all)))
 
 ;; (use-package benchmark-init
+;;   :demand
 ;;   :init (benchmark-init/activate)
 ;;   :hook (after-init . benchmark-init/deactivate))
 

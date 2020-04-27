@@ -48,7 +48,8 @@
 
   (defun maple/balance-windows(func &optional window-or-frame)
     (unless (zoom--window-ignored-p)
-      (funcall func window-or-frame)))
+      (let ((window-configuration-change-hook nil))
+        (funcall func window-or-frame))))
 
   (advice-add 'balance-windows :around 'maple/balance-windows)
 

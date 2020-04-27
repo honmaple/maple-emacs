@@ -48,7 +48,6 @@
         dired-dwim-target t)
   (put 'dired-find-alternate-file 'disabled nil)  ;; 只有一个buffer
   :bind (:map dired-mode-map
-              ("H" . dired-omit-mode)
               ("RET" . dired-find-alternate-file)
               ("C-c C-e" . wdired-change-to-wdired-mode)))
 
@@ -63,7 +62,8 @@
   :config
   (setq dired-omit-verbose nil
         dired-omit-files
-        (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$")))
+        (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$"))
+  :bind (:map dired-mode-map ("H" . dired-omit-mode)))
 
 (use-package all-the-icons-dired
   :defines *icon*

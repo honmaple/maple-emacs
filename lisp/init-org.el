@@ -51,7 +51,7 @@
         org-export-with-sub-superscripts '{}
         org-export-with-broken-links t
         org-descriptive-links nil ;; 不要锁定连接，保持原样
-        org-src-window-setup 'current-window
+        org-src-window-setup 'split-window-right
         org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
           (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
@@ -148,8 +148,10 @@
    org-download-screenshot
    maple/org-download-yank)
   :config
-  (setq org-download-image-dir "images/"
-        org-download-screenshot-method (if maple-system-is-mac "screencapture -i %s" "scrot -s %s"))
+  (setq-default org-download-image-dir "images/"
+                org-download-heading-lvl nil
+                org-download-screenshot-method
+                (if maple-system-is-mac "screencapture -i %s" "scrot -s %s"))
 
   (defun maple/org-download-yank()
     (interactive)

@@ -28,6 +28,9 @@
   :config
   (setq company-lsp-cache-candidates 'auto))
 
+;; (use-package eglot
+;;   :hook ((python-mode go-mode yaml-mode) . eglot-ensure))
+
 (use-package lsp-mode
   :diminish lsp-mode
   :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
@@ -35,8 +38,10 @@
   (setq lsp-restart 'ignore
         lsp-auto-guess-root t
         lsp-diagnostic-package :none
+        lsp-flycheck-live-reporting nil
         lsp-signature-auto-activate nil
         lsp-enable-snippet nil
+        lsp-enable-file-watchers nil
         lsp-enable-symbol-highlighting nil
         lsp-keep-workspace-alive nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
@@ -55,6 +60,11 @@
     (setq company-backends (cdr company-backends)))
 
   (advice-add 'lsp--auto-configure :after 'maple/lsp-configure-complete)
+
+  (defun maple/lsp--init-if-visible(func &rest args)
+    (unless (bound-and-true-p git-timemachine-mode) (apply func args)))
+
+  (advice-add 'lsp--init-if-visible :around 'maple/lsp--init-if-visible)
 
   ;; pip install python-language-server
   (use-package lsp-pyls

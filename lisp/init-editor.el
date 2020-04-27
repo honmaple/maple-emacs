@@ -50,6 +50,14 @@
   (setq show-paren-when-point-inside-paren t
         show-paren-when-point-in-periphery t))
 
+(use-package align
+  :ensure nil
+  :config
+  (defun maple/align-regexp(func &rest args)
+    (let ((indent-tabs-mode nil)) (apply func args)))
+
+  (advice-add 'align-regexp :around 'maple/align-regexp))
+
 (use-package xref
   :ensure nil
   :config

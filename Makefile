@@ -9,7 +9,7 @@ clean:
 	@rm $(EMACSPATH)/elpa/*
 
 upgrade:
-	@$(EMACS) --load $(INITFILE) --eval '(let ((inhibit-message t)) (maple-package-upgrade))'
+	@$(EMACS) --load $(INITFILE) --eval '(maple-package-upgrade nil t)'
 
 compile:
 	@rm $(EMACSPATH)/cache/autoloads.pkg.el*

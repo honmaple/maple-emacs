@@ -76,7 +76,8 @@
 (use-package maple-xpm
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-xpm" :files ("*.el"))
   :config
-  (setq maple-xpm-style (if (display-graphic-p) 'wave 'default)))
+  (setq maple-xpm-height 20
+        maple-xpm-style (if (display-graphic-p) 'wave 'default)))
 
 (use-package maple-modeline
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))

@@ -38,7 +38,6 @@
   (setq lsp-restart 'ignore
         lsp-auto-guess-root t
         lsp-diagnostic-package :none
-        lsp-flycheck-live-reporting nil
         lsp-signature-auto-activate nil
         lsp-enable-snippet nil
         lsp-enable-file-watchers nil

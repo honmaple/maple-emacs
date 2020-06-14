@@ -142,7 +142,12 @@
 
 (with-eval-after-load 'org-agenda
   (setq org-agenda-files (list maple-org:root-path)
-        org-default-notes-file (expand-file-name "gtd.org" maple-org:root-path)))
+        org-default-notes-file (expand-file-name "gtd.org" maple-org:root-path)
+        org-agenda-custom-commands
+        '(("b"  "博客" tags-todo "Blog")
+          ("e"  "个人" tags-todo "@Home")
+          ("p"  "项目" tags-todo "@Office")
+          ("w" "Weekly Review" ((stuck "") (tags-todo "Project"))))))
 
 (provide 'maple-org)
 ;;; maple-org.el ends here

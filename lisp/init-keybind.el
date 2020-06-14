@@ -150,7 +150,6 @@
     )
 
   (evil-leader/set-key
-    "<tab>" 'maple-buffer/switch-to-previous
     "TAB" 'maple-buffer/switch-to-previous
     "bk" 'kill-this-buffer
     "be" 'maple-buffer/safe-erase

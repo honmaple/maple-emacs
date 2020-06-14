@@ -48,10 +48,6 @@
 ;;         spaceline-window-numbers-unicode t
 ;;         spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
 
-(use-package hydra
-  :custom-face
-  (hydra-face-red ((t (:foreground "chocolate" :weight bold)))))
-
 (use-package maple-theme
   :ensure nil
   :commands (maple-theme:switch/body maple-theme:next maple-theme:previous)
@@ -60,34 +56,6 @@
    ()
    ("n" maple-theme:next "next theme")
    ("p" maple-theme:previous "prev theme")))
-
-(use-package which-key
-  :diminish which-key-mode
-  :hook (maple-init . which-key-mode)
-  :config
-  (setq which-key-echo-keystrokes 0.02
-        which-key-max-description-length 32
-        which-key-sort-order 'which-key-key-order-alpha
-        which-key-idle-delay 0.2
-        which-key-allow-evil-operators t)
-
-  (maple/add-hook 'which-key-init-buffer-hook
-    (setq window-size-fixed 'height))
-
-  (which-key-add-key-based-replacements
-    ",f" "file"
-    ",b" "buffer"
-    ",c" "comment"
-    ",o" "orgmode"
-    ",e" "flycheck"
-    ",j" "avy"
-    ",g" "git"
-    ",w" "window"
-    ",p" "project"
-    ",q" "emacs"
-    ",S" "search"
-    ",sq" "sql"
-    ",t" "toggle mode"))
 
 ;; this is ugly
 (use-package display-line-numbers
@@ -126,6 +94,10 @@
   ((prog-mode text-mode) . highlight-symbol-mode)
   :diminish highlight-symbol-mode)
 
+;;高亮当前行
+(use-package hl-line
+  :ensure nil
+  :hook (maple-init . global-hl-line-mode))
 
 (use-package volatile-highlights
   :hook (maple-init . volatile-highlights-mode)

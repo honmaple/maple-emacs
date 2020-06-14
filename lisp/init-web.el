@@ -89,12 +89,10 @@
    :complete '(company-css :with company-yasnippet)))
 
 (use-package less-css-mode)
-
 (use-package sass-mode)
-
 (use-package scss-mode)
-
 (use-package coffee-mode)
+(use-package typescript-mode)
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)

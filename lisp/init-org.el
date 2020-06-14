@@ -52,6 +52,7 @@
         org-export-with-broken-links t
         org-descriptive-links nil ;; 不要锁定连接，保持原样
         org-src-window-setup 'split-window-right
+        org-log-done t
         org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
           (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
@@ -120,13 +121,7 @@
   (setq org-agenda-restore-windows-after-quit t
         org-agenda-window-setup 'current-window
         org-agenda-inhibit-startup t   ;; ~50x speedup
-        org-agenda-use-tag-inheritance nil ;; 3-4x speedup
-        org-log-done t)
-  (setq org-agenda-custom-commands
-        '(("b"  "博客" tags-todo "Blog")
-          ("p"  "项目" tags-todo "@Office")
-          ("w" "Weekly Review"
-           ((stuck "") (tags-todo "Project")))))
+        org-agenda-use-tag-inheritance nil)
   (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers)
   :bind (:map org-agenda-mode-map
               ("j" . org-agenda-next-line)

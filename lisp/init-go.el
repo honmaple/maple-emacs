@@ -31,13 +31,7 @@
 
 (use-package go-mode
   :config
-  (setq gofmt-show-errors nil
-        go-packages-function 'go-packages-go-list)
-
-  (defun maple/go-packages-function()
-    "Return a list of all Go packages, using `gopkgs'."
-    (sort (process-lines "gopkgs") #'string<))
-
+  (setq gofmt-show-errors nil)
   :custom
   (:language
    "go-mode"

@@ -82,7 +82,6 @@
 ;;   :init (benchmark-init/activate)
 ;;   :hook (after-init . benchmark-init/deactivate))
 
-(use-package fullframe)
 (use-package restart-emacs
   :commands (maple/restart-emacs)
   :config
@@ -100,6 +99,37 @@
   :ensure nil
   :commands (server-running-p)
   :hook (maple-init . (lambda() (unless (server-running-p) (server-start)))))
+
+(use-package hydra
+  :custom-face
+  (hydra-face-red ((t (:foreground "chocolate" :weight bold)))))
+
+(use-package which-key
+  :diminish which-key-mode
+  :hook (maple-init . which-key-mode)
+  :config
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-idle-delay 0.2)
+
+  (maple/add-hook 'which-key-init-buffer-hook
+    (setq window-size-fixed 'height))
+
+  (which-key-add-key-based-replacements
+    ",f" "file"
+    ",b" "buffer"
+    ",c" "comment"
+    ",o" "orgmode"
+    ",e" "flycheck"
+    ",j" "avy"
+    ",g" "git"
+    ",w" "window"
+    ",p" "project"
+    ",q" "emacs"
+    ",S" "search"
+    ",sq" "sql"
+    ",t" "toggle mode"))
+
+
 
 (provide 'init-elpa)
 ;;; init-elpa.el ends here

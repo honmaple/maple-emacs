@@ -151,11 +151,6 @@
         browse-url-generic-program
         (if maple-system-is-mac "open" "google-chrome-stable")))
 
-;;高亮当前行
-(use-package hl-line
-  :ensure nil
-  :hook (maple-init . global-hl-line-mode))
-
 (use-package ediff
   :ensure nil
   :config

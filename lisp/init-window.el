@@ -1,6 +1,6 @@
 ;;; init-window.el --- Initialize window configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -27,7 +27,9 @@
 
 (use-package window
   :ensure nil
-  :init (setq split-width-threshold 100))
+  :init
+  (setq split-width-threshold 100
+        window-combination-resize t))
 
 (use-package winner
   :ensure nil

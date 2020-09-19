@@ -1,6 +1,6 @@
 ;;; init-maple.el --- Initialize maple configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -81,7 +81,7 @@
 
 (use-package maple-modeline
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
-  :hook (maple-theme . maple-modeline-init)
+  :hook (maple-theme . maple-modeline-mode)
   :config
   (setq maple-modeline-message-p nil)
   (setq maple-modeline-icon (and (display-graphic-p) *icon*))

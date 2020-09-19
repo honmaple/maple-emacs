@@ -1,6 +1,6 @@
 ;;; init-flycheck.el --- Initialize flycheck configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs

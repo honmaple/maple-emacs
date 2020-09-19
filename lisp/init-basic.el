@@ -1,6 +1,6 @@
 ;;; init-basic.el --- Initialize basic configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,18 +24,13 @@
 ;;
 
 ;;; Code:
-
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (defvar maple-init-hook nil
   "Custom init hook.")
 
 (defvar maple-theme-hook nil
   "Custom theme hook.")
-
-(defconst maple-cache-directory
-  (expand-file-name "cache/" user-emacs-directory)
-  "Maple storage area for persistent files.")
 
 (defconst maple-system-is-mac
   (eq system-type 'darwin))
@@ -49,6 +44,10 @@
 
 (defconst maple-system-is-windows
   (eq system-type 'windows-nt))
+
+(defconst maple-cache-directory
+  (expand-file-name "cache/" user-emacs-directory)
+  "Maple storage area for persistent files.")
 
 (defun maple/plist-get(args key &optional default)
   "Custom `plist-get` with ARGS and KEY DEFAULT."
@@ -84,16 +83,6 @@
       (dolist (i hooks)
         (push `(add-hook ',i ,fn ,-append ,-local) forms)))
     `(when ,-if ,@forms)))
-
-(defmacro maple/add-hook-once (hook f &optional append local)
-  "Like `add-hook`, remove after call with HOOK F &OPTIONAL APPEND LOCAL."
-  (let ((func (intern (format "maple/run-once-%s"
-                              (symbol-name f)))))
-    `(progn
-       (defun ,func ()
-         (remove-hook ',hook ',func ,local)
-         (funcall ',f))
-       (add-hook ',hook ',func ,append ,local))))
 
 (defun maple/process-exit-sentinel(process _event)
   "Close current when PROCESS `exit'."

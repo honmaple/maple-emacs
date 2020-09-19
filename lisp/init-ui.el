@@ -1,6 +1,6 @@
 ;;; init-ui.el --- Initialize ui configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -68,6 +68,14 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode)
   :diminish rainbow-delimiters-mode)
+
+;; 高亮括号配对
+(use-package paren
+  :ensure nil
+  :hook (maple-init . show-paren-mode)
+  :config
+  (setq show-paren-when-point-inside-paren t
+        show-paren-when-point-in-periphery t))
 
 ;; 外置高亮括号
 (use-package highlight-parentheses

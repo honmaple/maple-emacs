@@ -1,6 +1,6 @@
 ;;; init.el --- Initialize configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -56,14 +56,12 @@
 ;;----------------------------------------------------------------------------
 (defvar maple-packages
   '(init-basic
-    init-elpa        ;; Machinery for installing required packages
+    init-core        ;; Machinery for installing required packages
     init-maple
-    init-gui         ;; ui设置 显示行号
     init-ui          ;; modeline,which-key
     init-editor      ;; 自动补全括号等
     init-evil
     init-ivy
-    init-dired       ;; 自带文件管理
     init-file        ;; 文件操作
     init-window
     init-keybind))

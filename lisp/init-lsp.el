@@ -1,6 +1,6 @@
 ;;; init-lsp.el --- Initialize lsp configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -33,16 +33,18 @@
 
 (use-package lsp-mode
   :diminish lsp-mode
-  :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
+  :hook ((python-mode go-mode rust-mode yaml-mode) . lsp-deferred)
   :config
   (setq lsp-restart 'ignore
         lsp-auto-guess-root t
-        lsp-diagnostic-package :none
         lsp-signature-auto-activate nil
         lsp-enable-snippet nil
         lsp-enable-file-watchers nil
+        lsp-enable-semantic-highlighting nil
         lsp-enable-symbol-highlighting nil
         lsp-keep-workspace-alive nil
+        lsp-modeline-code-actions-enable nil
+        lsp-modeline-diagnostics-enable nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
 
   (defun maple/lsp-project-root(func session file-name)
@@ -64,6 +66,11 @@
     (unless (bound-and-true-p git-timemachine-mode) (apply func args)))
 
   (advice-add 'lsp--init-if-visible :around 'maple/lsp--init-if-visible)
+
+  (use-package lsp-diagnostics
+    :ensure nil
+    :config
+    (setq lsp-diagnostics-provider :none))
 
   ;; pip install python-language-server
   (use-package lsp-pyls
@@ -96,11 +103,23 @@
   ;; go get -u github.com/sourcegraph/go-langserver
   ;; go get golang.org/x/tools/cmd/gopls
   (use-package lsp-go
-    :ensure nil)
+    :ensure nil
+    :config
+    (setq lsp-go-codelens nil))
 
   ;; npm install -g yaml-language-server
   (use-package lsp-yaml
-    :ensure nil)
+    :ensure nil
+    :config
+    (add-to-list 'lsp--formatting-indent-alist '(yaml-mode . tab-width)))
+
+  (use-package lsp-rust
+    :ensure nil
+    :config
+    (setq lsp-rust-server 'rls
+          lsp-rust-library-directories
+          (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
+                (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
 
   :custom
   (:language

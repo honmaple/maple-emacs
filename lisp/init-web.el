@@ -1,6 +1,6 @@
 ;;; init-web.el --- Initialize web configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -62,7 +62,6 @@
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
    :complete '(company-web-html company-css company-tern :with company-yasnippet)))
-
 
 (use-package web-beautify
   :commands (web-beautify-html web-beautify-css web-beautify-js))

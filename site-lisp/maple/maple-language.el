@@ -176,7 +176,10 @@
 (defun maple-language:default-format()
   "Call default indent format."
   (interactive)
-  (save-excursion (indent-region (point-min) (point-max) nil)))
+  (save-excursion
+    (if (use-region-p)
+        (indent-region (region-beginning) (region-end) nil)
+      (indent-region (point-min) (point-max) nil))))
 
 (defun maple-language:default-fold()
   "Call default fold."

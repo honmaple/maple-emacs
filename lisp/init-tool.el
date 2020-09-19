@@ -1,6 +1,6 @@
 ;;; init-tool.el --- Initialize tool configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -28,10 +28,6 @@
 (use-package docker-tramp)
 (use-package dockerfile-mode)
 
-(use-package esup
-  :config
-  (maple/evil-map esup-mode-map))
-
 (use-package pangu-spacing
   :commands (pangu-spacing-space-current-buffer)
   :config
@@ -51,6 +47,10 @@
   (maple/evil-map youdao-dictionary-mode-map))
 
 (use-package figlet)
+
+(use-package esup
+  :config
+  (maple/evil-map esup-mode-map))
 
 (use-package 2048-game
   :config

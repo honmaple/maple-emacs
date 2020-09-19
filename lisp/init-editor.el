@@ -1,6 +1,6 @@
 ;;; init-editor.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2019 lin.jiang
+;; Copyright (C) 2015-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -41,14 +41,6 @@
   :config
   ;; (setq electric-pair-pairs '((?\' . ?\')))
   (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
-
-;; 高亮括号配对
-(use-package paren
-  :ensure nil
-  :hook (maple-init . show-paren-mode)
-  :config
-  (setq show-paren-when-point-inside-paren t
-        show-paren-when-point-in-periphery t))
 
 (use-package align
   :ensure nil
@@ -120,6 +112,9 @@
 
 (use-package ace-pinyin
   :hook (maple-init . ace-pinyin-global-mode))
+
+(use-package edit-indirect
+  :commands (edit-indirect-region))
 
 (use-package string-inflection
   :commands (maple/string-inflection-toggle)

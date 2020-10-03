@@ -58,8 +58,13 @@
     "sD" 'delete-non-matching-lines
     "sp" 'flyspell-correct-word-generic
     "sh" 'shell-command
-    "Sg" 'maple/search-google
-    "Sh" 'maple/search-github
+    "Sg" 'maple-search:google
+    "Sh" 'maple-search:github
+    )
+
+  (evil-leader/set-key
+    "dn" 'maple-diff:next-sign
+    "dp" 'maple-diff:previous-sign
     )
 
   (evil-leader/set-key

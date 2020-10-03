@@ -44,16 +44,12 @@
    "markdown-mode"
    :run 'markdown-toggle-markup-hiding))
 
+(use-package dockerfile-mode)
 (use-package vimrc-mode)
 (use-package json-mode)
 (use-package nginx-mode)
 (use-package yaml-mode
-  :config
-  (maple/add-hook 'yaml-mode-hook (setq tab-width 2)))
-
-(use-package origami
-  :diminish origami-mode
-  :hook (yaml-mode . origami-mode)
+  :hook (yaml-mode . (lambda() (setq tab-width 2) (origami-mode 1)))
   :custom
   (:language
    "yaml-mode"

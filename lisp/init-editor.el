@@ -84,6 +84,9 @@
   :diminish hs-minor-mode
   :hook ((conf-mode prog-mode) . hs-minor-mode))
 
+(use-package origami
+  :diminish origami-mode)
+
 (use-package anzu
   :hook (maple-init . global-anzu-mode)
   :config
@@ -106,9 +109,10 @@
   :config
   (setq avy-all-windows t
         avy-background t)
-  :evil-bind
-  (:state normal ("F" . avy-goto-char))
-  (:state visual ("F" . avy-goto-char)))
+  :evil
+  (:bind
+   (:state normal ("F" . avy-goto-char))
+   (:state visual ("F" . avy-goto-char))))
 
 (use-package ace-pinyin
   :hook (maple-init . ace-pinyin-global-mode))
@@ -122,9 +126,10 @@
   (defun maple/string-inflection-toggle()
     (interactive)
     (save-excursion (call-interactively 'string-inflection-toggle)))
-  :evil-bind
-  (:state normal ("gr" . maple/string-inflection-toggle))
-  (:state visual ("gr" . maple/string-inflection-toggle)))
+  :evil
+  (:bind
+   (:state normal ("gr" . maple/string-inflection-toggle))
+   (:state visual ("gr" . maple/string-inflection-toggle))))
 
 (use-package projectile
   :diminish projectile-mode "ⓟ"

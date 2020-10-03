@@ -67,20 +67,16 @@
     init-keybind))
 
 (defvar maple-develops
-  '(init-flycheck
-    init-company
+  '(init-company
+    init-flycheck
+    init-lsp
     init-git
-    init-shell     ;; shell
     init-web
-    init-python
-    init-go
-    init-lua
-    init-c
-    init-sql
-    init-text      ;; markdown rst
+    init-backend
     init-org
-    init-tool
-    init-lsp))
+    init-text      ;; markdown rst
+    init-shell     ;; shell
+    init-tool))
 
 (apply 'maple/require maple-packages)
 (apply 'maple/require maple-develops)

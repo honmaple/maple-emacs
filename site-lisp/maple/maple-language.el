@@ -152,19 +152,21 @@
 (defmacro maple-language:define (mode &rest args)
   "Language define with MODE ARGS."
   (declare (indent defun))
-  (cl-destructuring-bind (&key run fold format checker complete definition references documentation) args
+  (cl-destructuring-bind (&key tab run fold format checker complete definition references documentation) args
     (let ((forms (list (when run `(setq maple-language:run ,run))
                        (when fold  `(setq maple-language:fold ,fold))
                        (when format `(setq maple-language:format ,format))
                        (when definition `(setq maple-language:definition ,definition))
                        (when references `(setq maple-language:references ,references))
                        (when documentation `(setq maple-language:documentation ,documentation))
+                       (when tab (if tab `(setq tab-width tab) `(setq indent-tabs-mode nil)))
                        (when complete
                          `(with-eval-after-load 'company
                             (setq-local company-backends (maple-language:complete-backend ,complete))))
                        (when checker
                          `(with-eval-after-load 'flycheck
                             (let ((checkers (maple-language:checker-backend ,checker)))
+                              (when (car checkers) (setq-local flycheck-checkers (car checkers)))
                               (setq-local flycheck-disabled-checkers (cdr checkers))))))))
       (when forms
         (let* ((fn `(lambda() ,@(cl-loop for form in forms when form collect form)))

@@ -22,7 +22,7 @@
 ;;
 ;; define keybind.
 ;;
-;; (maple-keybind/define
+;; (maple-keybind
 ;;  :bind
 ;;  ("im" . maple/capture-screenshot)
 ;;  ("em" . maple/org-md-export-to-markdown)
@@ -96,7 +96,7 @@
          (mapcan 'maple-keybind/bind binds))
         (t `((global-set-key ,(car binds) ',(cdr binds))))))
 
-(defmacro maple-keybind/define(&rest args)
+(defmacro maple-keybind(&rest args)
   "Define keybinds with ARGS."
   (let ((binds (maple-keybind/plist-get args :bind))
         (evil-binds (maple-keybind/plist-get args :evil-bind))

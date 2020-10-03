@@ -53,16 +53,7 @@
       (let ((window-configuration-change-hook nil))
         (funcall func window-or-frame))))
 
-  (advice-add 'balance-windows :around 'maple/balance-windows)
-
-  (defmacro with-zoom-disable(body)
-    (declare (indent defun))
-    (let ((zoom-mode-p (when (featurep 'zoom) zoom-mode))
-          res)
-      (when zoom-mode-p (zoom-mode -1))
-      (setq res `,@body)
-      (when zoom-mode-p (zoom-mode zoom-mode-p))
-      res)))
+  (advice-add 'balance-windows :around 'maple/balance-windows))
 
 (use-package shackle
   :hook (maple-init . shackle-mode)

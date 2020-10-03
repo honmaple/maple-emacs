@@ -26,7 +26,6 @@
 ;;; Code:
 
 (use-package docker-tramp)
-(use-package dockerfile-mode)
 
 (use-package pangu-spacing
   :commands (pangu-spacing-space-current-buffer)

@@ -24,12 +24,6 @@
 ;;
 
 ;;; Code:
-
-;; There are dependencies
-(use-package iedit)
-(use-package websocket)
-(use-package simple-httpd :pin melpa-stable)
-
 (use-package maple-use-package
   :ensure nil :demand)
 
@@ -56,7 +50,10 @@
 
 (use-package maple-preview
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-preview" :files ("*.el" "index.html" "static"))
-  :commands (maple-preview-mode))
+  :commands (maple-preview-mode)
+  :dependencies
+  (websocket)
+  (simple-httpd :pin melpa-stable))
 
 (use-package maple-note
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
@@ -114,6 +111,8 @@
 (use-package maple-iedit
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-iedit" :files ("*.el"))
   :commands (maple-iedit-match-all maple-iedit-match-next maple-iedit-match-previous)
+  :custom-face
+  (iedit-occurrence ((t (:background "chocolate" :foreground "#272822"))))
   :hydra
   (maple/iedit
    ()
@@ -121,13 +120,13 @@
    ("t" maple-iedit-skip-and-match-next "skip and next")
    ("T" maple-iedit-skip-and-match-previous "skip and previous")
    ("p" maple-iedit-match-previous "prev"))
-  :custom-face
-  (iedit-occurrence ((t (:background "chocolate" :foreground "#272822"))))
-  :evil-bind (:state visual
-                     ("n" . maple/iedit/body)
-                     ("C-n" . maple-iedit-match-next)
-                     ("C-p" . maple-iedit-match-previous)
-                     ("C-t" . maple-iedit-skip-and-match-next)))
+  :evil
+  (visual
+   ("n" . maple/iedit/body)
+   ("C-n" . maple-iedit-match-next)
+   ("C-p" . maple-iedit-match-previous)
+   ("C-t" . maple-iedit-skip-and-match-next))
+  :dependencies (iedit))
 
 (use-package maple-scratch
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-scratch")

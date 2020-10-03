@@ -27,7 +27,7 @@
 ;;   (:state normal :map python-mode-map
 ;;           ("C-c" . run-python))
 ;;   (:state (normal insert) :map python-mode-map
-;;    ("C-s" . run-python))
+;;           ("C-s" . run-python))
 ;;   :evil-leader
 ;;   ("C-c" . run-python)
 ;;   (("C-c" . run-python)
@@ -38,6 +38,21 @@
 ;;   :evil-state
 ;;   (comint-mode . insert)
 ;;   (sql-interactive-mode . insert)
+;;   :evil
+;;   (normal :map python-mode-map
+;;           ("C-c" . run-python))
+;;   (:bind
+;;    (:state normal :map python-mode-map
+;;            ("C-c" . run-python)))
+;;   (:state (comint-mode . insert)
+;;           (sql-interactive-mode . insert))
+;;   (:leader
+;;    ("C-c" . run-python)
+;;    (("C-c" . run-python)
+;;     ("C-s" . run-python))
+;;    (:mode python-mode
+;;           ("C-s" . run-python)
+;;           ("C-c" . run-python)))
 ;;   :custom
 ;;   (:mode org-mode
 ;;          company-tooltip-align-annotations nil)
@@ -50,10 +65,12 @@
 (require 'maple-keybind)
 (require 'maple-language)
 
+(defalias 'use-package-normalize/:evil 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:hydra 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-bind 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-leader 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-state 'use-package-normalize-forms)
-(defalias 'use-package-normalize/:hydra 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:dependencies 'use-package-normalize-forms)
 
 (defun maple-use-package/set-keyword (keyword &optional position refer)
   "Execute KEYWORD forms before or after REFER POSITION."
@@ -85,10 +102,6 @@
             ;; maybe define prop multi times
             (when tail (maple-use-package/plist-get tail prop)))))
 
-(defun maple-use-package/evil-state(args)
-  "Evil bind ARGS."
-  `((evil-set-initial-state ',(car args) ',(cdr args))))
-
 (defun maple-use-package/hydra(args)
   "Evil bind ARGS."
   `((defhydra ,@args)))
@@ -96,6 +109,7 @@
 (defun maple-use-package/custom-keyword(args)
   "Custom variable with ARGS."
   (pcase (car args)
+    (:face `((custom-set-faces ,@(cdr args))))
     (:variable `((setq ,@(cdr args))))
     (:default `((setq-default ,@(cdr args))))
     (:mode (let ((mode (cadr args)))
@@ -103,7 +117,6 @@
              (cl-loop for i in (if (listp mode) mode (list mode)) collect
                       `(setq-mode-local ,i ,@(cddr args)))))
     (:language `((maple-language:define ,@(cdr args))))
-    (:face `((custom-set-faces ,@(cdr args))))
     (:window (with-eval-after-load 'shackle
                (cl-loop for i in (cdr args) collect `(push ,i shackle-rules))))))
 
@@ -117,6 +130,33 @@
       (unless (and comment (stringp comment))
         (setq comment (format "Customized %s with use-package" variable)))
       `((customize-set-variable (quote ,variable) ,value ,comment)))))
+
+(defun maple-use-package/evil(args)
+  "Set evil bind or state with ARGS."
+  (if (keywordp (car args))
+      (pcase (car args)
+        (:bind (mapcan 'maple-keybind/evil-bind (cdr args)))
+        (:state (maple-use-package/evil-state (cdr args)))
+        (:leader (mapcan 'maple-keybind/evil-leader (cdr args))))
+    (maple-use-package/evil (list :bind `(:state ,@args)))))
+
+(defun maple-use-package/evil-state(args)
+  "Evil bind ARGS."
+  (cl-loop for i in args collect `(evil-set-initial-state ',(car i) ',(cdr i))))
+
+(defun use-package-handler/:evil (name _keyword args rest state)
+  "NAME KEYWORD ARGS REST STATE."
+  (use-package-concat
+   `((with-eval-after-load 'evil
+       ,@(mapcan 'maple-use-package/evil args)))
+   (use-package-process-keywords name rest state)))
+
+(defun use-package-handler/:evil-state (name _keyword args rest state)
+  "NAME KEYWORD ARGS REST STATE."
+  (use-package-concat
+   `((with-eval-after-load 'evil
+       ,@(maple-use-package/evil-state args)))
+   (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:evil-bind (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
@@ -132,13 +172,6 @@
        ,@(mapcan 'maple-keybind/evil-leader args)))
    (use-package-process-keywords name rest state)))
 
-(defun use-package-handler/:evil-state (name _keyword args rest state)
-  "NAME KEYWORD ARGS REST STATE."
-  (use-package-concat
-   `((with-eval-after-load 'evil
-       ,@(mapcan 'maple-use-package/evil-state args)))
-   (use-package-process-keywords name rest state)))
-
 (defun use-package-handler/:custom (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
@@ -150,6 +183,12 @@
   (use-package-concat
    `((with-eval-after-load 'hydra
        ,@(mapcan 'maple-use-package/hydra args)))
+   (use-package-process-keywords name rest state)))
+
+(defun use-package-handler/:dependencies (name _keyword args rest state)
+  "NAME KEYWORD ARGS REST STATE."
+  (use-package-concat
+   `(,@(mapcan (lambda(body) `((use-package ,@body))) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-normalize/:quelpa (name keyword args)
@@ -183,11 +222,13 @@
 
 (advice-add 'use-package-handler/:ensure :around 'use-package-handler/:quelpa-ensure)
 
-(maple-use-package/set-keyword :evil-bind   'after :init)
-(maple-use-package/set-keyword :evil-leader 'after :init)
-(maple-use-package/set-keyword :evil-state  'after :init)
-(maple-use-package/set-keyword :hydra       'after :init)
-(maple-use-package/set-keyword :quelpa      'after :unless)
+(maple-use-package/set-keyword :evil         'after :init)
+(maple-use-package/set-keyword :evil-bind    'after :init)
+(maple-use-package/set-keyword :evil-leader  'after :init)
+(maple-use-package/set-keyword :evil-state   'after :init)
+(maple-use-package/set-keyword :hydra        'after :init)
+(maple-use-package/set-keyword :dependencies 'after :init)
+(maple-use-package/set-keyword :quelpa       'after :unless)
 
 (provide 'maple-use-package)
 ;;; maple-use-package.el ends here

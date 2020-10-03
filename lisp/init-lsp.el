@@ -24,25 +24,22 @@
 ;;
 
 ;;; Code:
-(use-package company-lsp
-  :config
-  (setq company-lsp-cache-candidates 'auto))
-
 ;; (use-package eglot
 ;;   :hook ((python-mode go-mode yaml-mode) . eglot-ensure))
 
 (use-package lsp-mode
   :diminish lsp-mode
-  :hook ((python-mode go-mode rust-mode yaml-mode) . lsp-deferred)
+  :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
   :config
   (setq lsp-restart 'ignore
         lsp-auto-guess-root t
         lsp-signature-auto-activate nil
+        lsp-keep-workspace-alive nil
         lsp-enable-snippet nil
         lsp-enable-file-watchers nil
-        lsp-enable-semantic-highlighting nil
         lsp-enable-symbol-highlighting nil
-        lsp-keep-workspace-alive nil
+        lsp-completion-enable t
+        lsp-completion-provider :none
         lsp-modeline-code-actions-enable nil
         lsp-modeline-diagnostics-enable nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
@@ -56,11 +53,6 @@
 
   (defun maple/lsp-restart-workspace(&rest _)
     (call-interactively 'lsp-restart-workspace))
-
-  (defun maple/lsp-configure-complete(&rest _)
-    (setq company-backends (cdr company-backends)))
-
-  (advice-add 'lsp--auto-configure :after 'maple/lsp-configure-complete)
 
   (defun maple/lsp--init-if-visible(func &rest args)
     (unless (bound-and-true-p git-timemachine-mode) (apply func args)))
@@ -80,7 +72,6 @@
           ;; synax check
           lsp-pyls-plugins-flake8-enabled t
           lsp-pyls-plugins-mccabe-enabled nil
-          lsp-pyls-plugins-pylint-enabled nil
           lsp-pyls-plugins-pyflakes-enabled nil
           lsp-pyls-plugins-pycodestyle-enabled nil
           ;; format
@@ -128,7 +119,7 @@
   (:language
    "lsp-mode"
    :definition 'lsp-find-definition
-   :complete   '(company-lsp :with company-yasnippet)))
+   :complete   '(company-capf :with company-yasnippet)))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)

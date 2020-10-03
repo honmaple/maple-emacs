@@ -93,8 +93,8 @@ the current state and point position."
 
 (use-package evil-surround
   :hook (maple-init . global-evil-surround-mode)
-  :evil-bind
-  (:state visual :map evil-surround-mode-map
+  :evil
+  (visual :map evil-surround-mode-map
           ("s" . evil-surround-region)
           ("S" . evil-substitute)))
 

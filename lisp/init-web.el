@@ -24,11 +24,6 @@
 ;;
 
 ;;; Code:
-
-(use-package company-web)
-
-(use-package company-tern)
-
 (use-package web-mode
   :mode ("\\.\\(xml\\|vue\\|html?\\)$")
   :config
@@ -61,7 +56,39 @@
    "web-mode"
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
-   :complete '(company-web-html company-css company-tern :with company-yasnippet)))
+   :complete '(company-web-html company-css company-tern :with company-yasnippet))
+  :dependencies
+  (company-web))
+
+
+(use-package css-mode
+  :config
+  (setq css-indent-offset 2)
+  :custom
+  (:language
+   "css-mode"
+   :complete '(company-css :with company-yasnippet))
+  :dependencies
+  (less-css-mode)
+  (sass-mode)
+  (scss-mode))
+
+(use-package js2-mode
+  :mode ("\\.js\\'" . js2-mode)
+  :hook (js2-mode . js2-imenu-extras-mode)
+  :config
+  (setq js-indent-level 2
+        js2-basic-offset 2
+        js2-bounce-indent-p nil
+        js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil)
+  :custom
+  (:language
+   "js2-mode"
+   :complete '(company-tern))
+  :dependencies
+  (coffee-mode)
+  (typescript-mode))
 
 (use-package web-beautify
   :commands (web-beautify-html web-beautify-css web-beautify-js))
@@ -75,43 +102,17 @@
     (if (bound-and-true-p yas-minor-mode)
         (call-interactively 'emmet-expand-yas)
       (call-interactively 'emmet-expand-line)))
-  :evil-bind
-  (:state insert :map emmet-mode-keymap
+  :evil
+  (insert :map emmet-mode-keymap
           ([tab] . maple/emmet-expand)))
-
-(use-package css-mode
-  :config
-  (setq css-indent-offset 4)
-  :custom
-  (:language
-   "css-mode"
-   :complete '(company-css :with company-yasnippet)))
-
-(use-package less-css-mode)
-(use-package sass-mode)
-(use-package scss-mode)
-(use-package coffee-mode)
-(use-package typescript-mode)
-
-(use-package js2-mode
-  :mode ("\\.js\\'" . js2-mode)
-  :hook (js2-mode . js2-imenu-extras-mode)
-  :config
-  (setq js-indent-level 4
-        js2-basic-offset 4
-        js2-bounce-indent-p nil
-        js2-mode-show-parse-errors nil
-        js2-mode-show-strict-warnings nil)
-  :custom
-  (:language
-   "js2-mode"
-   :complete '(company-tern)))
 
 (use-package tern
   :diminish tern-mode
   :hook (js2-mode . tern-mode)
   :config
-  (add-to-list 'tern-command "--no-port-file" 'append))
+  (add-to-list 'tern-command "--no-port-file" 'append)
+  :dependencies
+  (company-tern))
 
 (use-package npm-mode
   :hook (js2-mode . npm-mode))

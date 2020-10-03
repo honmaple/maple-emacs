@@ -61,8 +61,8 @@
     (interactive)
     (cl-letf (((symbol-function 'switch-to-buffer) 'pop-to-buffer))
       (term "/bin/bash")))
-  :evil-bind
-  (:state insert :map term-raw-map
+  :evil
+  (insert :map term-raw-map
           ("C-c C-d" . term-send-eof)
           ("C-c C-z" . term-stop-subjob)
           ("C-y" . term-paste)

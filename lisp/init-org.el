@@ -75,9 +75,8 @@
       (setq electric-pair-inhibit-predicate
             (lambda (c)
               (if (char-equal c ?<) t (electric-pair-default-inhibit c))))))
-
-  :evil-bind
-  (:state normal :map org-mode-map
+  :evil
+  (normal :map org-mode-map
           ("RET" . org-open-at-point)
           ("t" . org-todo)
           ("TAB" . org-cycle)

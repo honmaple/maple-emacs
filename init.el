@@ -32,9 +32,9 @@
   (defvar *icon* t)
   (defvar *python3* t)
 
-  (setq user-full-name "jianglin"
-        user-default-theme 'monokai
+  (setq user-full-name "lin.jiang"
         user-mail-address "mail@honmaple.com"
+        user-default-theme 'monokai
         gc-cons-threshold (* 256 1024 1024)
         gc-cons-percentage 0.6
         file-name-handler-alist nil)

@@ -1,6 +1,6 @@
 ;;; maple-keybind.el --- define keybind.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2018-2019 lin.jiang
+;; Copyright (C) 2018-2020 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/emacs-maple-modeline
@@ -80,9 +80,7 @@
   (cond ((keywordp (car binds))
          (let ((p (maple-keybind/plist-get binds :mode)))
            `((evil-leader/set-key-for-mode ',(car p) ,@(maple-keybind/keys (cdr p))))))
-        ((consp (car binds))
-         (mapcan 'maple-keybind/evil-leader binds))
-        (t `((evil-leader/set-key ,@(maple-keybind/keys (list binds)))))))
+        (t `((evil-leader/set-key ,@(maple-keybind/keys (if (consp (car binds)) binds (list binds))))))))
 
 (defun maple-keybind/bind (binds)
   "Global keybinds with BINDS."
@@ -90,23 +88,29 @@
          (let* ((p (maple-keybind/plist-get binds :map))
                 (map (car p))
                 (binds (cdr p)))
-           (cl-loop for i in binds collect
-                    `(define-key ,map ,(car i) ',(cdr i)))))
+           `(progn ,@(cl-loop for i in binds collect `(define-key ,map ,(car i) ',(cdr i))))))
         ((consp (car binds))
          (mapcan 'maple-keybind/bind binds))
         (t `((global-set-key ,(car binds) ',(cdr binds))))))
 
 (defmacro maple-keybind(&rest args)
   "Define keybinds with ARGS."
+  (declare (indent defun))
   (let ((binds (maple-keybind/plist-get args :bind))
         (evil-binds (maple-keybind/plist-get args :evil-bind))
-        (evil-leaders (maple-keybind/plist-get args :evil-leader)))
-    `(progn
-       ,@(mapcan 'maple-keybind/bind binds)
-       (with-eval-after-load 'evil
-         ,@(mapcan 'maple-keybind/evil-bind evil-binds))
-       (with-eval-after-load 'evil-leader
-         ,@(mapcan 'maple-keybind/evil-leader evil-leaders)))))
+        (evil-leaders (maple-keybind/plist-get args :evil-leader))
+        forms)
+    (when binds
+      (push `,@(mapcan 'maple-keybind/bind binds) forms))
+    (when evil-binds
+      (push `(with-eval-after-load 'evil
+               ,@(mapcan 'maple-keybind/evil-bind evil-binds))
+            forms))
+    (when evil-leaders
+      (push `(with-eval-after-load 'evil-leader
+               ,@(mapcan 'maple-keybind/evil-leader evil-leaders))
+            forms))
+    `(progn ,@forms)))
 
 (provide 'maple-keybind)
 ;;; maple-keybind.el ends here

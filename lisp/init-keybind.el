@@ -47,19 +47,19 @@
     )
 
   (evil-leader/set-key
-    "cc" 'maple-language:comment
-    "cC" 'maple-language:copy-and-comment
+    "cc" 'maple-language/comment
+    "cC" 'maple-language/copy-and-comment
     "u"  'undo-tree-visualize
     "'" 'maple/shell
-    "=" 'maple-language:call-format
+    "=" 'maple-language/call-format
     "se" 'maple-iedit-match-all
     "ss" 'anzu-query-replace-regexp
     "sd" 'delete-matching-lines
     "sD" 'delete-non-matching-lines
     "sp" 'flyspell-correct-word-generic
     "sh" 'shell-command
-    "Sg" 'maple-search:google
-    "Sh" 'maple-search:github
+    "Sg" 'maple-search/google
+    "Sh" 'maple-search/github
     )
 
   (evil-leader/set-key
@@ -96,7 +96,7 @@
     "tn" 'display-line-numbers-mode
     "tv" 'smooth-scrolling-mode
     "tV" 'visual-line-mode
-    "th" 'maple-theme:switch/body
+    "th" 'maple-theme/switch/body
     )
 
   (evil-leader/set-key
@@ -273,8 +273,8 @@
     (kbd "U") 'undo-tree-redo
     ;; (kbd "RET") 'maple-evil/insert-line-below
     (kbd "S-<return>") 'maple-evil/insert-line-above
-    (kbd "gd") 'maple-language:call-definition
-    (kbd "za") 'maple-language:call-fold)
+    (kbd "gd") 'maple-language/call-definition
+    (kbd "za") 'maple-language/call-fold)
 
   (maple/define-key evil-insert-state-map
     (kbd "C-h") 'left-char
@@ -307,8 +307,8 @@
         ((keyboard-quit))))
 
 (global-set-key [remap keyboard-quit] 'maple/escape)
-(global-set-key [f5] 'maple-language:call-run)
-(global-set-key [f6] 'maple-language:call-format)
+(global-set-key [f5] 'maple-language/call-run)
+(global-set-key [f6] 'maple-language/call-format)
 (global-set-key [tab] 'maple/company-or-indent)
 
 (when maple-system-is-mac

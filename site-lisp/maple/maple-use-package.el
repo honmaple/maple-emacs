@@ -116,7 +116,7 @@
              (unless (featurep 'mode-local) (require 'mode-local))
              (cl-loop for i in (if (listp mode) mode (list mode)) collect
                       `(setq-mode-local ,i ,@(cddr args)))))
-    (:language `((maple-language:define ,@(cdr args))))
+    (:language `((maple-language ,@(cdr args))))
     (:window (with-eval-after-load 'shackle
                (cl-loop for i in (cdr args) collect `(push ,i shackle-rules))))))
 

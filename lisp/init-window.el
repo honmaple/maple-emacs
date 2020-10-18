@@ -48,9 +48,16 @@
         '(term-mode shell-mode flycheck-error-list-mode ediff-mode)
         zoom-ignored-buffer-names '(" *Org todo*"))
 
+  ;; https://github.com/cyrus-and/zoom/issues/30
+  (defun maple/undo-local-track-mouse(&optional ignored)
+    (kill-local-variable 'track-mouse))
+
+  (advice-add 'zoom--handler :before 'maple/undo-local-track-mouse)
+
   (defun maple/balance-windows(func &optional window-or-frame)
     (unless (zoom--window-ignored-p)
-      (let ((window-configuration-change-hook nil))
+      (let ((pre-redisplay-functions nil)
+            (window-configuration-change-hook nil))
         (funcall func window-or-frame))))
 
   (advice-add 'balance-windows :around 'maple/balance-windows))

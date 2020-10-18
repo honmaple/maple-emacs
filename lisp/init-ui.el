@@ -50,12 +50,12 @@
 
 (use-package maple-theme
   :ensure nil
-  :commands (maple-theme:switch/body maple-theme:next maple-theme:previous)
+  :commands (maple-theme/switch/body maple-theme/next maple-theme/previous)
   :hydra
-  (maple-theme:switch
+  (maple-theme/switch
    ()
-   ("n" maple-theme:next "next theme")
-   ("p" maple-theme:previous "prev theme")))
+   ("n" maple-theme/next "next theme")
+   ("p" maple-theme/previous "prev theme")))
 
 ;; this is ugly
 (use-package display-line-numbers

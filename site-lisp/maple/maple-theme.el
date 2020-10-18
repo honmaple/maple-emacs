@@ -25,10 +25,10 @@
 
 ;;; Code:
 
-;; (defvar  maple-theme:alist (mapcar 'symbol-name (custom-available-themes)))
-;; (defvar  maple-theme:alist (delete "doom-one-light"
+;; (defvar  maple-theme/alist (mapcar 'symbol-name (custom-available-themes)))
+;; (defvar  maple-theme/alist (delete "doom-one-light"
 ;;                                  (mapcar 'symbol-name (custom-available-themes))))
-(defvar maple-theme:alist
+(defvar maple-theme/alist
   '(monokai
     spacemacs-dark
     solarized-light
@@ -39,9 +39,9 @@
     doom-peacock
     doom-vibrant))
 
-(defun maple-theme:cycle (&optional backward)
+(defun maple-theme/cycle (&optional backward)
   "Theme switch with BACKWARD."
-  (let* ((themes (if backward (reverse maple-theme:alist) maple-theme:alist))
+  (let* ((themes (if backward (reverse maple-theme/alist) maple-theme/alist))
          (theme  (car custom-enabled-themes))
          (index  (cl-loop for i in themes and index from 0
                           when (eq i theme) return index))
@@ -56,16 +56,16 @@
       (progress-reporter-done progress-reporter))))
 
 ;;;###autoload
-(defun maple-theme:next()
+(defun maple-theme/next()
   "Next theme."
   (interactive)
-  (maple-theme:cycle))
+  (maple-theme/cycle))
 
 ;;;###autoload
-(defun maple-theme:previous()
+(defun maple-theme/previous()
   "Previous theme."
   (interactive)
-  (maple-theme:cycle t))
+  (maple-theme/cycle t))
 
 (provide 'maple-theme)
 ;;; maple-theme.el ends here

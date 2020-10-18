@@ -58,7 +58,7 @@
 
   (setq company-yasnippet-annotation-fn
         (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
-        company-backends maple-language:complete-backends)
+        company-backends maple-language/complete-backends)
 
   (defun maple/company-yasnippet ()
     (interactive)

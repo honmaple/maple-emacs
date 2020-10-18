@@ -24,12 +24,12 @@
 ;;
 
 ;;; Code:
-(defvar maple-search:alist
+(defvar maple-search/alist
   '(("Google" . "http://www.google.com/search?q=")
     ("GitHub" . "https://github.com/search?q=")
     ("Google Image" . "https://google.com/images?q=%s")))
 
-(defun maple-search:action (query-url prompt)
+(defun maple-search/action (query-url prompt)
   "Open the QUERY-URL.PROMPT set the `read-string prompt."
   (browse-url
    (concat query-url
@@ -38,20 +38,20 @@
                 (buffer-substring (region-beginning) (region-end))
               (read-string prompt))))))
 
-(defmacro maple-search:define (name url)
+(defmacro maple-search (name url)
   "Define search engine with NAME and URL."
   (let ((engine-name (replace-regexp-in-string " " "-" (downcase name)))
         (engine-prompt (concat name ": ")))
-    `(defun ,(intern (format "maple-search:%s" engine-name)) ()
+    `(defun ,(intern (format "maple-search/%s" engine-name)) ()
        ,(format "Search %s with a query or region if any." engine-name)
        (interactive)
-       (maple-search:action ,url ,engine-prompt))))
+       (maple-search/action ,url ,engine-prompt))))
 
 ;;;###autoload
-(defun maple-search-init ()
+(defun maple-search-mode ()
   "Search macro init."
-  (dolist (item maple-search:alist)
-    (eval `(maple-search:define ,(car item) ,(cdr item)))))
+  (dolist (item maple-search/alist)
+    (eval `(maple-search ,(car item) ,(cdr item)))))
 
 (provide 'maple-search)
 ;;; maple-search.el ends here

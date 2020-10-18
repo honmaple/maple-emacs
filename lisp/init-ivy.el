@@ -152,8 +152,12 @@
         counsel-more-chars-alist '((t . 1))
         counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
 
-  (setq ivy-initial-inputs-alist '((counsel-ag . maple/region-string)
-                                   (swiper . maple/region-string)))
+  (setq ivy-initial-inputs-alist
+        (mapcar (lambda(x) (cons x 'maple/region-string))
+                '(swiper
+                  counsel-ag
+                  counsel-find-file
+                  counsel-projectile-find-file)))
 
   (defun maple/counsel-ag-directory()
     (interactive)
@@ -194,7 +198,6 @@
          ("C-k" . ivy-previous-line)
          :map counsel-find-file-map
          ("C-<return>" . ivy-immediate-done)
-         ("C-c C-e" . maple/ivy-dired-occur)
          ([tab] . maple/ivy-done)
          ([backspace] . maple/ivy-backward-delete-char)
          :map counsel-ag-map

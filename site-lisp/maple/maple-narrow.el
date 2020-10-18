@@ -24,7 +24,7 @@
 ;;
 
 ;;; Code:
-(defun maple-narrow:block-in-web()
+(defun maple-narrow/block-in-web()
   "Narrow block in web-mode."
   (interactive)
   (when (and (get-text-property (point) 'block-side)
@@ -34,13 +34,13 @@
                  (1+ (web-mode-block-end-position (point))))))
       (when (and beg end) (narrow-to-region beg end)))))
 
-(defun maple-narrow:comment-in-web()
+(defun maple-narrow/comment-in-web()
   "Narrow comment in web-mode."
   (interactive)
   (when (eq (get-text-property (point) 'tag-type) 'comment)
     (narrow-to-region (web-mode-tag-beginning-position) (web-mode-tag-end-position))))
 
-(defun maple-narrow:html-in-web()
+(defun maple-narrow/html-in-web()
   "Narrow html in web-mode."
   (interactive)
   (when (or (member (get-text-property (point) 'tag-type) '(start end))
@@ -56,7 +56,7 @@
           (setq end (point))))
       (when (and beg end) (narrow-to-region beg end)))))
 
-(defun maple-narrow:script-in-web()
+(defun maple-narrow/script-in-web()
   "Narrow script in web-mode."
   (interactive)
   (let* ((ctx (web-mode-point-context (point)))
@@ -67,7 +67,7 @@
 
 (defvar-local maple-narrow--indent 0)
 
-(defmacro maple-narrow:without-undo (&rest forms)
+(defmacro maple-narrow/without-undo (&rest forms)
   "Excute FORMS."
   `(let* ((buffer-undo-list)
           (modified (buffer-modified-p))
@@ -75,27 +75,27 @@
      (unwind-protect (progn ,@forms)
        (set-buffer-modified-p modified))))
 
-(defun maple-narrow:reindent(start end &optional restore)
-  (maple-narrow:without-undo
+(defun maple-narrow/reindent(start end &optional restore)
+  (maple-narrow/without-undo
    (if restore
        (progn (indent-rigidly start end maple-narrow--indent)
               (setq maple-narrow--indent 0))
      (setq maple-narrow--indent (indent-rigidly--current-indentation start end))
      (indent-rigidly start end (- maple-narrow--indent)))))
 
-(defun maple-narrow:to-defun(func &optional include-comments)
+(defun maple-narrow/to-defun(func &optional include-comments)
   (if (buffer-narrowed-p) (widen)
     (funcall func include-comments)
-    (maple-narrow:reindent (point-min) (point-max))))
+    (maple-narrow/reindent (point-min) (point-max))))
 
-(defun maple-narrow:to-region(func start end)
+(defun maple-narrow/to-region(func start end)
   (if (buffer-narrowed-p) (widen)
     (funcall func start end)
-    (maple-narrow:reindent start end)))
+    (maple-narrow/reindent start end)))
 
-(defun maple-narrow:widen(&rest _)
+(defun maple-narrow/widen(&rest _)
   (when (buffer-narrowed-p)
-    (maple-narrow:reindent (point-min) (point-max) t)))
+    (maple-narrow/reindent (point-min) (point-max) t)))
 
 ;;;###autoload
 (define-minor-mode maple-narrow-mode
@@ -104,16 +104,16 @@
   :global     t
   (if maple-narrow-mode
       (progn
-        (advice-add 'narrow-to-region  :around 'maple-narrow:to-region)
-        (advice-add 'narrow-to-defun   :around 'maple-narrow:to-defun)
-        (advice-add 'narrow-to-page    :around 'maple-narrow:to-defun)
-        (advice-add 'widen             :before 'maple-narrow:widen)
-        (advice-add 'basic-save-buffer :before 'maple-narrow:widen))
-    (advice-remove 'narrow-to-region  'maple-narrow:to-region)
-    (advice-remove 'narrow-to-defun   'maple-narrow:to-defun)
-    (advice-remove 'narrow-to-page    'maple-narrow:to-defun)
-    (advice-remove 'widen             'maple-narrow:widen)
-    (advice-remove 'basic-save-buffer 'maple-narrow:widen)))
+        (advice-add 'narrow-to-region  :around 'maple-narrow/to-region)
+        (advice-add 'narrow-to-defun   :around 'maple-narrow/to-defun)
+        (advice-add 'narrow-to-page    :around 'maple-narrow/to-defun)
+        (advice-add 'widen             :before 'maple-narrow/widen)
+        (advice-add 'basic-save-buffer :before 'maple-narrow/widen))
+    (advice-remove 'narrow-to-region  'maple-narrow/to-region)
+    (advice-remove 'narrow-to-defun   'maple-narrow/to-defun)
+    (advice-remove 'narrow-to-page    'maple-narrow/to-defun)
+    (advice-remove 'widen             'maple-narrow/widen)
+    (advice-remove 'basic-save-buffer 'maple-narrow/widen)))
 
 (provide 'maple-narrow)
 ;;; maple-narrow.el ends here

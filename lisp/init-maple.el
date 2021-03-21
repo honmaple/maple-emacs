@@ -31,10 +31,6 @@
   :ensure nil
   :commands (maple-package-upgrade))
 
-(use-package maple-search
-  :ensure nil
-  :hook (maple-init . maple-search-mode))
-
 (use-package maple-header
   :ensure nil
   :defines (maple-header/auto-update-alist)
@@ -59,7 +55,8 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
   :commands (maple-note)
   :config
-  (setq maple-note-base-directory "~/Git/pelican/content")
+  (setq maple-note-base-directory "~/Git/pelican/content/posts/"
+        maple-note-draft-directory "~/Git/pelican/content/drafts/")
   (maple/evil-map maple-note-mode-map))
 
 (use-package maple-line

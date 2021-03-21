@@ -28,7 +28,7 @@
 ;;   :hook ((python-mode go-mode yaml-mode) . eglot-ensure))
 
 (use-package lsp-mode
-  :diminish lsp-mode
+  :diminish "LSP"
   :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
   :config
   (setq lsp-restart 'ignore

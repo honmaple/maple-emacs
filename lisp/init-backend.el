@@ -62,7 +62,7 @@
   (:language
    "go-mode"
    :format 'gofmt
-   :checker '(go-build go-golint go-vet))
+   :checker '(go-build go-test go-vet))
   :dependencies
   (go-rename)
   (go-add-tags))

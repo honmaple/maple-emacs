@@ -27,6 +27,10 @@
 
 (eval-when-compile (require 'init-basic))
 
+(use-package so-long
+  :ensure nil
+  :hook (maple-init . global-so-long-mode))
+
 (use-package autorevert
   :ensure nil
   :hook (maple-init . global-auto-revert-mode)
@@ -82,12 +86,21 @@
 (use-package hideshow
   :ensure nil
   :diminish hs-minor-mode
-  :hook ((conf-mode prog-mode) . hs-minor-mode))
+  :hook ((conf-mode prog-mode) . hs-minor-mode)
+  :config
+  (defun maple/hs-overlay (ov)
+    (when (eq 'code (overlay-get ov 'hs))
+      (let ((face '((t (:inherit 'font-lock-comment-face :underline t))))
+            (nlines (count-lines (overlay-start ov) (overlay-end ov))))
+        (overlay-put ov 'display (propertize (format "...#%d" nlines) 'face face)))))
+
+  (setq hs-set-up-overlay 'maple/hs-overlay))
 
 (use-package origami
   :diminish origami-mode)
 
 (use-package anzu
+  :diminish anzu-mode
   :hook (maple-init . global-anzu-mode)
   :config
   (setq anzu-cons-mode-line-p nil
@@ -115,6 +128,7 @@
    (:state visual ("F" . avy-goto-char))))
 
 (use-package ace-pinyin
+  :diminish ace-pinyin-mode
   :hook (maple-init . ace-pinyin-global-mode))
 
 (use-package edit-indirect

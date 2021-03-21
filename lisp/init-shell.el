@@ -46,6 +46,8 @@
   :commands (maple/shell)
   :hook (term-mode . maple/process-exit)
   :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+
   (defun term-send-tab ()
     "Send tab in term mode."
     (interactive)

@@ -106,6 +106,7 @@
   (setq recentf-save-file (concat maple-cache-directory "recentf")
         recentf-max-saved-items 100
         recentf-auto-cleanup 'never
+        recentf-filename-handlers '(abbreviate-file-name)
         recentf-exclude (list "\\.\\(png\\|jpg\\)\\'"
                               "COMMIT_EDITMSG\\'"
                               (expand-file-name maple-cache-directory)

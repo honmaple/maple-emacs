@@ -37,6 +37,8 @@
         evil-emacs-state-cursor '(box "SkyBlue2")
         evil-replace-state-cursor '((hbox . 2) "chocolate"))
 
+  (evil-set-undo-system 'undo-tree)
+
   (evil-define-operator maple/evil-join (beg end)
     "Join the selected lines."
     :motion evil-line

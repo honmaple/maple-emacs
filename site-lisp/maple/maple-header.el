@@ -94,12 +94,13 @@
 (defun maple-header/auto-update()
   "Header auto update."
   (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (dotimes (_ maple-header/limit)
-      (cl-loop for item in maple-header/auto-update-alist
-               do (funcall (intern (format "maple-header/update-%s" item)) t))
-      (forward-line 1))))
+  (let ((buffer-undo-list t))
+    (save-excursion
+      (goto-char (point-min))
+      (dotimes (_ maple-header/limit)
+        (cl-loop for item in maple-header/auto-update-alist
+                 do (funcall (intern (format "maple-header/update-%s" item)) t))
+        (forward-line 1)))))
 
 (defun maple-header/auto-insert()
   "Conf auto insert."

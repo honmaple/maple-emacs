@@ -60,7 +60,6 @@
   :dependencies
   (company-web))
 
-
 (use-package css-mode
   :config
   (setq css-indent-offset 2)

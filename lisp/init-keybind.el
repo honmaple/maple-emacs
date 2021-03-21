@@ -146,7 +146,8 @@
     "pb"  'projectile-switch-to-buffer
     "pw"  'projectile-ag
     "pd"  'projectile-find-dir
-    "pf"  'projectile-find-file
+    "pf"  'counsel-git
+    "pF"  'projectile-find-file
     "pp"  'projectile-switch-project
     "pr"  'projectile-recentf
     "pi"  'projectile-invalidate-cache

@@ -103,9 +103,6 @@ the current state and point position."
 (use-package evil-matchit
   :hook (maple-init . global-evil-matchit-mode))
 
-(use-package evil-ediff
-  :hook (ediff-mode . evil-ediff-init))
-
 (use-package evil-escape
   :hook (maple-init . evil-escape-mode)
   :diminish 'evil-escape-mode
@@ -122,6 +119,19 @@ the current state and point position."
                                            undo-tree-visualizer-mode)
         evil-escape-inhibit-functions '(evil-visual-state-p
                                         evil-escape--is-magit-buffer)))
+
+(use-package evil-collection
+  :init
+  (setq evil-want-keybinding nil
+        evil-collection-want-unimpaired-p nil
+        evil-collection--supported-modes '(dired magit ediff image 2048-game))
+
+  :hook (evil-mode . evil-collection-init)
+  :config
+  (defun maple/evil-collection-keybind(mode _keymaps)
+    (pcase mode ('dired (evil-define-key 'normal dired-mode-map "H" 'dired-omit-mode))))
+
+  (add-hook 'evil-collection-setup-hook 'maple/evil-collection-keybind))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here

@@ -24,9 +24,6 @@
         ("<tab>" . magit-section-cycle)
         ("C-<tab>" . magit-section-toggle)))
 
-(use-package evil-magit
-  :after magit :demand)
-
 (use-package git-commit
   :hook (git-commit-mode . goto-address-mode))
 

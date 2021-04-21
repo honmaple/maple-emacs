@@ -31,7 +31,7 @@
   :diminish "LSP"
   :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
   :config
-  (setq lsp-restart 'ignore
+  (setq lsp-restart 'auto-restart
         lsp-auto-guess-root t
         lsp-signature-auto-activate nil
         lsp-keep-workspace-alive nil
@@ -96,7 +96,7 @@
   (use-package lsp-go
     :ensure nil
     :config
-    (setq lsp-go-codelens nil))
+    (setq lsp-go-codelenses nil))
 
   ;; npm install -g yaml-language-server
   (use-package lsp-yaml

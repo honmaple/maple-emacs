@@ -255,7 +255,7 @@
       end if
     end tell' &>/dev/null"))))
 
-  (add-hook 'focus-in-hook 'maple/mac-switch-input-source)
+  (add-function :after after-focus-change-function 'maple/mac-switch-input-source)
   (with-eval-after-load 'evil
     (add-hook 'evil-insert-state-exit-hook 'maple/mac-switch-input-source)))
 

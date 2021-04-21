@@ -61,8 +61,6 @@
   (company-web))
 
 (use-package css-mode
-  :config
-  (setq css-indent-offset 2)
   :custom
   (:language
    "css-mode"
@@ -77,7 +75,6 @@
   :hook (js2-mode . js2-imenu-extras-mode)
   :config
   (setq js-indent-level 2
-        js2-basic-offset 2
         js2-bounce-indent-p nil
         js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil)

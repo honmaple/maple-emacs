@@ -27,20 +27,6 @@
 (use-package web-mode
   :mode ("\\.\\(xml\\|vue\\|html?\\)$")
   :config
-  (setq web-mode-markup-indent-offset 2
-        web-mode-enable-auto-closing t ; enable auto close tag in text-mode
-        web-mode-enable-current-element-highlight t
-        web-mode-enable-auto-indentation nil
-        web-mode-enable-css-colorization nil
-        web-mode-engines-alist '(("django" . "\\.\\(xml\\|vue\\|html?\\)$"))
-        web-mode-engines-auto-pairs '(("django" . (("{{ " . " }")
-                                                   ("{% " . " %")
-                                                   ("{%-" . " | %")
-                                                   ("{%=" . " | %")
-                                                   ("{{-" . " | }")
-                                                   ("{{{" . " | }}")
-                                                   ("{# " . " #")
-                                                   ("<% " . " %>")))))
   (fset 'maple/put-text-property (symbol-function 'put-text-property))
   (defun maple/web-mode-put-text(p q prop value)
     (if (and (eq prop 'invisible) value) (hs-make-overlay p q 'code)
@@ -52,6 +38,20 @@
   (maple/add-hook 'web-mode-hook
     (setq electric-pair-pairs '((?\' . ?\'))))
   :custom
+  (web-mode-markup-indent-offset 2)
+  (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
+  (web-mode-enable-current-element-highlight t)
+  (web-mode-enable-auto-indentation nil)
+  (web-mode-enable-css-colorization nil)
+  (web-mode-engines-alist '(("django" . "\\.\\(xml\\|vue\\|html?\\)$")))
+  (web-mode-engines-auto-pairs '(("django" . (("{{ " . " }")
+                                              ("{% " . " %")
+                                              ("{%-" . " | %")
+                                              ("{%=" . " | %")
+                                              ("{{-" . " | }")
+                                              ("{{{" . " | }}")
+                                              ("{# " . " #")
+                                              ("<% " . " %>")))))
   (:language
    "web-mode"
    :run      'browse-url-of-file
@@ -73,12 +73,11 @@
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode)
   :hook (js2-mode . js2-imenu-extras-mode)
-  :config
-  (setq js-indent-level 2
-        js2-bounce-indent-p nil
-        js2-mode-show-parse-errors nil
-        js2-mode-show-strict-warnings nil)
   :custom
+  (js-indent-level 2)
+  (js2-bounce-indent-p nil)
+  (js2-mode-show-parse-errors nil)
+  (js2-mode-show-strict-warnings nil)
   (:language
    "js2-mode"
    :complete '(company-tern))

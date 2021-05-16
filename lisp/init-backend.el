@@ -33,17 +33,18 @@
 ;;; Code:
 (use-package python
   :ensure nil
-  :config
-  (setq python-indent-offset 4
-        python-indent-guess-indent-offset nil
-        python-shell-completion-native-enable nil)
-  (defun maple/run-python ()
-    (interactive)
-    (or (python-shell-get-process) (call-interactively 'run-python))
-    (if (use-region-p)
-        (python-shell-send-region (region-beginning) (region-end) t)
-      (python-shell-send-buffer t)))
   :custom
+  (:variable
+   (python-indent-offset 4)
+   (python-indent-guess-indent-offset nil)
+   (python-shell-completion-native-enable nil))
+  (:function
+   (defun maple/run-python ()
+     (interactive)
+     (or (python-shell-get-process) (call-interactively 'run-python))
+     (if (use-region-p)
+         (python-shell-send-region (region-beginning) (region-end) t)
+       (python-shell-send-buffer t))))
   (:language
    "python-mode"
    :run 'maple/run-python
@@ -56,9 +57,9 @@
   (pip-requirements))
 
 (use-package go-mode
-  :config
-  (setq gofmt-show-errors nil)
   :custom
+  (:variable
+   (gofmt-show-errors nil))
   (:language
    "go-mode"
    :format 'gofmt
@@ -68,19 +69,15 @@
   (go-add-tags))
 
 (use-package rust-mode
-  ;; :custom
-  ;; (:language
-  ;;  "rust-mode"
-  ;;  :complete 'company-c-headers))
   :dependencies
   (flycheck-rust
    :hook (rust-mode . flycheck-rust-setup)))
 
 (use-package cc-mode
-  :config
-  (setq c-default-style "linux"
-        c-basic-offset 4)
   :custom
+  (:variable
+   (c-default-style "linux")
+   (c-basic-offset 4))
   (:language
    "c-mode"
    :complete 'company-c-headers)
@@ -89,10 +86,10 @@
 
 (use-package lua-mode
   :diminish lua-mode
-  :config
-  (setq lua-indent-level 4
-        lua-indent-string-contents t)
   :custom
+  (:variable
+   (lua-indent-level 4)
+   (lua-indent-string-contents t))
   (:language
    "lua-mode"
    :complete 'company-lua)
@@ -114,7 +111,7 @@
   :evil (:state (sql-interactive-mode . insert))
   :dependencies
   (sql-indent
-   :hook (sql-mode-hook .  sqlind-minor-mode)))
+   :hook (sql-mode-hook . sqlind-minor-mode)))
 
 (provide 'init-backend)
 ;;; init-backend.el ends here

@@ -68,7 +68,9 @@
 (use-package all-the-icons-dired
   :defines *icon*
   :if (and (display-graphic-p) *icon*)
-  :hook (dired-mode . all-the-icons-dired-mode))
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :custom
+  (all-the-icons-dired-monochrome nil))
 
 (use-package image-dired
   :ensure nil

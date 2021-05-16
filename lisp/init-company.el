@@ -29,10 +29,12 @@
 (use-package yasnippet
   :diminish yas-minor-mode
   :hook (maple-init . yas-global-mode)
-  :config
-  (setq yas-triggers-in-field t
-        yas-prompt-functions '(yas-completing-prompt))
-  (use-package yasnippet-snippets))
+  :custom
+  (:variable
+   (yas-triggers-in-field t)
+   (yas-prompt-functions '(yas-completing-prompt)))
+  :dependencies
+  (yasnippet-snippets))
 
 (use-package company
   :diminish company-mode

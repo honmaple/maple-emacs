@@ -112,6 +112,14 @@
   (interactive)
   (load-file user-init-file))
 
+(defun maple/escape ()
+  "Run maple/escape."
+  (interactive)
+  (cond ((minibuffer-window-active-p (minibuffer-window))
+         (abort-recursive-edit))
+        ((or defining-kbd-macro executing-kbd-macro) nil)
+        ((keyboard-quit))))
+
 (defun maple/define-key (keymap key def &rest bindings)
   "Define multi keybind with KEYMAP KEY DEF BINDINGS."
   (declare (indent defun))

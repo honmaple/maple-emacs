@@ -125,7 +125,6 @@ the current state and point position."
   (setq evil-want-keybinding nil
         evil-collection-want-unimpaired-p nil
         evil-collection--supported-modes '(dired magit ediff image 2048-game))
-
   :hook (evil-mode . evil-collection-init)
   :config
   (defun maple/evil-collection-keybind(mode _keymaps)

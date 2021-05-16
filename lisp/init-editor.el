@@ -102,13 +102,13 @@
 (use-package anzu
   :diminish anzu-mode
   :hook (maple-init . global-anzu-mode)
-  :config
-  (setq anzu-cons-mode-line-p nil
-        anzu-kode-lighter ""
-        anzu-search-threshold 1000
-        anzu-replace-to-string-separator " → ")
-  :custom-face
-  (anzu-replace-to ((t (:inherit query-replace))))
+  :custom
+  (anzu-cons-mode-line-p nil)
+  (anzu-kode-lighter "")
+  (anzu-search-threshold 1000)
+  (anzu-replace-to-string-separator " → ")
+  (:face
+   '(anzu-replace-to ((t (:inherit query-replace)))))
   :bind (:map query-replace-map
               ([return] . 'automatic)))
 
@@ -119,9 +119,9 @@
               ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package avy
-  :config
-  (setq avy-all-windows t
-        avy-background t)
+  :custom
+  (avy-all-windows t)
+  (avy-background t)
   :evil
   (:bind
    (:state normal ("F" . avy-goto-char))
@@ -144,6 +144,16 @@
   (:bind
    (:state normal ("gr" . maple/string-inflection-toggle))
    (:state visual ("gr" . maple/string-inflection-toggle))))
+
+(use-package whitespace
+  :ensure nil
+  :hook ((prog-mode conf-mode yaml-mode) . whitespace-mode)
+  :config
+  (setq whitespace-action '(auto-cleanup)
+        whitespace-style '(face
+                           trailing indentation empty
+                           space-before-tab space-after-tab))
+  :diminish whitespace-mode "ⓦ")
 
 (use-package projectile
   :diminish projectile-mode "ⓟ"

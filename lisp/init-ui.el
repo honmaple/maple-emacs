@@ -137,15 +137,5 @@
         highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
 
-(use-package whitespace
-  :ensure nil
-  :hook ((prog-mode conf-mode yaml-mode) . whitespace-mode)
-  :config
-  (setq whitespace-action '(auto-cleanup)
-        whitespace-style '(face
-                           trailing space-before-tab
-                           indentation empty space-after-tab))
-  :diminish whitespace-mode "ⓦ")
-
 (provide 'init-ui)
 ;;; init-ui.el ends here

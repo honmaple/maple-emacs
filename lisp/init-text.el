@@ -56,9 +56,9 @@
    :fold 'origami-toggle-node))
 
 (use-package writeroom-mode
-  :config
-  (setq writeroom-mode-line t
-        writeroom-bottom-divider-width 0))
+  :custom
+  (writeroom-mode-line t)
+  (writeroom-bottom-divider-width 0))
 
 (use-package company-english-helper
   :quelpa (:fetcher github :repo "manateelazycat/company-english-helper")

@@ -254,7 +254,7 @@
     "fw" 'counsel-ag
     "fW" 'maple/counsel-ag-directory
     "sj" 'counsel-semantic-or-imenu
-    "bb" 'ivy-switch-buffer  ;;显示缓冲区(已经打开的文件)
+    "bb" 'counsel-switch-buffer  ;;显示缓冲区(已经打开的文件)
     "ph" 'counsel-projectile ;;在工程内查找
     "pw" 'counsel-projectile-ag
     "pb" 'counsel-projectile-switch-to-buffer))
@@ -298,14 +298,6 @@
                 (call-interactively 'evil-shift-right)
                 (evil-normal-state)
                 (evil-visual-restore))))
-
-(defun maple/escape ()
-  "Run maple/escape."
-  (interactive)
-  (cond ((minibuffer-window-active-p (minibuffer-window))
-         (abort-recursive-edit))
-        ((or defining-kbd-macro executing-kbd-macro) nil)
-        ((keyboard-quit))))
 
 (global-set-key [remap keyboard-quit] 'maple/escape)
 (global-set-key [f5] 'maple-language/call-run)

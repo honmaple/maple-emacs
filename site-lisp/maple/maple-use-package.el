@@ -110,8 +110,9 @@
   "Custom variable with ARGS."
   (pcase (car args)
     (:face `((custom-set-faces ,@(cdr args))))
-    (:variable `((setq ,@(cdr args))))
-    (:default `((setq-default ,@(cdr args))))
+    (:function `((progn ,@(cdr args))))
+    (:variable `((setq ,@(apply 'append (cdr args)))))
+    (:default `((setq-default ,@(apply 'append (cdr args)))))
     (:mode (let ((mode (cadr args)))
              (unless (featurep 'mode-local) (require 'mode-local))
              (cl-loop for i in (if (listp mode) mode (list mode)) collect

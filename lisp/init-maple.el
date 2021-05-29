@@ -33,10 +33,7 @@
 
 (use-package maple-header
   :ensure nil
-  :defines (maple-header/auto-update-alist)
-  :hook (maple-init . maple-header-mode)
-  :config
-  (setq maple-header/auto-update-alist '(filename modify)))
+  :hook (maple-init . maple-header-mode))
 
 (use-package maple-run
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-run")

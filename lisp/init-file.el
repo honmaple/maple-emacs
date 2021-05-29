@@ -99,11 +99,7 @@
 
 (use-package recentf
   :ensure nil
-  :init
-  (maple/add-hook 'find-file-hook
-    (unless recentf-mode
-      (recentf-mode)
-      (recentf-track-opened-file)))
+  :hook (maple-init . recentf-mode)
   :config
   (setq recentf-save-file (concat maple-cache-directory "recentf")
         recentf-max-saved-items 100
@@ -119,7 +115,6 @@
   :ensure nil
   :hook (maple-init . savehist-mode)
   :config
-  ;; Minibuffer history
   (setq savehist-file (concat maple-cache-directory "savehist")
         savehist-autosave-interval nil ; save on kill only
         savehist-additional-variables '(kill-ring

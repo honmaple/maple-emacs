@@ -60,7 +60,7 @@
   :group 'maple-header
   :type '(list))
 
-(defcustom maple-header/auto-update-alist '(filename email modify)
+(defcustom maple-header/auto-update-alist '(filename modify)
   "The update list of header."
   :group 'maple-header
   :type '(list))

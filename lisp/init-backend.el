@@ -37,8 +37,8 @@
   (:variable
    (python-indent-offset 4)
    (python-indent-guess-indent-offset nil)
-   (python-shell-completion-native-enable nil))
-  (:function
+   (python-shell-completion-native-enable nil)
+   :function
    (defun maple/run-python ()
      (interactive)
      (or (python-shell-get-process) (call-interactively 'run-python))
@@ -98,16 +98,18 @@
 
 (use-package sql
   :ensure nil
-  :config
-  (setq sql-input-ring-file-name
-        (expand-file-name "sql.history" user-emacs-directory)
-        sql-postgres-login-params
-        '((user :default "postgres")
-          (database :default "postgres")
-          (server :default "localhost")
-          (port :default 5432)))
-  (maple/add-hook 'sql-interactive-mode-hook
-    '(maple/truncate-lines maple/process-exit))
+  :custom
+  (:variable
+   (sql-input-ring-file-name
+    (expand-file-name "sql.history" user-emacs-directory))
+   (sql-postgres-login-params
+    '((user :default "postgres")
+      (database :default "postgres")
+      (server :default "localhost")
+      (port :default 5432)))
+   :function
+   (maple/add-hook 'sql-interactive-mode-hook
+     '(maple/truncate-lines maple/process-exit)))
   :evil (:state (sql-interactive-mode . insert))
   :dependencies
   (sql-indent

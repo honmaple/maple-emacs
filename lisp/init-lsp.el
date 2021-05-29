@@ -76,7 +76,8 @@
           lsp-pyls-plugins-pycodestyle-enabled nil
           ;; format
           lsp-pyls-plugins-autopep8-enabled nil
-          lsp-pyls-plugins-yapf-enabled t)
+          lsp-pyls-plugins-yapf-enabled t
+          lsp-pyls-disable-warning t)
 
     (defun lsp-pyls-get-pyenv-environment()
       (if lsp-pyls-plugins-jedi-environment

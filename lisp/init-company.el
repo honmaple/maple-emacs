@@ -43,9 +43,10 @@
   (setq company-idle-delay 0.1
         company-show-numbers t
         company-tooltip-limit 15
-        company-minimum-prefix-length 1
         company-tooltip-align-annotations t ;; 提示右对齐
         company-tooltip-offset-display 'lines
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t
         company-dabbrev-downcase nil
         company-begin-commands '(self-insert-command)
         company-global-modes '(not comint-mode
@@ -61,6 +62,9 @@
   (setq company-yasnippet-annotation-fn
         (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
         company-backends maple-language/complete-backends)
+
+  (unless *icon*
+    (setq company-format-margin-function nil))
 
   (defun maple/company-yasnippet ()
     (interactive)
@@ -97,37 +101,6 @@
   :hook (company-mode . company-prescient-mode)
   :config
   (setq prescient-save-file (expand-file-name "prescient-save.el" maple-cache-directory)))
-
-(use-package company-box
-  :disabled
-  :if (and (display-graphic-p) *icon*)
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-backends-colors nil
-        company-box-show-single-candidate t
-        company-box-max-candidates 50
-        company-box-doc-delay 0.5
-        company-box-icons-alist 'company-box-icons-all-the-icons)
-
-  (defun company-box-icons--elisp (candidate)
-    (when (derived-mode-p 'emacs-lisp-mode)
-      (let ((sym (intern candidate)))
-        (cond ((fboundp sym) 'Function)
-              ((featurep sym) 'Module)
-              ((facep sym) 'Color)
-              ((boundp sym) 'Variable)
-              (t  'Unknown)))))
-
-  (defun company-box-icons--yasnippet (candidate)
-    (when (get-text-property 0 'yas-annotation candidate)
-      'Snippet)))
-
-(use-package company-quickhelp
-  :disabled
-  :if (display-graphic-p)
-  :hook (company-mode . company-quickhelp-mode)
-  :config
-  (setq company-quickhelp-delay 1))
 
 (provide 'init-company)
 ;;; init-company.el ends here

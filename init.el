@@ -29,7 +29,7 @@
 (eval-and-compile
   (defvar user-handler-alist file-name-handler-alist)
   (defvar user-default-theme nil)
-  (defvar *icon* t)
+  (defvar *icon* (display-graphic-p))
   (defvar *python3* t)
 
   (setq user-full-name "lin.jiang"

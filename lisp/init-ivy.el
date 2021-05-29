@@ -221,12 +221,6 @@
     :if (and (display-graphic-p) *icon*)
     :demand
     :config
-    (setq all-the-icons-scale-factor 1.15
-          all-the-icons-icon-alist
-          (append
-           (butlast all-the-icons-icon-alist)
-           (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan))))
-
     (defun maple/ivy-file-transformer(candidate)
       "Advice ivy-read-file-transformer with `CANDIDATE`."
       (format "%s %s" (propertize "\t" 'display (all-the-icons-ivy-rich-file-icon candidate)) candidate))

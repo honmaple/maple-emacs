@@ -34,17 +34,19 @@
 (use-package autorevert
   :ensure nil
   :hook (maple-init . global-auto-revert-mode)
-  :config
-  (setq global-auto-revert-non-file-buffers t
-        auto-revert-verbose nil)
+  :custom
+  (:variable
+   (global-auto-revert-non-file-buffers t)
+   (auto-revert-verbose nil))
   :diminish auto-revert-mode)
 
 (use-package elec-pair
   :ensure nil
   :hook (maple-init . electric-pair-mode)
-  :config
-  ;; (setq electric-pair-pairs '((?\' . ?\')))
-  (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+  :custom
+  (:variable
+   ;; (electric-pair-pairs '((?\' . ?\')))
+   (electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)))
 
 (use-package align
   :ensure nil
@@ -61,9 +63,10 @@
 
 (use-package tramp
   :ensure nil
-  :config
-  (setq tramp-ssh-controlmaster-options
-        "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no"))
+  :custom
+  (:variable
+   (tramp-ssh-controlmaster-options
+    "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")))
 
 (use-package isearch
   :ensure nil
@@ -87,14 +90,15 @@
   :ensure nil
   :diminish hs-minor-mode
   :hook ((conf-mode prog-mode) . hs-minor-mode)
-  :config
-  (defun maple/hs-overlay (ov)
-    (when (eq 'code (overlay-get ov 'hs))
-      (let ((face '((t (:inherit 'font-lock-comment-face :underline t))))
-            (nlines (count-lines (overlay-start ov) (overlay-end ov))))
-        (overlay-put ov 'display (propertize (format "...#%d" nlines) 'face face)))))
-
-  (setq hs-set-up-overlay 'maple/hs-overlay))
+  :custom
+  (:function
+   (defun maple/hs-overlay (ov)
+     (when (eq 'code (overlay-get ov 'hs))
+       (let ((face '((t (:inherit 'font-lock-comment-face :underline t))))
+             (nlines (count-lines (overlay-start ov) (overlay-end ov))))
+         (overlay-put ov 'display (propertize (format "...#%d" nlines) 'face face))))))
+  (:variable
+   (hs-set-up-overlay 'maple/hs-overlay)))
 
 (use-package origami
   :diminish origami-mode)
@@ -103,25 +107,28 @@
   :diminish anzu-mode
   :hook (maple-init . global-anzu-mode)
   :custom
-  (anzu-cons-mode-line-p nil)
-  (anzu-kode-lighter "")
-  (anzu-search-threshold 1000)
-  (anzu-replace-to-string-separator " → ")
+  (:variable
+   (anzu-cons-mode-line-p nil)
+   (anzu-kode-lighter "")
+   (anzu-search-threshold 1000)
+   (anzu-replace-to-string-separator " → "))
   (:face
    '(anzu-replace-to ((t (:inherit query-replace)))))
   :bind (:map query-replace-map
               ([return] . 'automatic)))
 
 (use-package wgrep
-  :config
-  (setq wgrep-auto-save-buffer t)
+  :custom
+  (:variable
+   (wgrep-auto-save-buffer t))
   :bind (:map wgrep-mode-map
               ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package avy
   :custom
-  (avy-all-windows t)
-  (avy-background t)
+  (:variable
+   (avy-all-windows t)
+   (avy-background t))
   :evil
   (:bind
    (:state normal ("F" . avy-goto-char))
@@ -148,24 +155,27 @@
 (use-package whitespace
   :ensure nil
   :hook ((prog-mode conf-mode yaml-mode) . whitespace-mode)
-  :config
-  (setq whitespace-action '(auto-cleanup)
-        whitespace-style '(face
-                           trailing indentation empty
-                           space-before-tab space-after-tab))
+  :custom
+  (:variable
+   (whitespace-action '(auto-cleanup))
+   (whitespace-style '(face
+                       trailing indentation empty
+                       space-before-tab space-after-tab)))
   :diminish whitespace-mode "ⓦ")
 
 (use-package projectile
   :diminish projectile-mode "ⓟ"
   :hook (maple-init . projectile-mode)
-  :config
-  (setq projectile-sort-order 'recentf
-        projectile-current-project-on-switch 'keep
-        projectile-cache-file
-        (expand-file-name "projectile.cache" maple-cache-directory)
-        projectile-known-projects-file
-        (expand-file-name "projectile-bookmarks.eld" maple-cache-directory))
-  (add-to-list 'projectile-project-root-files-bottom-up "go.mod" t))
+  :custom
+  (:variable
+   (projectile-sort-order 'recentf)
+   (projectile-current-project-on-switch 'keep)
+   (projectile-cache-file
+    (expand-file-name "projectile.cache" maple-cache-directory))
+   (projectile-known-projects-file
+    (expand-file-name "projectile-bookmarks.eld" maple-cache-directory))
+   :function
+   (add-to-list 'projectile-project-root-files-bottom-up "go.mod" t)))
 
 (provide 'init-editor)
 ;;; init-editor.el ends here

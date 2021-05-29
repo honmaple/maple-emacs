@@ -107,27 +107,6 @@
   :ensure nil
   :hook (maple-init . global-hl-line-mode))
 
-(use-package volatile-highlights
-  :hook (maple-init . volatile-highlights-mode)
-  :config
-  ;; additional extensions
-  ;; evil
-  (with-eval-after-load 'evil
-    (vhl/define-extension 'evil
-                          'evil-move
-                          'evil-paste-after
-                          'evil-paste-before
-                          'evil-paste-pop)
-    (vhl/install-extension 'evil))
-  ;; undo-tree
-  (with-eval-after-load 'undo-tree
-    (vhl/define-extension 'undo-tree
-                          'undo-tree-move
-                          'undo-tree-yank)
-    (vhl/install-extension 'undo-tree))
-  :custom-face (vhl/default-face ((t (:background "Springgreen3" :foreground "#272822"))))
-  :diminish volatile-highlights-mode)
-
 ;; 显示缩进
 (use-package highlight-indent-guides
   :if (display-graphic-p)
@@ -136,6 +115,15 @@
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
+
+(use-package all-the-icons
+  :if (and (display-graphic-p) *icon*)
+  :config
+  (setq all-the-icons-icon-alist
+        (append
+         (list '("\\.go$" all-the-icons-fileicon "golo" :height 1.0 :face all-the-icons-blue))
+         (butlast all-the-icons-icon-alist)
+         (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here

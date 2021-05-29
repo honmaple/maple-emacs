@@ -52,24 +52,6 @@
         (delete-horizontal-space)
         (insert sep))))
 
-  (defun maple-evil/insert-line-below (count)
-    "Insert one of several lines below the current point's line without changing
-the current state and point position."
-    (interactive "p")
-    (save-excursion
-      (evil-save-state (evil-open-below count)))
-    (evil-normal-state)
-    (evil-next-line count))
-
-  (defun maple-evil/insert-line-above (count)
-    "Insert one of several lines above the current point's line without changing
- the current state and point position."
-    (interactive "p")
-    (save-excursion
-      (evil-save-state (evil-open-above count)))
-    (evil-previous-line count)
-    (evil-escape))
-
   :custom-face
   (region ((t (:background "#66d9ef" :foreground "#272822"))))
   :bind (:map evil-normal-state-map

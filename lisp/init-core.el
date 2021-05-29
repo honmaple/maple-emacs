@@ -95,7 +95,6 @@
   :commands (server-running-p)
   :hook (maple-init . (lambda() (unless (server-running-p) (server-start)))))
 
-
 (use-package fontawesome
   :commands (counsel-fontawesome))
 

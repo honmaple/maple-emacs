@@ -66,7 +66,7 @@
   :custom
   (:mode
    (org-mode markdown-mode)
-   company-tooltip-align-annotations nil)
+   (company-tooltip-align-annotations nil))
   (:language
    (markdown-mode org-mode)
    :complete 'company-english-helper-search))

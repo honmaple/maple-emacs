@@ -98,7 +98,7 @@
     (pop tail)
     (while (and (consp tail) (not (keywordp (car tail))))
       (push (pop tail) result))
-    (append (cl-remove-if nil (list (nreverse common) (nreverse result)))
+    (append (cl-remove-if nil (append (nreverse common) (nreverse result)))
             ;; maybe define prop multi times
             (when tail (maple-use-package/plist-get tail prop)))))
 
@@ -111,15 +111,18 @@
   (pcase (car args)
     (:face `((custom-set-faces ,@(cdr args))))
     (:function `((progn ,@(cdr args))))
-    (:variable `((setq ,@(apply 'append (cdr args)))))
-    (:default `((setq-default ,@(apply 'append (cdr args)))))
+    (:variable (let ((vs (maple-use-package/plist-get args :variable))
+                     (fs (maple-use-package/plist-get args :function))
+                     (ds (maple-use-package/plist-get args :default)))
+                 (append
+                  (when vs `((setq ,@(apply 'append vs))))
+                  (when ds `((setq-default ,@(apply 'append ds))))
+                  (when fs `((progn ,@fs))))))
     (:mode (let ((mode (cadr args)))
              (unless (featurep 'mode-local) (require 'mode-local))
              (cl-loop for i in (if (listp mode) mode (list mode)) collect
-                      `(setq-mode-local ,i ,@(cddr args)))))
-    (:language `((maple-language ,@(cdr args))))
-    (:window (with-eval-after-load 'shackle
-               (cl-loop for i in (cdr args) collect `(push ,i shackle-rules))))))
+                      `(setq-mode-local ,i ,@(apply 'append (cddr args))))))
+    (:language `((maple-language ,@(cdr args))))))
 
 (defun maple-use-package/custom(args)
   "Custom variable with ARGS."
@@ -176,7 +179,8 @@
 (defun use-package-handler/:custom (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   (mapcan 'maple-use-package/custom args)
+   `((with-eval-after-load ',name
+       ,@(mapcan 'maple-use-package/custom args)))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:hydra (name _keyword args rest state)

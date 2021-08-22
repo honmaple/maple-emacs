@@ -96,6 +96,16 @@
   :dependencies
   (company-lua))
 
+(use-package dart-mode
+  :diminish)
+
+(use-package sh-mode
+  :ensure nil
+  :custom
+  (:language
+   "sh-mode"
+   :checker '(sh-posix-bash)))
+
 (use-package sql
   :ensure nil
   :custom

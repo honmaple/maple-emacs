@@ -108,6 +108,7 @@
         auto-insert-alist maple-header/auto-insert-alist)
   (auto-insert-mode 1))
 
+;;;###autoload
 (defmacro maple-header (name &rest args)
   "Define header update with NAME, ARGS."
   (declare (indent 1) (doc-string 2))
@@ -136,7 +137,7 @@
 (maple-header modify
   :find
   (cond ((apply 'derived-mode-p '(org-mode markdown-mode))
-         ".*\\(Modified:\\|MODIFIED[: ]\\)\\(.*\\)")
+         ".*\\(Modified:\\|MODIFIED:?\\)\\(.*\\)")
         (t ".*\\([lL]ast[ -][uU]pdate:\\)\\(.*\\)"))
   :replace
   (cond ((apply 'derived-mode-p '(org-mode markdown-mode))

@@ -51,7 +51,10 @@
     [24] nil nil '(center repeated)))
 
 (use-package browse-at-remote
-  :commands (browse-at-remote))
+  :commands (browse-at-remote)
+  :config
+  ;; github.com.cnpmjs.org -> github.com
+  (add-to-list 'browse-at-remote-remote-type-regexps '("^github\\.com.*$" . "github")))
 
 (provide 'init-git)
 ;;; init-git.el ends here

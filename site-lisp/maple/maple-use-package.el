@@ -62,8 +62,13 @@
 
 ;;; Code:
 (require 'use-package)
-(require 'maple-keybind)
-(require 'maple-language)
+
+(autoload 'maple-keybind "maple-keybind" "" nil t)
+(autoload 'maple-keybind/bind "maple-keybind" "")
+(autoload 'maple-keybind/evil-bind "maple-keybind" "")
+(autoload 'maple-keybind/evil-leader "maple-keybind" "")
+(autoload 'maple-language "maple-language" "" nil t)
+(autoload 'maple-language/complete-backend "maple-language" "")
 
 (defalias 'use-package-normalize/:evil 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:hydra 'use-package-normalize-forms)

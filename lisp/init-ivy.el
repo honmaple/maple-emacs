@@ -129,7 +129,8 @@
   ;; completion-system
   (with-eval-after-load 'evil
     (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
-    (evil-make-overriding-map ivy-occur-mode-map 'normal))
+    (evil-make-overriding-map ivy-occur-mode-map 'normal)
+    (evil-make-overriding-map ivy-occur-grep-mode-map 'normal))
 
   (with-eval-after-load 'projectile
     (setq projectile-completion-system 'ivy))
@@ -137,12 +138,12 @@
   (with-eval-after-load 'magit
     (setq magit-completing-read-function 'ivy-completing-read))
 
-  (use-package ivy-xref
-    :init
-    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
-
   :custom-face
-  (ivy-highlight-face ((t (:background nil)))))
+  (ivy-highlight-face ((t (:background nil))))
+  :dependencies
+  (ivy-xref
+   :init
+   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)))
 
 (use-package counsel
   :diminish (counsel-mode)
@@ -228,6 +229,9 @@
     (with-eval-after-load 'projectile
       (ivy-set-display-transformer
        'projectile-completing-read 'maple/ivy-file-transformer))
+
+    (fset 'all-the-icons-ivy-rich--project-root 'ignore)
+    (fset 'all-the-icons-ivy-rich-file-id (lambda(x) ""))
 
     (advice-add 'all-the-icons-ivy-rich--format-icon :filter-return 'string-trim-left)
     (advice-add 'ivy-rich-bookmark-type :override 'all-the-icons-ivy-rich-bookmark-type)

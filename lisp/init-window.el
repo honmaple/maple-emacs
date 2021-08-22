@@ -63,16 +63,14 @@
         shackle-default-alignment 'below
         shackle-default-rule nil
         shackle-rules
-        '(("*Help*" :select t :align 'below :autoclose t)
-          ("*compilation*" :align 'below :autoclose t)
-          ("*Completions*" :align 'below :autoclose t)
-          ("*ert*" :align 'below :autoclose t)
-          ("*Backtrace*" :select t :size 15 :align 'below)
-          ("*Warnings*" :align 'below :autoclose t)
-          ("*Messages*" :align 'below :autoclose t)
-          ("^\\*.*Shell Command.*\\*$" :regexp t :align 'below :autoclose t)
-          ("\\*[Wo]*Man.*\\*" :regexp t :select t :align 'below :autoclose t)
-          (" *undo-tree*" :select t)
+        '((("*compilation*" "*Completions*" "*ert*" "*Warnings*" "*Messages*")
+           :align 'below :autoclose t)
+          (("*Help*" "*Backtrace*")
+           :select t :align 'below :autoclose t)
+          (("^\\*.*Shell Command.*\\*$" "\\*[Wo]*Man.*\\*")
+           :regexp t :align 'below :autoclose t)
+          (" *undo-tree*"
+           :select t :autoclose t)
 
           (flycheck-error-list-mode :select t :align 'below :autoclose t)
           (inferior-python-mode :select t)

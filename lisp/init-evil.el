@@ -53,7 +53,7 @@
         (insert sep))))
 
   :custom-face
-  (region ((t (:background "#66d9ef" :foreground "#272822"))))
+  (region ((t (:background "gray" :foreground "#272822"))))
   :bind (:map evil-normal-state-map
               ("C-k" . evil-scroll-up)
               ("C-j" . evil-scroll-down)))

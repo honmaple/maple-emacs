@@ -90,11 +90,13 @@
   :type '(list)
   :group 'maple-language)
 
-(defun maple-language/complete-backend(backend &optional with-snippet)
+;;;###autoload
+(defun maple-language/complete-backend(&optional backend with-snippet)
   "Return BACKENDs WITH-SNIPPET or not."
-  (let ((backend (if (listp backend) backend (list backend))))
-    (append (list (if with-snippet (maple-language/complete-backend-with-snippet backend) backend))
-            maple-language/complete-backends)))
+  (if (not backend) maple-language/complete-backends
+    (let ((backend (if (listp backend) backend (list backend))))
+      (append (list (if with-snippet (maple-language/complete-backend-with-snippet backend) backend))
+              maple-language/complete-backends))))
 
 (defun maple-language/complete-backend-with-snippet(backend)
   "Return BACKEND with company-yasnippet."
@@ -202,6 +204,7 @@
   (interactive)
   (call-interactively maple-language/documentation))
 
+;;;###autoload
 (defmacro maple-language (mode &rest args)
   "Language define with MODE ARGS."
   (declare (indent defun))

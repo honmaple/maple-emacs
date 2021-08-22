@@ -121,13 +121,13 @@
 (defun maple-org/capture-screenshot (basename)
   "Screenshot and insert link to current buffer with BASENAME."
   (interactive "sScreenshot name: ")
-  (let ((blog-image-path (expand-file-name
-                          (format "%s-%s.png" basename (format-time-string "%Y%m%d_%H%M%S")) maple-org/img-path)))
-    (if (file-exists-p blog-image-path)
-        (message "the path '%s' already exists!" blog-image-path)
+  (let ((image-path (expand-file-name
+                     (format "%s-%s.png" basename (format-time-string "%Y%m%d_%H%M%S")) maple-org/img-path)))
+    (if (file-exists-p image-path)
+        (message "the path '%s' already exists!" image-path)
       (shell-command
-       (format "scrot -s %s" blog-image-path))
-      (maple-org/insert-img-link blog-image-path basename)))
+       (format "scrot -s %s" image-path))
+      (maple-org/insert-img-link image-path basename)))
   (insert "\n"))
 
 (with-eval-after-load 'org-capture

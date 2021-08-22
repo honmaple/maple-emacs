@@ -43,7 +43,9 @@
 (eval-when-compile
   ;; (require 'maple-package)
   ;; (maple-package-initialize 'no-activate)
-  (package-initialize)
+  (unless (bound-and-true-p package--initialized)
+    (setq package-enable-at-startup nil)
+    (package-initialize))
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package)))
@@ -110,12 +112,12 @@
 (use-package adaptive-wrap
   :hook (visual-line-mode . adaptive-wrap-prefix-mode)
   :config
-  (setq-default adaptive-wrap-extra-indent 1))
+  (setq adaptive-wrap-extra-indent 1))
 
 (use-package frame
   :ensure nil
   ;; blink-cursor-interval 0.4
-  :init (blink-cursor-mode -1))
+  :hook (maple-init . (lambda() (blink-cursor-mode -1))))
 
 (use-package tooltip
   :ensure nil
@@ -243,16 +245,13 @@
         mac-function-modifier 'hyper)
 
   (defun maple/mac-switch-input-source ()
-    (if (fboundp 'mac-select-input-source)
+    (if (and (display-graphic-p) (fboundp 'mac-select-input-source))
         (mac-select-input-source "com.apple.keylayout.ABC")
       (let ((inhibit-message t))
         (shell-command
-         "osascript -e 'tell application \"System Events\" to tell process \"SystemUIServer\"
-      set currentLayout to get the value of the first menu bar item of menu bar 1 whose description is \"text input\"
-      if currentLayout is not \"ABC\" then
-        tell (1st menu bar item of menu bar 1 whose description is \"text input\") to {click, click (menu 1'\"'\"'s menu item \"ABC\")}
-      end if
-    end tell' &>/dev/null"))))
+         "osascript -e 'tell application \"System Events\"
+                        key code 49 using control down
+                        end tell' &>/dev/null"))))
 
   (add-function :after after-focus-change-function 'maple/mac-switch-input-source)
   (with-eval-after-load 'evil

@@ -133,9 +133,19 @@
         (message (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
+(defun maple-file/line-number (&optional pos absolute)
+  "Return buffer line number at position POS ABSOLUTE."
+  (save-restriction
+    (when absolute (widen))
+    (let ((opoint (or pos (point))))
+      (save-excursion
+        (goto-char opoint)
+        (string-to-number (format-mode-line "%l"))))))
+
 (defun maple-file/check-large ()
   "Check large file."
-  (when (and (> (buffer-size) (* 1024 1024 3))
+  (when (and (or (> (buffer-size) (* 1024 1024 3))
+                 (> (maple-file/line-number (point-max)) 1024))
              (y-or-n-p (format (concat "%s is a large file, open literally to "
                                        "avoid performance issues?")
                                buffer-file-name)))

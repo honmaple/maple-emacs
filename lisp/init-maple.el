@@ -64,12 +64,6 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-line" :files ("maple-line-hide.el"))
   :commands (maple-line-hide-mode))
 
-(use-package maple-xpm
-  :quelpa (:fetcher github :repo "honmaple/emacs-maple-xpm" :files ("*.el"))
-  :config
-  (setq maple-xpm-height 20
-        maple-xpm-style (if (display-graphic-p) 'wave 'default)))
-
 (use-package maple-modeline
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
   :hook (maple-theme . maple-modeline-mode)
@@ -96,7 +90,13 @@
   (advice-add 'load-theme :after #'maple/modeline-theme)
   :custom-face
   (mode-line ((t (:box nil))))
-  (mode-line-inactive ((t (:box nil)))))
+  (mode-line-inactive ((t (:box nil))))
+  :dependencies
+  (maple-xpm
+   :quelpa (:fetcher github :repo "honmaple/emacs-maple-xpm" :files ("*.el"))
+   :config
+   (setq maple-xpm-height 20
+         maple-xpm-style (if (display-graphic-p) 'wave 'default))))
 
 (use-package maple-minibuffer
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-minibuffer")

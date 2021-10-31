@@ -142,7 +142,6 @@
 
   (evil-leader/set-key
     "pb"  'projectile-switch-to-buffer
-    "pw"  'projectile-ag
     "pd"  'projectile-find-dir
     "pf"  'counsel-git
     "pF"  'projectile-find-file
@@ -151,6 +150,7 @@
     "pi"  'projectile-invalidate-cache
     "pc"  'projectile-cleanup-known-projects
     "pa"  'projectile-add-known-project
+    "pw"  'counsel-projectile-ag
     )
 
   (evil-leader/set-key
@@ -253,9 +253,7 @@
     "fW" 'maple/counsel-ag-directory
     "sj" 'counsel-semantic-or-imenu
     "bb" 'counsel-switch-buffer  ;;显示缓冲区(已经打开的文件)
-    "ph" 'counsel-projectile ;;在工程内查找
-    "pw" 'counsel-projectile-ag
-    "pb" 'counsel-projectile-switch-to-buffer))
+    ))
 
 (with-eval-after-load 'evil
   (maple/define-key evil-normal-state-map

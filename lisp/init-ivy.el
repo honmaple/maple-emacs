@@ -157,20 +157,7 @@
         (mapcar (lambda(x) (cons x 'maple/region-string))
                 '(swiper
                   counsel-ag
-                  counsel-find-file
-                  counsel-projectile-find-file)))
-
-  (defun maple/counsel-ag-directory()
-    (interactive)
-    (counsel-ag nil (read-directory-name "Search in directory: ")))
-
-  ;; custom counsel-ag
-  (defun maple/counsel-ag(-counsel-ag &optional initial-input initial-directory extra-ag-args ag-prompt)
-    (funcall -counsel-ag
-             (or initial-input (maple/region-string))
-             (or initial-directory default-directory)
-             extra-ag-args
-             ag-prompt))
+                  counsel-find-file)))
 
   (defun maple/ivy-dired-occur()
     (interactive)
@@ -183,7 +170,25 @@
        (wdired-change-to-wdired-mode)
        (when (bound-and-true-p evil-local-mode) (evil-normal-state)))))
 
+  (defun maple/counsel-ag-directory()
+    (interactive)
+    (counsel-ag nil (read-directory-name "Search in directory: ")))
+
+  (defun maple/counsel-ag-parent-dir ()
+    "Search upwards in the directory tree."
+    (interactive)
+    (ivy-quit-and-run
+      (counsel-ag ivy-text (file-name-directory (directory-file-name default-directory)))))
+
+  ;; custom counsel-ag
+  (defun maple/counsel-ag(-counsel-ag &optional initial-input initial-directory extra-ag-args ag-prompt)
+    (let ((int (or initial-input (maple/region-string)))
+          (dir (or initial-directory default-directory)))
+      (funcall -counsel-ag int dir extra-ag-args
+               (concat ag-prompt (abbreviate-file-name (directory-file-name dir)) ": "))))
+
   (advice-add 'counsel-ag :around #'maple/counsel-ag)
+
   :bind (("M-x" . counsel-M-x)
          ("C-x C-m" . counsel-M-x)
          ("M-y" . counsel-yank-pop)
@@ -203,6 +208,7 @@
          ([backspace] . maple/ivy-backward-delete-char)
          :map counsel-ag-map
          ([tab] . ivy-call)
+         ("C-s" . maple/counsel-ag-parent-dir)
          :map swiper-map
          ([tab] . ivy-done)))
 

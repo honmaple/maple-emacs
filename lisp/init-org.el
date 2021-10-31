@@ -67,8 +67,8 @@
           (org-html-head-include-default-style nil))
       (org-html-export-as-html nil nil nil t)))
 
-  (when (version< "9.1.4" (org-version))
-    (add-to-list 'org-modules 'org-tempo)
+  (when (string< (org-version) "9.5")
+    (add-to-list 'org-modules 'org-tempo t)
     ;; disable auto add comma prepended
     (fset 'org-escape-code-in-region 'ignore)
     (maple/add-hook 'org-mode-hook
@@ -77,9 +77,9 @@
   :evil
   (normal :map org-mode-map
           ("RET" . org-open-at-point)
-          ("t" . org-todo)
-          ("TAB" . org-cycle)
-          ("<tab>" . org-cycle)))
+          ("t" . org-todo))
+  ((normal insert) :map org-mode-map
+   ([tab] . org-cycle)))
 
 (use-package org-crypt
   :ensure nil
@@ -143,22 +143,23 @@
   :config
   (setq-default org-download-image-dir "images/"
                 org-download-heading-lvl nil
+                org-download-display-inline-images nil
                 org-download-screenshot-method
                 (if maple-system-is-mac "screencapture -i %s" "scrot -s %s"))
 
   (defun maple/org-download-yank()
     (interactive)
-    (let ((file  org-download-screenshot-file)
-          (image (get-text-property 0 'display (current-kill 0))))
-      (if (or (not (consp image)) (not (eq (car image) 'image)))
-          (org-download-yank)
+    (let* ((file  org-download-screenshot-file)
+           (tiff  (format "%s.tiff" file))
+           (image (get-text-property 0 'display (current-kill 0))))
+      (if (not (eq (car-safe image) 'image)) (org-download-yank)
         (with-temp-buffer
           (insert (plist-get (cdr image) :data))
-          (let ((coding-system-for-write 'no-conversion))
-            (write-region nil nil file)))
-        (when (file-exists-p file)
-          (org-download-image file)
-          (delete-file file))))))
+          (write-region (point-min) (point-max) tiff))
+        (when (memq (plist-get (cdr image) :type) '(image-io))
+          (shell-command (format "tifftopnm %s | pnmtopng > %s" tiff file)))
+        (when (file-exists-p tiff) (delete-file tiff t))
+        (when (file-exists-p file) (org-download-image file) (delete-file file t))))))
 
 (provide 'init-org)
 ;;; init-org.el ends here

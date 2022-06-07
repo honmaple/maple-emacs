@@ -1,6 +1,6 @@
-;;; init-ui.el --- Initialize ui configurations.	-*- lexical-binding: t -*-
+;;; core-ui.el --- Initialize ui configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,30 +24,6 @@
 ;;
 
 ;;; Code:
-
-(eval-when-compile (require 'init-basic))
-
-(use-package monokai-theme)
-(use-package solarized-theme)
-(use-package spacemacs-theme)
-(use-package doom-themes
-  :custom-face (show-paren-match ((t (:background "#51afef")))))
-
-(maple/add-hook 'after-init-hook
-  (load-theme user-default-theme t))
-
-;; (use-package powerline
-;;   :hook (maple-theme . powerline-center-evil-theme))
-
-;; (use-package spaceline-config
-;;   :ensure spaceline
-;;   :hook (maple-theme . spaceline-spacemacs-theme)
-;;   :config
-;;   (setq powerline-default-separator (if (display-graphic-p) 'wave 'utf-8)
-;;         spaceline-byte-compile nil
-;;         spaceline-window-numbers-unicode t
-;;         spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
-
 (use-package maple-theme
   :ensure nil
   :commands (maple-theme/switch/body maple-theme/next maple-theme/previous)
@@ -56,6 +32,12 @@
    ()
    ("n" maple-theme/next "next theme")
    ("p" maple-theme/previous "prev theme")))
+
+(use-package monokai-theme)
+(use-package solarized-theme)
+(use-package spacemacs-theme)
+(use-package doom-themes
+  :custom-face (show-paren-match ((t (:background "#51afef")))))
 
 ;; this is ugly
 (use-package display-line-numbers
@@ -117,7 +99,7 @@
   :diminish highlight-indent-guides-mode)
 
 (use-package all-the-icons
-  :if (and (display-graphic-p) *icon*)
+  :if (and (display-graphic-p) maple-icon)
   :config
   (setq all-the-icons-icon-alist
         (append
@@ -125,5 +107,5 @@
          (butlast all-the-icons-icon-alist)
          (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
-(provide 'init-ui)
-;;; init-ui.el ends here
+(provide 'core-ui)
+;;; core-ui.el ends here

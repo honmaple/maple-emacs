@@ -1,6 +1,6 @@
 ;;; maple-theme.el ---  theme configuration.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,10 +24,13 @@
 ;;
 
 ;;; Code:
+(declare-function powerline-reset 'powerline)
 
-;; (defvar  maple-theme/alist (mapcar 'symbol-name (custom-available-themes)))
-;; (defvar  maple-theme/alist (delete "doom-one-light"
-;;                                  (mapcar 'symbol-name (custom-available-themes))))
+;; (defvar maple-theme/alist
+;;   (mapcar 'symbol-name (custom-available-themes)))
+;; (defvar maple-theme/alist
+;;   (delete "doom-one-light" (mapcar 'symbol-name (custom-available-themes))))
+
 (defvar maple-theme/alist
   '(monokai
     spacemacs-dark
@@ -67,5 +70,4 @@
   (interactive)
   (maple-theme/cycle t))
 
-(provide 'maple-theme)
-;;; maple-theme.el ends here
+;;; theme.el ends here

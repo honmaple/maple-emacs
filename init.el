@@ -1,6 +1,6 @@
 ;;; init.el --- Initialize configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -27,25 +27,12 @@
 
 ;;; Code:
 (eval-and-compile
-  (defvar user-handler-alist file-name-handler-alist)
-  (defvar user-default-theme nil)
-  (defvar *icon* (display-graphic-p))
-  (defvar *python3* t)
+  (setq maple-user "lin.jiang"
+        maple-mail "mail@honmaple.com"
+        maple-theme 'monokai))
 
-  (setq user-full-name "lin.jiang"
-        user-mail-address "mail@honmaple.com"
-        user-default-theme 'monokai
-        gc-cons-threshold (* 256 1024 1024)
-        gc-cons-percentage 0.6
-        file-name-handler-alist nil)
-
-  (defun maple/finish()
-    "Restore defalut values after init"
-    (setq file-name-handler-alist user-handler-alist
-          gc-cons-threshold 800000
-          gc-cons-percentage 0.1))
-
-  (add-hook 'emacs-startup-hook 'maple/finish))
+(autoload 'maple-initialize (expand-file-name "core/core" user-emacs-directory))
+(maple-initialize)
 
 (defun maple/require (&rest pkgs)
   "Load PKGS."
@@ -55,10 +42,7 @@
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
 (defvar maple-packages
-  '(init-basic
-    init-core        ;; Machinery for installing required packages
-    init-maple
-    init-ui          ;; modeline,which-key
+  '(init-maple
     init-editor      ;; 自动补全括号等
     init-evil
     init-ivy

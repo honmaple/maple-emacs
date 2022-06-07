@@ -1,6 +1,6 @@
 ;;; init-web.el --- Initialize web configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -35,7 +35,7 @@
     (interactive)
     (cl-letf (((symbol-function 'put-text-property) 'maple/web-mode-put-text))
       (web-mode-fold-or-unfold)))
-  (maple/add-hook 'web-mode-hook
+  (maple-add-hook 'web-mode-hook
     (setq electric-pair-pairs '((?\' . ?\'))))
   :custom
   (web-mode-markup-indent-offset 2)
@@ -74,7 +74,7 @@
   :mode ("\\.js\\'" . js2-mode)
   :hook (js2-mode . js2-imenu-extras-mode)
   :custom
-  (js-indent-level 2)
+  (js-indent-level 4)
   (js2-bounce-indent-p nil)
   (js2-mode-show-parse-errors nil)
   (js2-mode-show-strict-warnings nil)
@@ -97,8 +97,8 @@
     (if (bound-and-true-p yas-minor-mode)
         (call-interactively 'emmet-expand-yas)
       (call-interactively 'emmet-expand-line)))
-  :evil
-  (insert :map emmet-mode-keymap
+  :keybind
+  (:states insert :map emmet-mode-keymap
           ([tab] . maple/emmet-expand)))
 
 (use-package tern

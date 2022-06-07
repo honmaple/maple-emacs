@@ -1,6 +1,6 @@
-;;; maple-buffer.el --- Initialize buffer configurations.	-*- lexical-binding: t -*-
+;;; core/autoload/buffer.el ---  function about buffer.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -20,27 +20,30 @@
 
 ;;; Commentary:
 ;;
-;; Buffer configurations.
+;; buffer functions.
 ;;
 
 ;;; Code:
-
+;;;###autoload
 (defun maple-buffer/switch-to-previous ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
+;;;###autoload
 (defun maple-buffer/switch-to-scratch ()
   "Switch to the `*scratch*' buffer.  Create it first if needed."
   (interactive)
   (switch-to-buffer (get-buffer-create "*scratch*")))
 
+;;;###autoload
 (defun maple-buffer/copy-to-clipboard ()
   "Copy entire buffer to clipboard."
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
 
+;;;###autoload
 (defun maple-buffer/copy-clipboard ()
   "Copy clipboard and replace buffer."
   (interactive)
@@ -48,11 +51,13 @@ Repeated invocations toggle between the two most recently open buffers."
   (clipboard-yank)
   (deactivate-mark))
 
+;;;###autoload
 (defun maple-buffer/safe-revert ()
   "Prompt before reverting the file."
   (interactive)
   (revert-buffer nil nil))
 
+;;;###autoload
 (defun maple-buffer/safe-erase ()
   "Prompt before erasing the content of the file."
   (interactive)
@@ -60,6 +65,7 @@ Repeated invocations toggle between the two most recently open buffers."
       (erase-buffer)))
 
 ;; found at http://emacswiki.org/emacs/KillingBuffers
+;;;###autoload
 (defun maple-buffer/kill-others ()
   "Kill all other buffers."
   (interactive)
@@ -67,15 +73,4 @@ Repeated invocations toggle between the two most recently open buffers."
     (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
     (message "Buffers deleted!")))
 
-(defun maple-buffer/reopen(buffer-name &optional restore)
-  "Reopen BUFFER-NAME RESTORE."
-  (if (get-buffer buffer-name)
-      (let ((buffer-text (with-current-buffer buffer-name
-                           (buffer-substring (point-min) (point-max)))))
-        (kill-buffer buffer-name)
-        (with-current-buffer (get-buffer-create buffer-name)
-          (when restore (insert buffer-text))))
-    (message (format "%s buffer is not exists" buffer-name))))
-
-(provide 'maple-buffer)
-;;; maple-buffer.el ends here
+;;; buffer.el ends here

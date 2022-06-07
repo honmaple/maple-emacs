@@ -1,6 +1,6 @@
 ;;; init-text.el --- Initialize text configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -35,7 +35,7 @@
       (goto-char (point-min))
       (while (search-forward "-+-" nil t) (replace-match "-|-"))))
 
-  (maple/add-hook 'markdown-mode-hook
+  (maple-add-hook 'markdown-mode-hook
     (add-hook 'after-save-hook 'cleanup-org-tables  nil 'make-it-local))
 
   (use-package markdown-toc)
@@ -44,6 +44,7 @@
    "markdown-mode"
    :run 'markdown-toggle-markup-hiding))
 
+(use-package protobuf-mode)
 (use-package dockerfile-mode)
 (use-package vimrc-mode)
 (use-package json-mode)

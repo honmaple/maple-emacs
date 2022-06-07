@@ -1,6 +1,6 @@
 ;;; maple-language.el --- Initialize language configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,6 +24,10 @@
 ;;
 
 ;;; Code:
+(defvar xref-prompt-for-identifier)
+
+(declare-function imenu--make-index-alist 'imenu)
+(declare-function hs-already-hidden-p 'hideshow)
 
 (defgroup maple-language nil
   "Display minibuffer with another frame."
@@ -131,6 +135,7 @@
     (ignore imenu-auto-rescan-maxout)
     items))
 
+;;;###autoload
 (defun maple-language/comment(&optional paste)
   "Call comment.Yank selected region if PASTE."
   (interactive)
@@ -146,11 +151,13 @@
       (when paste (copy-region-as-kill beg end) (goto-char end) (yank))
       (comment-or-uncomment-region beg end))))
 
+;;;###autoload
 (defun maple-language/copy-and-comment()
   "Copy and comment."
   (interactive)
   (maple-language/comment t))
 
+;;;###autoload
 (defun maple-language/default-format()
   "Call default indent format."
   (interactive)
@@ -159,6 +166,7 @@
         (indent-region (region-beginning) (region-end) nil)
       (indent-region (point-min) (point-max) nil))))
 
+;;;###autoload
 (defun maple-language/default-fold()
   "Call default fold."
   (interactive)
@@ -166,6 +174,7 @@
                              'evil-toggle-fold)
                             (t 'hs-toggle-hiding))))
 
+;;;###autoload
 (defun maple-language/default-definition()
   "Call default definition."
   (interactive)
@@ -174,31 +183,37 @@
     (call-interactively
      (if (bound-and-true-p lsp-mode) 'lsp-find-definition #'xref-find-definitions))))
 
+;;;###autoload
 (defun maple-language/call-run()
   "Call run."
   (interactive)
   (call-interactively maple-language/run))
 
+;;;###autoload
 (defun maple-language/call-fold()
   "Call fold."
   (interactive)
   (call-interactively maple-language/fold))
 
+;;;###autoload
 (defun maple-language/call-format()
   "Call indent format."
   (interactive)
   (call-interactively maple-language/format))
 
+;;;###autoload
 (defun maple-language/call-definition()
   "Call definition."
   (interactive)
   (call-interactively maple-language/definition))
 
+;;;###autoload
 (defun maple-language/call-references()
   "Call references."
   (interactive)
   (call-interactively maple-language/references))
 
+;;;###autoload
 (defun maple-language/call-documentation()
   "Call documentation."
   (interactive)
@@ -231,20 +246,4 @@
                         (list (intern (format "%s-hook" mode))))))
           `(progn ,@(cl-loop for hook in hooks collect `(add-hook ',hook ,fn))))))))
 
-
-;;;###autoload
-(define-minor-mode maple-language-mode
-  "maple header mode"
-  :group      'maple-language
-  :global     t
-  (with-eval-after-load 'evil
-    (evil-define-key 'normal 'global
-      "gd" 'maple-language/call-definition))
-  (with-eval-after-load 'evil-leader
-    (evil-leader/set-key
-      "=" 'maple-language/call-format))
-  (global-set-key [f5] 'maple-language/call-run)
-  (global-set-key [f6] 'maple-language/call-format))
-
-(provide 'maple-language)
-;;; maple-language.el ends here
+;;; language.el ends here

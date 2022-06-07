@@ -1,6 +1,6 @@
 ;;; init-maple.el --- Initialize maple configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,15 +24,12 @@
 ;;
 
 ;;; Code:
-(use-package maple-use-package
-  :ensure nil :demand)
-
 (use-package maple-package
-  :ensure nil
+  :quelpa (:fetcher github :repo "honmaple/emacs-maple-package")
   :commands (maple-package-upgrade))
 
 (use-package maple-header
-  :ensure nil
+  :quelpa (:fetcher github :repo "honmaple/emacs-maple-header")
   :hook (maple-init . maple-header-mode))
 
 (use-package maple-run
@@ -54,7 +51,7 @@
   :config
   (setq maple-note-base-directory "~/Git/pelican/content/posts/"
         maple-note-draft-directory "~/Git/pelican/content/drafts/")
-  (maple/evil-map maple-note-mode-map))
+  (maple-evil-map maple-note-mode-map))
 
 (use-package maple-line
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-line")
@@ -69,7 +66,7 @@
   :hook (maple-theme . maple-modeline-mode)
   :config
   (setq maple-modeline-message-p nil)
-  (setq maple-modeline-icon (and (display-graphic-p) *icon*))
+  (setq maple-modeline-icon (and (display-graphic-p) maple-icon))
 
   (defun maple-modeline-reset-face(color &optional frame)
     "Reset face when theme change with FRAME."
@@ -100,7 +97,9 @@
 
 (use-package maple-minibuffer
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-minibuffer")
-  :commands (maple-minibuffer-mode))
+  :commands (maple-minibuffer-mode)
+  :config
+  (setq maple-minibuffer:position-type 'window-center))
 
 (use-package maple-iedit
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-iedit" :files ("*.el"))
@@ -114,19 +113,19 @@
    ("t" maple-iedit-skip-and-match-next "skip and next")
    ("T" maple-iedit-skip-and-match-previous "skip and previous")
    ("p" maple-iedit-match-previous "prev"))
-  :evil
-  (visual
-   ("n" . maple/iedit/body)
-   ("C-n" . maple-iedit-match-next)
-   ("C-p" . maple-iedit-match-previous)
-   ("C-t" . maple-iedit-skip-and-match-next))
+  :keybind
+  (:states visual
+           ("n" . maple/iedit/body)
+           ("C-n" . maple-iedit-match-next)
+           ("C-p" . maple-iedit-match-previous)
+           ("C-t" . maple-iedit-skip-and-match-next))
   :dependencies (iedit))
 
 (use-package maple-scratch
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-scratch")
   :hook (window-setup . maple-scratch-init)
   :config
-  (maple/evil-map maple-scratch-mode-map)
+  (maple-evil-map maple-scratch-mode-map)
   (setq maple-scratch-source nil
         maple-scratch-items '(maple-scratch-banner
                               maple-scratch-navbar
@@ -145,7 +144,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-explorer")
   :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf maple-explorer-search)
   :config
-  (when (and (display-graphic-p) *icon*) (maple-explorer-icon-mode))
+  (when (and (display-graphic-p) maple-icon) (maple-explorer-icon-mode))
   (setq maple-explorer-file-display-alist '((side . left) (slot . -1))))
 
 (use-package maple-env
@@ -153,7 +152,7 @@
   :hook (maple-init . maple-env-mode)
   :config
   (setq maple-env:path (substitute-in-file-name "$HOME/repo")
-        maple-env:python-command (if *python3* "pip3" "pip")
+        maple-env:python-command (if (eq maple-python 'python3) "pip3" "pip")
         ;; https://github.com/davidhalter/jedi/issues/1423
         maple-env:python-packages
         '("flake8" "isort" "yapf" "python-language-server[all]" "jedi==0.15.2")

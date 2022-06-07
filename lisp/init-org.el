@@ -1,6 +1,6 @@
 ;;; init-org.el --- Org Mode configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,18 +24,18 @@
 ;;
 
 ;;; Code:
+(use-package ox-confluence
+  :ensure org-contrib
+  :commands (org-confluence-export-as-confluence))
+
 (use-package org-faces
-  :ensure org-plus-contrib
+  :ensure nil
   :config
   (when (display-graphic-p)
     ;; (set-face-attribute 'org-table nil :font "-Misc-Fixed-normal-normal-normal-*-18-*-*-*-c-90-iso10646-1")
     ;; (set-face-attribute 'org-table nil :font "-jis-fixed-medium-r-normal--16-*-75-75-c-160-jisx0208.1983-0")
     ;; (set-face-attribute 'org-table nil :font "-Sony-Sony Fixed-normal-normal-normal-*-16-*-*-*-c-80-iso10646-1")
     (set-face-attribute 'org-table nil :font "Inconsolata 12")))
-
-(use-package ox-confluence
-  :ensure nil
-  :commands (org-confluence-export-as-confluence))
 
 (use-package org
   :ensure nil
@@ -52,6 +52,7 @@
         org-export-with-broken-links t
         org-descriptive-links nil ;; 不要锁定连接，保持原样
         org-src-window-setup 'split-window-right
+        org-adapt-indentation t
         org-log-done t
         org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
@@ -67,19 +68,19 @@
           (org-html-head-include-default-style nil))
       (org-html-export-as-html nil nil nil t)))
 
-  (when (string< (org-version) "9.5")
+  (when (string> (org-version) "9.5")
     (add-to-list 'org-modules 'org-tempo t)
     ;; disable auto add comma prepended
     (fset 'org-escape-code-in-region 'ignore)
-    (maple/add-hook 'org-mode-hook
+    (maple-add-hook 'org-mode-hook
       (setq electric-pair-inhibit-predicate
             (lambda (c) (if (char-equal c ?<) t (electric-pair-default-inhibit c))))))
-  :evil
-  (normal :map org-mode-map
-          ("RET" . org-open-at-point)
-          ("t" . org-todo))
-  ((normal insert) :map org-mode-map
-   ([tab] . org-cycle)))
+  :keybind
+  (:states normal :map org-mode-map
+           ("RET" . org-open-at-point)
+           ("t" . org-todo))
+  (:states (normal insert) :map org-mode-map
+           ([tab] . org-cycle)))
 
 (use-package org-crypt
   :ensure nil
@@ -107,11 +108,20 @@
     (add-to-list 'org-babel-default-header-args:python
                  '(:results . "output"))))
 
-(use-package maple-org
-  :ensure nil :demand)
+(use-package ox-md
+  :ensure nil
+  :config
+  (defun maple/org-md-example-block (example-block _contents info)
+    (format "```%s\n%s\n```"
+            (org-element-property :language example-block)
+            (org-remove-indentation
+             (org-export-format-code-default example-block info))))
+  (advice-add 'org-md-example-block :override 'maple/org-md-example-block))
 
 (use-package org-capture
-  :ensure nil)
+  :ensure nil
+  :config
+  (maple-org/capture-init))
 
 (use-package org-agenda
   :ensure nil
@@ -121,13 +131,16 @@
         org-agenda-inhibit-startup t   ;; ~50x speedup
         org-agenda-use-tag-inheritance nil)
   (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers)
-  :bind (:map org-agenda-mode-map
-              ("j" . org-agenda-next-line)
-              ("k" . org-agenda-previous-line)
-              ("M-j" . org-agenda-next-item)
-              ("M-k" . org-agenda-previous-item)
-              ("M-h" . org-agenda-earlier)
-              ("M-l" . org-agenda-later)))
+
+  (maple-org/agenda-init)
+
+  :keybind (:map org-agenda-mode-map
+                 ("j" . org-agenda-next-line)
+                 ("k" . org-agenda-previous-line)
+                 ("M-j" . org-agenda-next-item)
+                 ("M-k" . org-agenda-previous-item)
+                 ("M-h" . org-agenda-earlier)
+                 ("M-l" . org-agenda-later)))
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)

@@ -1,6 +1,6 @@
 ;;; init-editor.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,9 +24,6 @@
 ;;
 
 ;;; Code:
-
-(eval-when-compile (require 'init-basic))
-
 (use-package so-long
   :ensure nil
   :hook (maple-init . global-so-long-mode))
@@ -59,7 +56,8 @@
 (use-package xref
   :ensure nil
   :config
-  (maple/evil-map xref--xref-buffer-mode-map))
+  (setq xref-show-xrefs-function #'xref-show-definitions-completing-read
+        xref-show-definitions-function #'xref-show-definitions-completing-read))
 
 (use-package tramp
   :ensure nil
@@ -79,8 +77,8 @@
       (deactivate-mark)))
 
   :hook (isearch-mode . maple/evil-search-paste)
-  :bind (:map isearch-mode-map
-              ([remap isearch-delete-char] . isearch-del-char)))
+  :keybind (:map isearch-mode-map
+                 ([remap isearch-delete-char] . isearch-del-char)))
 
 (use-package eldoc
   :ensure nil
@@ -114,29 +112,37 @@
    (anzu-replace-to-string-separator " → "))
   (:face
    '(anzu-replace-to ((t (:inherit query-replace)))))
-  :bind (:map query-replace-map
-              ([return] . 'automatic)))
+  :keybind (:map query-replace-map
+                 ([return] . automatic)))
 
 (use-package wgrep
   :custom
   (:variable
    (wgrep-auto-save-buffer t))
-  :bind (:map wgrep-mode-map
-              ("C-c C-c" . wgrep-finish-edit)))
+  :keybind (:map wgrep-mode-map
+                 ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package avy
   :custom
   (:variable
    (avy-all-windows t)
    (avy-background t))
-  :evil
-  (:bind
-   (:state normal ("F" . avy-goto-char))
-   (:state visual ("F" . avy-goto-char))))
+  :keybind
+  (:states normal ("F" . avy-goto-char))
+  (:states visual ("F" . avy-goto-char)))
 
 (use-package ace-pinyin
   :diminish ace-pinyin-mode
   :hook (maple-init . ace-pinyin-global-mode))
+
+(use-package pangu-spacing
+  :commands (pangu-spacing-space-current-buffer)
+  :config
+  (defun pangu-spacing-search-and-replace (match regexp)
+    (let* ((p (use-region-p))
+           (start (if p (region-beginning) (point-min)))
+           (end (if p (region-end) (point-max))))
+      (pangu-spacing-search-buffer regexp start end (replace-match match nil nil)))))
 
 (use-package edit-indirect
   :commands (edit-indirect-region))
@@ -147,10 +153,9 @@
   (defun maple/string-inflection-toggle()
     (interactive)
     (save-excursion (call-interactively 'string-inflection-toggle)))
-  :evil
-  (:bind
-   (:state normal ("gr" . maple/string-inflection-toggle))
-   (:state visual ("gr" . maple/string-inflection-toggle))))
+  :keybind
+  (:states normal ("gr" . maple/string-inflection-toggle))
+  (:states visual ("gr" . maple/string-inflection-toggle)))
 
 (use-package whitespace
   :ensure nil

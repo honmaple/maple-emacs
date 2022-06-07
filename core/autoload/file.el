@@ -1,6 +1,6 @@
-;;; maple-file.el --- Initialize file configurations.	-*- lexical-binding: t -*-
+;;; core/autoload/file.el ---  function about file.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -20,40 +20,57 @@
 
 ;;; Commentary:
 ;;
-;; file configurations.
+;; file functions.
 ;;
 
 ;;; Code:
+(declare-function dired-get-file-for-visit 'dired)
+(declare-function recentf-remove-if-non-kept 'recentf)
+(declare-function w32-shell-execute 'w32-shell-execute)
+
+;;;###autoload
+(defun maple-file/reload-init()
+  "Reload init file."
+  (interactive)
+  (load-file user-init-file))
+
+;;;###autoload
 (defun maple-file/open-init()
   "Open init file."
   (interactive)
-  (find-file "~/.emacs.d/init.el"))
+  (find-file user-init-file))
 
+;;;###autoload
 (defun maple-file/open-keybind()
   "Open keybind file."
   (interactive)
-  (find-file "~/.emacs.d/lisp/init-keybind.el"))
+  (find-file (expand-file-name "lisp/init-keybind.el" user-emacs-directory)))
 
+;;;###autoload
 (defun maple-file/open-gtd()
   "Open gtd file."
   (interactive)
-  (find-file "~/org-mode/gtd.org"))
+  (find-file (expand-file-name "org/gtd.org" user-emacs-directory)))
 
+;;;###autoload
 (defun maple-file/open-test()
   "Open test file."
   (interactive)
   (find-file (read-file-name "select test file: " "~/test/")))
 
+;;;###autoload
 (defun maple-file/dos2unix ()
   "Convert the current buffer to UNIX file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-unix nil))
 
+;;;###autoload
 (defun maple-file/unix2dos ()
   "Convert the current buffer to DOS file format."
   (interactive)
   (set-buffer-file-coding-system 'undecided-dos nil))
 
+;;;###autoload
 (defun maple-file/open-in-external-app ()
   "Open current file in external application."
   (interactive)
@@ -68,6 +85,7 @@
                                         (start-process "" nil "xdg-open" file-path))))
       (message "No file associated to this buffer."))))
 
+;;;###autoload
 (defun maple-file/sudo-edit (&optional file)
   "Edit FILE with sudo user."
   (interactive "P")
@@ -80,6 +98,7 @@
                              (if user (concat user "@" host) host)) "|"))
              "sudo:root@" host ":" (or (file-remote-p file 'localname) file)))))
 
+;;;###autoload
 (defun maple-file/delete ()
   "Remove file connected to current buffer and kill buffer."
   (interactive)
@@ -92,6 +111,7 @@
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+;;;###autoload
 (defun maple-file/rename ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -115,6 +135,7 @@
                  (recentf-remove-if-non-kept filename))
                (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
+;;;###autoload
 (defun maple-file/show-and-copy-buffer-filename ()
   "Show the full path to the current file in the minibuffer."
   (interactive)
@@ -124,6 +145,7 @@
         (message (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
+;;;###autoload
 (defun maple-file/copy-buffer-filename ()
   "Show the full path to the current file in the minibuffer."
   (interactive)
@@ -133,6 +155,7 @@
         (message (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
+;;;###autoload
 (defun maple-file/line-number (&optional pos absolute)
   "Return buffer line number at position POS ABSOLUTE."
   (save-restriction
@@ -142,6 +165,7 @@
         (goto-char opoint)
         (string-to-number (format-mode-line "%l"))))))
 
+;;;###autoload
 (defun maple-file/check-large ()
   "Check large file."
   (when (and (or (> (buffer-size) (* 1024 1024 3))
@@ -153,5 +177,4 @@
     (buffer-disable-undo)
     (fundamental-mode)))
 
-(provide 'maple-file)
-;;; maple-file.el ends here
+;;; file.el ends here

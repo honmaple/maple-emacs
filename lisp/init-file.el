@@ -1,6 +1,6 @@
 ;;; init-file.el --- Initialize file configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -47,9 +47,9 @@
         dired-recursive-deletes 'always
         dired-dwim-target t)
   (put 'dired-find-alternate-file 'disabled nil)  ;; 只有一个buffer
-  :bind (:map dired-mode-map
-              ("RET" . dired-find-alternate-file)
-              ("C-c C-e" . wdired-change-to-wdired-mode)))
+  :keybind (:map dired-mode-map
+                 ("RET" . dired-find-alternate-file)
+                 ("C-c C-e" . wdired-change-to-wdired-mode)))
 
 (use-package dired-async
   :ensure async
@@ -63,11 +63,11 @@
   (setq dired-omit-verbose nil
         dired-omit-files
         (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$"))
-  :bind (:map dired-mode-map ("H" . dired-omit-mode)))
+  :keybind (:map dired-mode-map ("H" . dired-omit-mode)))
 
 (use-package all-the-icons-dired
-  :defines *icon*
-  :if (and (display-graphic-p) *icon*)
+  :defines maple-icon
+  :if (and (display-graphic-p) maple-icon)
   :hook (dired-mode . all-the-icons-dired-mode)
   :custom
   (all-the-icons-dired-monochrome nil))
@@ -78,24 +78,24 @@
   :config
   (setq image-dired-dir (expand-file-name "image-dired" maple-cache-directory)
         image-dired-thumbnail-storage 'standard)
-  :evil
-  (normal :map image-dired-thumbnail-mode-map
-          ("j" . image-dired-next-line)
-          ("k" . image-dired-previous-line)
-          ("l" . image-dired-forward-image)
-          ("h" . image-dired-backward-image)
-          ("q" . image-dired-kill-buffer-and-window)
-          ("RET" . image-dired-display-thumbnail-original-image)))
+  :keybind
+  (:states normal :map image-dired-thumbnail-mode-map
+           ("j" . image-dired-next-line)
+           ("k" . image-dired-previous-line)
+           ("l" . image-dired-forward-image)
+           ("h" . image-dired-backward-image)
+           ("q" . image-dired-kill-buffer-and-window)
+           ("RET" . image-dired-display-thumbnail-original-image)))
 
 (use-package image-mode
   :ensure nil
-  :evil
-  (normal :map image-mode-map
-          ("j" . image-next-file)
-          ("k" . image-previous-file)
-          ("n" . image-next-file)
-          ("p" . image-previous-file)
-          ("q" . quit-window)))
+  :keybind
+  (:states normal :map image-mode-map
+           ("j" . image-next-file)
+           ("k" . image-previous-file)
+           ("n" . image-next-file)
+           ("p" . image-previous-file)
+           ("q" . quit-window)))
 
 (use-package recentf
   :ensure nil
@@ -105,7 +105,7 @@
         recentf-max-saved-items 100
         recentf-auto-cleanup 'never
         recentf-filename-handlers '(abbreviate-file-name)
-        recentf-exclude (list "\\.\\(png\\|jpg\\)\\'"
+        recentf-exclude (list "\\.\\(png$\\|jpg$\\|pdf$\\)\\'"
                               "COMMIT_EDITMSG\\'"
                               (expand-file-name maple-cache-directory)
                               ;; (expand-file-name package-user-dir)
@@ -139,34 +139,29 @@
         neo-show-hidden-files nil
         neo-auto-indent-point t
         neo-vc-integration '(face))
-  (maple/evil-map neotree-mode-map)
+  (maple-evil-map neotree-mode-map)
 
-  :bind (([f2] . neotree-toggle)
-         :map neotree-mode-map
-         ("C" . neotree-copy-node)
-         ("D" . neotree-delete-node)
-         ("R" . neotree-rename-node)
-         ("+" . neotree-create-node)
-         ("^" . neotree-select-up-node)))
+  :keybind (([f2] . neotree-toggle)
+            :map neotree-mode-map
+            ("C" . neotree-copy-node)
+            ("D" . neotree-delete-node)
+            ("R" . neotree-rename-node)
+            ("+" . neotree-create-node)
+            ("^" . neotree-select-up-node)))
 
 (use-package undo-tree
   :ensure nil
   :hook (maple-init . global-undo-tree-mode)
   :config
   (setq undo-tree-visualizer-timestamps t
-        undo-tree-visualizer-diff t)
+        undo-tree-visualizer-diff t
+        undo-tree-enable-undo-in-region nil
+        undo-tree-auto-save-history nil)
   (let ((dir (expand-file-name "undo-tree" maple-cache-directory)))
     (unless (file-exists-p dir) (make-directory dir t))
     (setq undo-tree-history-directory-alist (list (cons "." dir))))
+
   :diminish undo-tree-mode)
-
-(use-package maple-file
-  :ensure nil
-  :demand
-  :hook (find-file . maple-file/check-large))
-
-(use-package maple-buffer
-  :ensure nil :demand)
 
 (provide 'init-file)
 ;;; init-file.el ends here

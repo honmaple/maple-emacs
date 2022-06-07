@@ -1,6 +1,6 @@
 ;;; init-lsp.el --- Initialize lsp configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -38,8 +38,8 @@
         lsp-enable-snippet nil
         lsp-enable-file-watchers nil
         lsp-enable-symbol-highlighting nil
-        lsp-completion-enable t
         lsp-completion-provider :none
+        lsp-headerline-breadcrumb-enable nil
         lsp-modeline-code-actions-enable nil
         lsp-modeline-diagnostics-enable nil
         lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
@@ -58,6 +58,10 @@
     (unless (bound-and-true-p git-timemachine-mode) (apply func args)))
 
   (advice-add 'lsp--init-if-visible :around 'maple/lsp--init-if-visible)
+
+  (defun maple/lsp-shutdown()
+    (interactive)
+    (lsp--global-teardown))
 
   (use-package lsp-diagnostics
     :ensure nil
@@ -137,7 +141,7 @@
   (advice-add 'lsp-ui-doc--render-buffer :around 'maple/lsp-ui-doc-format)
   :custom-face
   (lsp-ui-doc-background ((t (:background nil))))
-  :bind
+  :keybind
   (:map lsp-ui-mode-map
         ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
         ([remap xref-find-references] . lsp-ui-peek-find-references)))

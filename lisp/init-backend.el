@@ -1,6 +1,6 @@
 ;;; init-backend.el --- Initialize backend language configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -118,9 +118,9 @@
       (server :default "localhost")
       (port :default 5432)))
    :function
-   (maple/add-hook 'sql-interactive-mode-hook
-     '(maple/truncate-lines maple/process-exit)))
-  :evil (:state (sql-interactive-mode . insert))
+   (maple-add-hook 'sql-interactive-mode-hook
+     '(maple-truncate-lines maple-process-exit)))
+  ;; :evil-state (sql-interactive-mode . insert)
   :dependencies
   (sql-indent
    :hook (sql-mode-hook . sqlind-minor-mode)))

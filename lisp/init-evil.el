@@ -1,6 +1,6 @@
 ;;; init-evil.el --- Initialize evil configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -54,19 +54,19 @@
 
   :custom-face
   (region ((t (:background "gray" :foreground "#272822"))))
-  :bind (:map evil-normal-state-map
-              ("C-k" . evil-scroll-up)
-              ("C-j" . evil-scroll-down)))
+  :keybind (:map evil-normal-state-map
+                 ("C-k" . evil-scroll-up)
+                 ("C-j" . evil-scroll-down)))
 
 (use-package evil-numbers
   :after evil
-  :bind (:map evil-normal-state-map
-              ("+" . evil-numbers/inc-at-pt)
-              ("-" . evil-numbers/dec-at-pt)))
+  :keybind (:map evil-normal-state-map
+                 ("+" . evil-numbers/inc-at-pt)
+                 ("-" . evil-numbers/dec-at-pt)))
 
 (use-package expand-region
   :after evil
-  :bind (:map evil-visual-state-map
+  :keybind (:map evil-visual-state-map
               ("v" . er/expand-region)
               ("V" . er/contract-region)))
 
@@ -77,10 +77,10 @@
 
 (use-package evil-surround
   :hook (maple-init . global-evil-surround-mode)
-  :evil
-  (visual :map evil-surround-mode-map
-          ("s" . evil-surround-region)
-          ("S" . evil-substitute)))
+  :keybind
+  (:states visual :map evil-surround-mode-map
+           ("s" . evil-surround-region)
+           ("S" . evil-substitute)))
 
 (use-package evil-matchit
   :hook (maple-init . global-evil-matchit-mode))
@@ -106,7 +106,7 @@
   :init
   (setq evil-want-keybinding nil
         evil-collection-want-unimpaired-p nil
-        evil-collection--supported-modes '(dired magit ediff image 2048-game))
+        evil-collection-mode-list '(dired magit ediff image 2048-game neotree xref))
   :hook (evil-mode . evil-collection-init)
   :config
   (defun maple/evil-collection-keybind(mode _keymaps)

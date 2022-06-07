@@ -1,6 +1,6 @@
 ;;; init-ivy.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,8 +24,6 @@
 ;;
 
 ;;; Code:
-
-(eval-when-compile (require 'init-basic))
 
 ;; 必须的,使用频率排序
 (use-package smex
@@ -143,7 +141,8 @@
   :dependencies
   (ivy-xref
    :init
-   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)))
+   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs
+         xref-show-definitions-function #'ivy-xref-show-defs)))
 
 (use-package counsel
   :diminish (counsel-mode)
@@ -154,9 +153,10 @@
         counsel-find-file-ignore-regexp "\\.\\(pyc\\|pyo\\)\\'")
 
   (setq ivy-initial-inputs-alist
-        (mapcar (lambda(x) (cons x 'maple/region-string))
+        (mapcar (lambda(x) (cons x 'maple-region-string))
                 '(swiper
                   counsel-ag
+                  counsel-grep
                   counsel-find-file)))
 
   (defun maple/ivy-dired-occur()
@@ -182,14 +182,14 @@
 
   ;; custom counsel-ag
   (defun maple/counsel-ag(-counsel-ag &optional initial-input initial-directory extra-ag-args ag-prompt)
-    (let ((int (or initial-input (maple/region-string)))
+    (let ((int (or initial-input (maple-region-string)))
           (dir (or initial-directory default-directory)))
       (funcall -counsel-ag int dir extra-ag-args
                (concat ag-prompt (abbreviate-file-name (directory-file-name dir)) ": "))))
 
   (advice-add 'counsel-ag :around #'maple/counsel-ag)
 
-  :bind (("M-x" . counsel-M-x)
+  :keybind (("M-x" . counsel-M-x)
          ("C-x C-m" . counsel-M-x)
          ("M-y" . counsel-yank-pop)
          :map ivy-minibuffer-map
@@ -225,7 +225,7 @@
      columns " "))
 
   (use-package all-the-icons-ivy-rich
-    :if (and (display-graphic-p) *icon*)
+    :if (and (display-graphic-p) maple-icon)
     :demand
     :config
     (defun maple/ivy-file-transformer(candidate)
@@ -236,8 +236,8 @@
       (ivy-set-display-transformer
        'projectile-completing-read 'maple/ivy-file-transformer))
 
-    (fset 'all-the-icons-ivy-rich--project-root 'ignore)
-    (fset 'all-the-icons-ivy-rich-file-id (lambda(x) ""))
+    (advice-add 'all-the-icons-ivy-rich--project-root :override 'ignore)
+    (advice-add 'all-the-icons-ivy-rich-file-id :override #'(lambda(x) ""))
 
     (advice-add 'all-the-icons-ivy-rich--format-icon :filter-return 'string-trim-left)
     (advice-add 'ivy-rich-bookmark-type :override 'all-the-icons-ivy-rich-bookmark-type)

@@ -1,6 +1,6 @@
 ;;; init-company.el --- Initialize company configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,8 +24,6 @@
 ;;
 
 ;;; Code:
-(eval-when-compile (require 'init-basic))
-
 (use-package yasnippet
   :diminish yas-minor-mode
   :hook (maple-init . yas-global-mode)
@@ -63,7 +61,8 @@
         (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
         company-backends (maple-language/complete-backend))
 
-  (unless *icon*
+  (unless nil
+    (setq company-format-margin-function 'company-text-icons-margin)
     (setq company-format-margin-function nil))
 
   (defun maple/company-yasnippet ()
@@ -88,7 +87,7 @@
    ((t (:inherit company-tooltip :weight bold :underline nil))))
   (company-tooltip-common-selection
    ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
-  :bind (:map company-active-map
+  :keybind (:map company-active-map
               ("C-d" . company-show-doc-buffer)
               ("C-j" . company-select-next)
               ("C-k" . company-select-previous)

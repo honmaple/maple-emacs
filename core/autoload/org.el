@@ -1,6 +1,6 @@
 ;;; maple-org.el ---  custom org configuration.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,26 +24,28 @@
 ;;
 
 ;;; Code:
-(defgroup maple-org nil
-  "Org configuration."
-  :group 'maple)
+(defvar org-capture-plist)
+(defvar org-capture-templates)
+(defvar org-refile-targets)
+(defvar org-complex-heading-regexp-format)
+(defvar org-agenda-files)
+(defvar org-default-notes-file)
+(defvar org-agenda-custom-commands)
 
-(defcustom maple-org/root-path (expand-file-name "org/" user-emacs-directory)
-  "Org src path."
-  :type 'string
-  :group 'maple-org)
+(declare-function org-capture-get 'org-capture)
+(declare-function org-capture-put 'org-capture)
+(declare-function org-capture-put-target-region-and-position 'org-capture)
 
-(defcustom maple-org/src-path (expand-file-name "org/src/" user-emacs-directory)
-  "Org src path."
-  :type 'string
-  :group 'maple-org)
+(defvar maple-org/root-path (expand-file-name "org/" user-emacs-directory)
+  "Org src path.")
 
-(defcustom maple-org/img-path (expand-file-name "org/images/" user-emacs-directory)
-  "Org img path."
-  :type 'string
-  :group 'maple-org)
+(defvar maple-org/src-path (expand-file-name "org/src/" user-emacs-directory)
+  "Org src path.")
 
-(defcustom maple-org/capture-templates
+(defvar maple-org/img-path (expand-file-name "org/images/" user-emacs-directory)
+  "Org img path.")
+
+(defvar maple-org/capture-templates
   `(("t" "待办"
      entry (file+headline ,(expand-file-name "gtd.org" maple-org/root-path) "待办事项")
      "* TODO [#B] %?      :%^{Where|@Office|@Home|@Lunchtime|@School}:\n  %^T\n%i"
@@ -81,12 +83,12 @@
      entry (file+datetree ,(expand-file-name "summary.org" maple-org/root-path) "总结")
      "* %?                :%^{周期|Yearly|Monthly|Weekly|Daily}:Summary:"
      :empty-lines 1))
-  "Org capture templates."
-  :type '(list)
-  :group 'maple-org)
+  "Org capture templates.")
 
+;;;###autoload
 (defun maple-org/capture-target ()
-  "Set point for capturing at what capture target file+headline with headline set to %l would do."
+  "Set point for capturing at what capture target file+headline.
+with headline set to %l would do."
   (org-capture-put :target (list
                             'file+headline
                             (nth 1 (org-capture-get :target))
@@ -104,6 +106,7 @@
       (insert "* " hd "\n")
       (beginning-of-line 0))))
 
+;;;###autoload
 (defun maple-org/capture-snip (keybind src &optional tags)
   "Dynamic capture with KEYBIND SRC optional TAGS."
   (add-to-list 'org-capture-templates
@@ -112,12 +115,14 @@
                                       maple-org/capture-target)
                           ,(concat "** %?\t\n#+BEGIN_SRC " src "\n\n#+END_SRC") :tags ,tags)))
 
+;;;###autoload
 (defun maple-org/insert-img-link (prefix imagename)
   "Insert link to current buffer with PREFIX and IMAGENAME."
   (if (equal (file-name-extension (buffer-file-name)) "org")
       (insert (format "[[%s]]" prefix))
     (insert (format "![%s](%s)" imagename prefix))))
 
+;;;###autoload
 (defun maple-org/capture-screenshot (basename)
   "Screenshot and insert link to current buffer with BASENAME."
   (interactive "sScreenshot name: ")
@@ -130,7 +135,9 @@
       (maple-org/insert-img-link image-path basename)))
   (insert "\n"))
 
-(with-eval-after-load 'org-capture
+;;;###autoload
+(defun maple-org/capture-init()
+  "Init org capture."
   (setq org-capture-templates maple-org/capture-templates
         org-refile-targets
         `((,(expand-file-name "gtd.org" maple-org/root-path) :level . 1)
@@ -140,7 +147,9 @@
   (maple-org/capture-snip "sl" "lua" '("Tool" "Nginx"))
   (maple-org/capture-snip "sg" "golang" '("Tool")))
 
-(with-eval-after-load 'org-agenda
+;;;###autoload
+(defun maple-org/agenda-init()
+  "Init org agenda."
   (setq org-agenda-files (list maple-org/root-path)
         org-default-notes-file (expand-file-name "gtd.org" maple-org/root-path)
         org-agenda-custom-commands
@@ -149,5 +158,4 @@
           ("p"  "项目" tags-todo "@Office")
           ("w" "Weekly Review" ((stuck "") (tags-todo "Project"))))))
 
-(provide 'maple-org)
-;;; maple-org.el ends here
+;;; org.el ends here

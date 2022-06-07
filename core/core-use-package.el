@@ -63,16 +63,8 @@
 ;;; Code:
 (require 'use-package)
 
-(autoload 'maple-keybind "maple-keybind" "" nil t)
-(autoload 'maple-keybind/bind "maple-keybind" "")
-(autoload 'maple-keybind/evil-bind "maple-keybind" "")
-(autoload 'maple-keybind/evil-leader "maple-keybind" "")
-(autoload 'maple-language "maple-language" "" nil t)
-(autoload 'maple-language/complete-backend "maple-language" "")
-
-(defalias 'use-package-normalize/:evil 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:hydra 'use-package-normalize-forms)
-(defalias 'use-package-normalize/:evil-bind 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:keybind 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-leader 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-state 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:dependencies 'use-package-normalize-forms)
@@ -87,6 +79,14 @@
                  (head (cl-subseq use-package-keywords 0 pos))
                  (tail (nthcdr pos use-package-keywords)))
             (append head (list keyword) tail)))))
+
+(defun maple-use-package/keys(args)
+  "Cons convert to keybinds with ARGS."
+  (mapcan
+   (lambda(arg)
+     (let ((key (car arg)))
+       (list (if (char-or-string-p key) (kbd key) key) `',(cdr arg))))
+   args))
 
 (defun maple-use-package/plist-get (plist prop)
   "Get the values associated PLIST to PROP, a modified plist."
@@ -140,24 +140,21 @@
         (setq comment (format "Customized %s with use-package" variable)))
       `((customize-set-variable (quote ,variable) ,value ,comment)))))
 
-(defun maple-use-package/evil(args)
-  "Set evil bind or state with ARGS."
-  (if (keywordp (car args))
-      (pcase (car args)
-        (:bind (mapcan 'maple-keybind/evil-bind (cdr args)))
-        (:state (maple-use-package/evil-state (cdr args)))
-        (:leader (mapcan 'maple-keybind/evil-leader (cdr args))))
-    (maple-use-package/evil (list :bind `(:state ,@args)))))
-
 (defun maple-use-package/evil-state(args)
   "Evil bind ARGS."
   (cl-loop for i in args collect `(evil-set-initial-state ',(car i) ',(cdr i))))
 
-(defun use-package-handler/:evil (name _keyword args rest state)
+(defun maple-use-package/evil-leader(args)
+  "Evil bind ARGS."
+  (cond ((keywordp (car args))
+         (let ((p (maple-use-package/plist-get args :mode)))
+           `((evil-leader/set-key-for-mode ',(car p) ,@(maple-use-package/keys (cdr p))))))
+        (t `((evil-leader/set-key ,@(maple-use-package/keys (if (consp (car args)) args (list args))))))))
+
+(defun use-package-handler/:keybind (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   `((with-eval-after-load 'evil
-       ,@(mapcan 'maple-use-package/evil args)))
+   `(,@(mapcar (lambda(arglist) `(apply 'maple-define-key ',arglist)) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:evil-state (name _keyword args rest state)
@@ -167,18 +164,11 @@
        ,@(maple-use-package/evil-state args)))
    (use-package-process-keywords name rest state)))
 
-(defun use-package-handler/:evil-bind (name _keyword args rest state)
-  "NAME KEYWORD ARGS REST STATE."
-  (use-package-concat
-   `((with-eval-after-load 'evil
-       ,@(mapcan 'maple-keybind/evil-bind args)))
-   (use-package-process-keywords name rest state)))
-
 (defun use-package-handler/:evil-leader (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
    `((with-eval-after-load 'evil-leader
-       ,@(mapcan 'maple-keybind/evil-leader args)))
+       ,@(mapcan 'maple-use-package/evil-leader args)))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:custom (name _keyword args rest state)
@@ -232,13 +222,11 @@
 
 (advice-add 'use-package-handler/:ensure :around 'use-package-handler/:quelpa-ensure)
 
-(maple-use-package/set-keyword :evil         'after :init)
-(maple-use-package/set-keyword :evil-bind    'after :init)
-(maple-use-package/set-keyword :evil-leader  'after :init)
 (maple-use-package/set-keyword :evil-state   'after :init)
+(maple-use-package/set-keyword :keybind      'after :init)
 (maple-use-package/set-keyword :hydra        'after :init)
 (maple-use-package/set-keyword :dependencies 'after :init)
 (maple-use-package/set-keyword :quelpa       'after :unless)
 
-(provide 'maple-use-package)
-;;; maple-use-package.el ends here
+(provide 'core-use-package)
+;;; core-use-package.el ends here

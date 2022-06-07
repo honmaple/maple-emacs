@@ -1,6 +1,6 @@
 ;;; init-flycheck.el --- Initialize flycheck configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -24,13 +24,11 @@
 ;;
 
 ;;; Code:
-
-
 (use-package flycheck
   :diminish flycheck-mode "ⓢ"
   :hook (prog-mode . flycheck-mode)
   :config
-  (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+  (setq flycheck-check-syntax-automatically '(save idle-buffer-switch idle-change mode-enabled)
         flycheck-idle-change-delay 0.8)
 
   (let ((govet (flycheck-checker-get 'go-vet 'command)))
@@ -73,14 +71,14 @@
       :overlay-category 'flycheck-info-overlay
       :fringe-bitmap bitmap
       :fringe-face 'flycheck-fringe-info))
-  :evil
-  (normal :map flycheck-error-list-mode-map
-          ("q" . quit-window)
-          ("j" . flycheck-error-list-next-error)
-          ("k" . flycheck-error-list-previous-error)
-          ("K" . evil-previous-line)
-          ("J" . evil-next-line)
-          ("RET" . flycheck-error-list-goto-error)))
+  :keybind
+  (:states normal :map flycheck-error-list-mode-map
+           ("q" . quit-window)
+           ("j" . flycheck-error-list-next-error)
+           ("k" . flycheck-error-list-previous-error)
+           ("K" . evil-previous-line)
+           ("J" . evil-next-line)
+           ("RET" . flycheck-error-list-goto-error)))
 
 
 ;; 显示tooltip

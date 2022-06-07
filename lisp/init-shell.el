@@ -1,6 +1,6 @@
 ;;; init-shell.el --- Initialize shell configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2020 lin.jiang
+;; Copyright (C) 2015-2022 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -26,10 +26,10 @@
 ;;; Code:
 (use-package comint
   :ensure nil
-  :hook (comint-mode . maple/process-exit)
+  :hook (comint-mode . maple-process-exit)
   :config
   (setq comint-prompt-read-only t)
-  :bind
+  :keybind
   (:map comint-mode-map
         ("<up>" . comint-previous-input)
         ("<down>" . comint-next-input)
@@ -44,7 +44,7 @@
 (use-package term
   :ensure nil
   :commands (maple/shell)
-  :hook (term-mode . maple/process-exit)
+  :hook (term-mode . maple-process-exit)
   :config
   (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
 
@@ -63,15 +63,15 @@
     (interactive)
     (cl-letf (((symbol-function 'switch-to-buffer) 'pop-to-buffer))
       (term "/bin/bash")))
-  :evil
-  (insert :map term-raw-map
-          ("C-c C-d" . term-send-eof)
-          ("C-c C-z" . term-stop-subjob)
-          ("C-y" . term-paste)
-          ("y" . term-kill-ring)
-          ("<tab>" . term-send-tab)
-          ("C-k" . term-send-up)
-          ("C-j" . term-send-down)))
+  :keybind
+  (:states insert :map term-raw-map
+           ("C-c C-d" . term-send-eof)
+           ("C-c C-z" . term-stop-subjob)
+           ("C-y" . term-paste)
+           ("y" . term-kill-ring)
+           ("<tab>" . term-send-tab)
+           ("C-k" . term-send-up)
+           ("C-j" . term-send-down)))
 
 (use-package multi-term
   :config

@@ -24,6 +24,12 @@
 ;;
 
 ;;; Code:
+(use-package json-mode)
+(use-package vimrc-mode)
+(use-package nginx-mode)
+(use-package protobuf-mode)
+(use-package dockerfile-mode)
+
 (use-package markdown-mode
   :config
   (use-package org-table
@@ -39,38 +45,18 @@
     (add-hook 'after-save-hook 'cleanup-org-tables  nil 'make-it-local))
 
   (use-package markdown-toc)
-  :custom
-  (:language
-   "markdown-mode"
-   :run 'markdown-toggle-markup-hiding))
+  :language
+  (markdown-mode :run 'markdown-toggle-markup-hiding))
 
-(use-package protobuf-mode)
-(use-package dockerfile-mode)
-(use-package vimrc-mode)
-(use-package json-mode)
-(use-package nginx-mode)
 (use-package yaml-mode
   :hook (yaml-mode . (lambda() (setq tab-width 2) (origami-mode 1)))
-  :custom
-  (:language
-   "yaml-mode"
-   :fold 'origami-toggle-node))
+  :language
+  (yaml-mode :fold 'origami-toggle-node))
 
 (use-package writeroom-mode
   :custom
   (writeroom-mode-line t)
   (writeroom-bottom-divider-width 0))
-
-(use-package company-english-helper
-  :quelpa (:fetcher github :repo "manateelazycat/company-english-helper")
-  :commands (company-english-helper-search)
-  :custom
-  (:mode
-   (org-mode markdown-mode)
-   (company-tooltip-align-annotations nil))
-  (:language
-   (markdown-mode org-mode)
-   :complete 'company-english-helper-search))
 
 (provide 'init-text)
 ;;; init-text.el ends here

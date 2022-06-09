@@ -1,4 +1,4 @@
-;;; core-ui.el --- Initialize ui configurations.	-*- lexical-binding: t -*-
+;;; init-ui.el --- Initialize ui configurations.	-*- lexical-binding: t -*-
 
 ;; Copyright (C) 2015-2022 lin.jiang
 
@@ -98,8 +98,14 @@
         highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
 
+(use-package fontawesome
+  :commands (counsel-fontawesome))
+
+(use-package default-text-scale
+  :commands (default-text-scale-increase default-text-scale-decrease))
+
 (use-package all-the-icons
-  :if (and (display-graphic-p) maple-icon)
+  :if maple-icon
   :config
   (setq all-the-icons-icon-alist
         (append
@@ -107,5 +113,5 @@
          (butlast all-the-icons-icon-alist)
          (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
-(provide 'core-ui)
-;;; core-ui.el ends here
+(provide 'init-ui)
+;;; init-ui.el ends here

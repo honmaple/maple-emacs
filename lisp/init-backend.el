@@ -33,22 +33,20 @@
 ;;; Code:
 (use-package python
   :ensure nil
+  :config
+  (defun maple/run-python ()
+    (interactive)
+    (or (python-shell-get-process) (call-interactively 'run-python))
+    (if (use-region-p)
+        (python-shell-send-region (region-beginning) (region-end) t)
+      (python-shell-send-buffer t)))
   :custom
-  (:variable
-   (python-indent-offset 4)
-   (python-indent-guess-indent-offset nil)
-   (python-shell-completion-native-enable nil)
-   :function
-   (defun maple/run-python ()
-     (interactive)
-     (or (python-shell-get-process) (call-interactively 'run-python))
-     (if (use-region-p)
-         (python-shell-send-region (region-beginning) (region-end) t)
-       (python-shell-send-buffer t))))
-  (:language
-   "python-mode"
-   :run 'maple/run-python
-   :checker '(:disable python-pylint))
+  (python-indent-offset 4)
+  (python-indent-guess-indent-offset nil)
+  (python-shell-completion-native-enable nil)
+  (:language python-mode
+             :run 'maple/run-python
+             :checker '(:disable python-pylint))
   :dependencies
   (pyenv-mode
    :commands (pyenv-mode-set))
@@ -58,12 +56,10 @@
 
 (use-package go-mode
   :custom
-  (:variable
-   (gofmt-show-errors nil))
-  (:language
-   "go-mode"
-   :format 'gofmt
-   :checker '(go-build go-test go-vet))
+  (gofmt-show-errors nil)
+  (:language go-mode
+             :format 'gofmt
+             :checker '(go-build go-test go-vet))
   :dependencies
   (go-rename)
   (go-add-tags))
@@ -75,24 +71,18 @@
 
 (use-package cc-mode
   :custom
-  (:variable
-   (c-default-style "linux")
-   (c-basic-offset 4))
-  (:language
-   "c-mode"
-   :complete 'company-c-headers)
+  (c-default-style "linux")
+  (c-basic-offset 4)
+  (:language c-mode :complete 'company-c-headers)
   :dependencies
   (company-c-headers))
 
 (use-package lua-mode
   :diminish lua-mode
   :custom
-  (:variable
-   (lua-indent-level 4)
-   (lua-indent-string-contents t))
-  (:language
-   "lua-mode"
-   :complete 'company-lua)
+  (lua-indent-level 4)
+  (lua-indent-string-contents t)
+  (:language lua-mode :complete 'company-lua)
   :dependencies
   (company-lua))
 
@@ -102,25 +92,21 @@
 (use-package sh-mode
   :ensure nil
   :custom
-  (:language
-   "sh-mode"
-   :checker '(sh-posix-bash)))
+  (:language sh-mode :checker '(sh-posix-bash)))
 
 (use-package sql
   :ensure nil
+  :hook
+  (sql-interactive-mode . maple-truncate-lines)
+  (sql-interactive-mode . maple-process-exit)
   :custom
-  (:variable
-   (sql-input-ring-file-name
-    (expand-file-name "sql.history" user-emacs-directory))
-   (sql-postgres-login-params
-    '((user :default "postgres")
-      (database :default "postgres")
-      (server :default "localhost")
-      (port :default 5432)))
-   :function
-   (maple-add-hook 'sql-interactive-mode-hook
-     '(maple-truncate-lines maple-process-exit)))
-  ;; :evil-state (sql-interactive-mode . insert)
+  (sql-input-ring-file-name
+   (expand-file-name "sql.history" user-emacs-directory))
+  (sql-postgres-login-params
+   '((user :default "postgres")
+     (database :default "postgres")
+     (server :default "localhost")
+     (port :default 5432)))
   :dependencies
   (sql-indent
    :hook (sql-mode-hook . sqlind-minor-mode)))

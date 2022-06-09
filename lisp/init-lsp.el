@@ -117,12 +117,10 @@
           (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
                 (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
 
-  :custom
-  (:language
-   ("yaml-mode" "python-mode")
+  :language
+  ('(yaml-mode python-mode)
    :format 'lsp-format-buffer)
-  (:language
-   "lsp-mode"
+  ('lsp-mode
    :definition 'lsp-find-definition
    :complete   '(company-capf :with company-yasnippet)))
 

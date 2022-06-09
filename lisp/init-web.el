@@ -31,12 +31,15 @@
   (defun maple/web-mode-put-text(p q prop value)
     (if (and (eq prop 'invisible) value) (hs-make-overlay p q 'code)
       (maple/put-text-property p q prop value)))
+
   (defun maple/web-mode-fold-or-unfold()
     (interactive)
     (cl-letf (((symbol-function 'put-text-property) 'maple/web-mode-put-text))
       (web-mode-fold-or-unfold)))
+
   (maple-add-hook 'web-mode-hook
     (setq electric-pair-pairs '((?\' . ?\'))))
+
   :custom
   (web-mode-markup-indent-offset 2)
   (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
@@ -52,8 +55,8 @@
                                               ("{{{" . " | }}")
                                               ("{# " . " #")
                                               ("<% " . " %>")))))
-  (:language
-   "web-mode"
+  :language
+  (web-mode
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
    :complete '(company-web-html company-css company-tern :with company-yasnippet))
@@ -61,10 +64,8 @@
   (company-web))
 
 (use-package css-mode
-  :custom
-  (:language
-   "css-mode"
-   :complete '(company-css :with company-yasnippet))
+  :language
+  (css-mode :complete '(company-css :with company-yasnippet))
   :dependencies
   (less-css-mode)
   (sass-mode)
@@ -78,9 +79,8 @@
   (js2-bounce-indent-p nil)
   (js2-mode-show-parse-errors nil)
   (js2-mode-show-strict-warnings nil)
-  (:language
-   "js2-mode"
-   :complete '(company-tern))
+  :language
+  (js2-mode :complete '(company-tern))
   :dependencies
   (coffee-mode)
   (typescript-mode))
@@ -91,15 +91,12 @@
 (use-package emmet-mode
   :diminish emmet-mode
   :hook ((html-mode sgml-mode web-mode) . emmet-mode)
-  :config
-  (defun maple/emmet-expand ()
-    (interactive)
-    (if (bound-and-true-p yas-minor-mode)
-        (call-interactively 'emmet-expand-yas)
-      (call-interactively 'emmet-expand-line)))
   :keybind
   (:states insert :map emmet-mode-keymap
-          ([tab] . maple/emmet-expand)))
+           ([tab] . (lambda() (interactive)
+                      (if (bound-and-true-p yas-minor-mode)
+                          (call-interactively 'emmet-expand-yas)
+                        (call-interactively 'emmet-expand-line))))))
 
 (use-package tern
   :diminish tern-mode

@@ -96,13 +96,6 @@
   :commands (server-running-p)
   :hook (maple-init . (lambda() (unless (server-running-p) (server-start)))))
 
-(use-package fontawesome
-  :commands (counsel-fontawesome))
-
-(use-package default-text-scale
-  :bind (("C-M-=" . default-text-scale-increase)
-         ("C-M--" . default-text-scale-decrease)))
-
 (use-package simple
   :ensure nil
   :hook (text-mode . visual-line-mode)

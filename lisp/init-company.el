@@ -25,38 +25,16 @@
 
 ;;; Code:
 (use-package yasnippet
-  :diminish yas-minor-mode
   :hook (maple-init . yas-global-mode)
   :custom
-  (:variable
-   (yas-triggers-in-field t)
-   (yas-prompt-functions '(yas-completing-prompt)))
+  (yas-triggers-in-field t)
+  (yas-prompt-functions '(yas-completing-prompt))
   :dependencies
   (yasnippet-snippets))
 
 (use-package company
-  :diminish company-mode
   :hook (maple-init . global-company-mode)
   :config
-  (setq company-idle-delay 0.1
-        company-show-numbers t
-        company-tooltip-limit 15
-        company-tooltip-align-annotations t ;; 提示右对齐
-        company-tooltip-offset-display 'lines
-        company-minimum-prefix-length 1
-        company-selection-wrap-around t
-        company-dabbrev-downcase nil
-        company-begin-commands '(self-insert-command)
-        company-global-modes '(not comint-mode
-                                   erc-mode
-                                   gud-mode
-                                   rcirc-mode
-                                   sql-interactive-mode
-                                   minibuffer-inactive-mode
-                                   inferior-python-mode
-                                   shell-mode
-                                   evil-command-window-mode))
-
   (setq company-yasnippet-annotation-fn
         (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
         company-backends (maple-language/complete-backend))
@@ -81,25 +59,54 @@
       (funcall fun command arg ignore)))
 
   (advice-add 'company-yasnippet :around 'maple/company-yasnippet-advice)
-
-  :custom-face
-  (company-tooltip-common
-   ((t (:inherit company-tooltip :weight bold :underline nil))))
-  (company-tooltip-common-selection
-   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+  :custom
+  (company-idle-delay 0.1)
+  (company-show-numbers t)
+  (company-tooltip-limit 15)
+  (company-tooltip-align-annotations t) ;; 提示右对齐
+  (company-tooltip-offset-display 'lines)
+  (company-minimum-prefix-length 1)
+  (company-selection-wrap-around t)
+  (company-dabbrev-downcase nil)
+  (company-begin-commands '(self-insert-command))
+  (company-global-modes '(not comint-mode
+                              erc-mode
+                              gud-mode
+                              rcirc-mode
+                              sql-interactive-mode
+                              minibuffer-inactive-mode
+                              inferior-python-mode
+                              shell-mode
+                              evil-command-window-mode))
+  (:face
+   (company-tooltip-common
+    ((t (:inherit company-tooltip :weight bold :underline nil))))
+   (company-tooltip-common-selection
+    ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   :keybind (:map company-active-map
-              ("C-d" . company-show-doc-buffer)
-              ("C-j" . company-select-next)
-              ("C-k" . company-select-previous)
-              ("<backtab>" . maple/company-yasnippet)
-              ("TAB" . company-complete-common-or-cycle)
-              ("<tab>" . company-complete-common-or-cycle)
-              ("<RET>" . company-complete-selection)))
+                 ("C-d" . company-show-doc-buffer)
+                 ("C-j" . company-select-next)
+                 ("C-k" . company-select-previous)
+                 ("<backtab>" . maple/company-yasnippet)
+                 ("TAB" . company-complete-common-or-cycle)
+                 ("<tab>" . company-complete-common-or-cycle)
+                 ("<RET>" . company-complete-selection)))
 
 (use-package company-prescient
   :hook (company-mode . company-prescient-mode)
-  :config
-  (setq prescient-save-file (expand-file-name "prescient-save.el" maple-cache-directory)))
+  :custom
+  (prescient-save-file (expand-file-name "prescient-save.el" maple-cache-directory)))
+
+(use-package company-english-helper
+  :quelpa (:fetcher github :repo "manateelazycat/company-english-helper")
+  :commands (company-english-helper-search)
+  :custom
+  (:mode
+   (org-mode markdown-mode)
+   (company-tooltip-align-annotations nil))
+  (:language
+   (markdown-mode org-mode)
+   :complete 'company-english-helper-search))
 
 (provide 'init-company)
 ;;; init-company.el ends here

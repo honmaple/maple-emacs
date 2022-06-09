@@ -67,8 +67,8 @@
 (use-package expand-region
   :after evil
   :keybind (:map evil-visual-state-map
-              ("v" . er/expand-region)
-              ("V" . er/contract-region)))
+                 ("v" . er/expand-region)
+                 ("V" . er/contract-region)))
 
 (use-package evil-leader
   :hook (maple-init . global-evil-leader-mode)

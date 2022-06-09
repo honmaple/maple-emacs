@@ -34,15 +34,12 @@
 (autoload 'maple-initialize (expand-file-name "core/core" user-emacs-directory))
 (maple-initialize)
 
-(defun maple/require (&rest pkgs)
-  "Load PKGS."
-  (mapc (lambda(pkg) (require `,pkg (format "%s/%s.el" (expand-file-name "lisp" user-emacs-directory) pkg))) pkgs))
-
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
 (defvar maple-packages
-  '(init-maple
+  '(init-ui
+    init-maple
     init-editor      ;; 自动补全括号等
     init-evil
     init-ivy
@@ -62,8 +59,8 @@
     init-shell     ;; shell
     init-tool))
 
-(apply 'maple/require maple-packages)
-(apply 'maple/require maple-develops)
+(apply 'maple-require "lisp" maple-packages)
+(apply 'maple-require "lisp" maple-develops)
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface

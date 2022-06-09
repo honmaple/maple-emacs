@@ -67,6 +67,7 @@
 (defalias 'use-package-normalize/:keybind 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-leader 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-state 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:language 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:dependencies 'use-package-normalize-forms)
 
 (defun maple-use-package/set-keyword (keyword &optional position refer)
@@ -78,7 +79,7 @@
                              ((eq position 'after)  (+ pos 1))))
                  (head (cl-subseq use-package-keywords 0 pos))
                  (tail (nthcdr pos use-package-keywords)))
-            (append head (list keyword) tail)))))
+            (append head (if (listp keyword) keyword (list keyword)) tail)))))
 
 (defun maple-use-package/keys(args)
   "Cons convert to keybinds with ARGS."
@@ -114,7 +115,7 @@
 (defun maple-use-package/custom-keyword(args)
   "Custom variable with ARGS."
   (pcase (car args)
-    (:face `((custom-set-faces ,@(cdr args))))
+    (:face `((apply 'custom-set-faces ',(cdr args))))
     (:function `((progn ,@(cdr args))))
     (:variable (let ((vs (maple-use-package/plist-get args :variable))
                      (fs (maple-use-package/plist-get args :function))
@@ -127,7 +128,7 @@
              (unless (featurep 'mode-local) (require 'mode-local))
              (cl-loop for i in (if (listp mode) mode (list mode)) collect
                       `(setq-mode-local ,i ,@(apply 'append (cddr args))))))
-    (:language `((maple-language ,@(cdr args))))))
+    (:language `((maple-language ',(cadr args) ,@(cddr args))))))
 
 (defun maple-use-package/custom(args)
   "Custom variable with ARGS."
@@ -154,7 +155,7 @@
 (defun use-package-handler/:keybind (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   `(,@(mapcar (lambda(arglist) `(apply 'maple-define-key ',arglist)) args))
+   `(,@(mapcar (lambda(body) `(apply 'maple-define-key '(:package ,name ,@body))) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:evil-state (name _keyword args rest state)
@@ -183,6 +184,12 @@
   (use-package-concat
    `((with-eval-after-load 'hydra
        ,@(mapcan 'maple-use-package/hydra args)))
+   (use-package-process-keywords name rest state)))
+
+(defun use-package-handler/:language (name _keyword args rest state)
+  "NAME KEYWORD ARGS REST STATE."
+  (use-package-concat
+   `(,@(mapcar (lambda(body) `(maple-language ',(car body) ,@(cdr body))) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:dependencies (name _keyword args rest state)
@@ -222,11 +229,19 @@
 
 (advice-add 'use-package-handler/:ensure :around 'use-package-handler/:quelpa-ensure)
 
-(maple-use-package/set-keyword :evil-state   'after :init)
-(maple-use-package/set-keyword :keybind      'after :init)
-(maple-use-package/set-keyword :hydra        'after :init)
-(maple-use-package/set-keyword :dependencies 'after :init)
-(maple-use-package/set-keyword :quelpa       'after :unless)
+(maple-use-package/set-keyword
+ '(:hydra
+   :keybind
+   :evil-state
+   :evil-leader
+   :dependencies)
+ 'after :init)
+(maple-use-package/set-keyword
+ :language
+ 'after :config)
+(maple-use-package/set-keyword
+ :quelpa
+ 'after :unless)
 
 (provide 'core-use-package)
 ;;; core-use-package.el ends here

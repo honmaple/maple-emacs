@@ -71,6 +71,10 @@
   "Run `maple-theme-hook'."
   (run-hooks 'maple-theme-hook))
 
+(defun maple-require (path &rest pkgs)
+  "Load PKGS from PATH."
+  (mapc (lambda(pkg) (require `,pkg (format "%s/%s.el" (expand-file-name path user-emacs-directory) pkg))) pkgs))
+
 (defun maple-finish()
   "Restore defalut values after init."
   (setq file-name-handler-alist user-handler-alist
@@ -89,13 +93,13 @@
   (require 'core-general)
   (require 'core-package)
   (require 'core-use-package)
-  (require 'core-ui)
 
   (with-no-warnings
     (maple-add-hook 'emacs-startup-hook
-      'maple-finish)
-    (maple-add-hook 'emacs-startup-hook
       (run-with-idle-timer 0.1 nil (lambda() (run-hooks 'maple-init-hook))))
+
+    (maple-add-hook 'emacs-startup-hook
+      'maple-finish)
 
     (maple-add-hook 'after-init-hook
       (load-theme maple-theme t))

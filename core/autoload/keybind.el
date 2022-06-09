@@ -28,10 +28,10 @@
 ;;   :keymaps 'python-mode-map
 ;;   "t"  '(:ignore t :desc "test")
 ;;   "t1" 'test
-;;   (kbd "t1") '(test :autoload package-name)
-;;   [f5] '(test :states '(insert visual) :when (featurep 'evil))
+;;   (kbd "t1") '(test :package package-name)
+;;   [f5] '(test :states '(insert visual) :if (featurep 'evil))
 ;;   [remap keyboard-quit] 'test
-;;   :reset
+;;   :--
 ;;   :keymaps 'go-mode-map
 ;;   "b1" 'test1)
 
@@ -87,17 +87,19 @@ is equivalent to
           (setq def (pop args)))
         (when (stringp key) (setq key (string-to-vector key)))
         (when (stringp def) (setq def (string-to-vector def)))
-        (cl-destructuring-bind (&key ignore states when desc autoload) args
-          (when (and autoload (functionp def))
-            (push `(autoload ,def ,autoload) forms))
+        (cl-destructuring-bind (&key if ignore states package desc) args
+          (when (and package (symbolp def))
+            (push `(unless (fboundp ',def)
+                     (autoload #',def ,(if (stringp package) package (symbol-name package))))
+                  forms))
           (when desc
             (push `(which-key-add-key-based-replacements
                      (key-description ,key) ,desc)
                   which-key-forms))
           (unless ignore
-            (setq condition `(and (or (not ,when)
-                                      (and (booleanp ,when) ,when)
-                                      (and (not (booleanp ,when)) ,when))))
+            (setq condition `(and (or (not ,if)
+                                      (and (booleanp ,if) ,if)
+                                      (and (not (booleanp ,if)) ,if))))
             (if states
                 (push `(when ,condition (evil-define-key ',states ,keymap ,key ',def)) evil-forms)
               (push `(when ,condition (define-key ,keymap ,key ',def)) forms))))))
@@ -126,7 +128,7 @@ is equivalent to
          (setq prefix (pop args)))
         ((or :map :keymaps)
          (setq keymaps (pop args)))
-        ((or :when :states :autoload)
+        ((or :if :states :package)
          (let ((arg (pop args)))
            (when (memq (car-safe arg) '(quote))
              (setq arg (cdr-safe arg)))

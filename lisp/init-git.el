@@ -13,20 +13,6 @@
         magit-diff-refine-hunk t
         magit-section-visibility-indicator nil)
 
-  (setq magit-blame-styles
-        '((margin
-           (margin-format    . (" %s%f" " %C %a" " %H"))
-           (margin-width     . 42)
-           (margin-face      . magit-blame-margin)
-           (margin-body-face . (magit-blame-dimmed)))
-          (headings
-           (heading-format   . "%-20a %C %s\n"))
-          (highlight
-           (highlight-face   . magit-blame-highlight))
-          (lines
-           (show-lines       . t)
-           (show-message     . t))))
-
   ;; https://github.com/magit/transient/issues/18
   (use-package transient
     :config
@@ -50,8 +36,9 @@
 (use-package git-timemachine
   :config
   (maple-evil-map git-timemachine-mode-map)
+
+  ;; force update evil keymaps after git-timemachine-mode loaded
   (with-eval-after-load 'evil
-    ;; force update evil keymaps after git-timemachine-mode loaded
     (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps))
   :keybind
   (:states normal :map git-timemachine-mode-map
@@ -59,6 +46,12 @@
 
 (use-package blamer
   :commands (blamer-mode))
+
+(use-package browse-at-remote
+  :commands (browse-at-remote)
+  :config
+  ;; github.com.cnpmjs.org -> github.com
+  (add-to-list 'browse-at-remote-remote-type-regexps '("^github\\.com.*$" . "github")))
 
 (use-package maple-diff
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-diff")
@@ -72,12 +65,6 @@
 
   (define-fringe-bitmap 'maple-diff:changed-fringe
     [24] nil nil '(center repeated)))
-
-(use-package browse-at-remote
-  :commands (browse-at-remote)
-  :config
-  ;; github.com.cnpmjs.org -> github.com
-  (add-to-list 'browse-at-remote-remote-type-regexps '("^github\\.com.*$" . "github")))
 
 (provide 'init-git)
 ;;; init-git.el ends here

@@ -59,10 +59,10 @@
 (use-package dired-x
   :ensure nil
   :hook (dired-mode . dired-omit-mode)
-  :config
-  (setq dired-omit-verbose nil
-        dired-omit-files
-        (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$"))
+  :custom
+  (dired-omit-verbose nil)
+  (dired-omit-files
+   (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$"))
   :keybind (:map dired-mode-map ("H" . dired-omit-mode)))
 
 (use-package all-the-icons-dired
@@ -75,9 +75,9 @@
 (use-package image-dired
   :ensure nil
   :commands (image-dired)
-  :config
-  (setq image-dired-dir (expand-file-name "image-dired" maple-cache-directory)
-        image-dired-thumbnail-storage 'standard)
+  :custom
+  (image-dired-dir (maple-cache-file "image-dired"))
+  (image-dired-thumbnail-storage 'standard)
   :keybind
   (:states normal :map image-dired-thumbnail-mode-map
            ("j" . image-dired-next-line)
@@ -100,47 +100,45 @@
 (use-package recentf
   :ensure nil
   :hook (maple-init . recentf-mode)
-  :config
-  (setq recentf-save-file (concat maple-cache-directory "recentf")
-        recentf-max-saved-items 100
-        recentf-auto-cleanup 'never
-        recentf-filename-handlers '(abbreviate-file-name)
-        recentf-exclude (list "\\.\\(png$\\|jpg$\\|pdf$\\)\\'"
-                              "COMMIT_EDITMSG\\'"
-                              (expand-file-name maple-cache-directory)
-                              ;; (expand-file-name package-user-dir)
-                              )))
+  :custom
+  (recentf-save-file (maple-cache-file "recentf"))
+  (recentf-max-saved-items 100)
+  (recentf-auto-cleanup 'never)
+  (recentf-filename-handlers '(abbreviate-file-name))
+  (recentf-exclude (list "\\.\\(png$\\|jpg$\\|pdf$\\)\\'" "COMMIT_EDITMSG\\'"
+                         ;; (expand-file-name package-user-dir)
+                         (expand-file-name maple-cache-directory))))
 
 (use-package savehist
   :ensure nil
   :hook (maple-init . savehist-mode)
-  :config
-  (setq savehist-file (concat maple-cache-directory "savehist")
-        savehist-autosave-interval nil ; save on kill only
-        savehist-additional-variables '(kill-ring
-                                        search-ring
-                                        regexp-search-ring)))
+  :custom
+  (savehist-file (maple-cache-file "savehist"))
+  (savehist-autosave-interval nil) ; save on kill only
+  (savehist-additional-variables '(kill-ring
+                                   search-ring
+                                   regexp-search-ring)))
 
 (use-package saveplace
   :ensure nil
   :hook (maple-init . save-place-mode)
-  :config
-  (setq save-place-file (concat maple-cache-directory "places")))
+  :custom
+  (save-place-file (maple-cache-file "places")))
 
 (use-package neotree
-  :commands neo-global--window-exists-p
+  :commands (neotree)
+  :custom
+  (neo-create-file-auto-open t)
+  (neo-banner-message nil)
+  (neo-show-updir-line t)
+  (neo-mode-line-type 'default)
+  (neo-cwd-line-style 'button)
+  (neo-smart-open t)
+  (neo-show-hidden-files nil)
+  (neo-auto-indent-point t)
+  (neo-vc-integration '(face))
   :config
-  (setq neo-create-file-auto-open t
-        neo-banner-message nil
-        neo-show-updir-line t
-        neo-mode-line-type 'default
-        neo-cwd-line-style 'button
-        neo-smart-open t
-        neo-show-hidden-files nil
-        neo-auto-indent-point t
-        neo-vc-integration '(face))
   (maple-evil-map neotree-mode-map)
-
   :keybind (([f2] . neotree-toggle)
             :map neotree-mode-map
             ("C" . neotree-copy-node)
@@ -150,17 +148,13 @@
             ("^" . neotree-select-up-node)))
 
 (use-package undo-tree
-  :ensure nil
   :hook (maple-init . global-undo-tree-mode)
-  :config
-  (setq undo-tree-visualizer-timestamps t
-        undo-tree-visualizer-diff t
-        undo-tree-enable-undo-in-region nil
-        undo-tree-auto-save-history nil)
-  (let ((dir (expand-file-name "undo-tree" maple-cache-directory)))
-    (unless (file-exists-p dir) (make-directory dir t))
-    (setq undo-tree-history-directory-alist (list (cons "." dir))))
-
+  :custom
+  (undo-tree-visualizer-timestamps t)
+  (undo-tree-visualizer-diff t)
+  (undo-tree-enable-undo-in-region nil)
+  (undo-tree-auto-save-history nil)
+  (undo-tree-history-directory-alist (list (cons "." (maple-cache-file "undo-tree" t))))
   :diminish undo-tree-mode)
 
 (provide 'init-file)

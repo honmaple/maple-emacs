@@ -28,11 +28,11 @@
 (use-package docker-tramp)
 
 (use-package youdao-dictionary
+  :custom
+  (url-automatic-caching t)
+  (youdao-dictionary-search-history-file (maple-cache-file "youdao"))
+  (youdao-dictionary-use-chinese-word-segmentation t)
   :config
-  (setq url-automatic-caching t
-        youdao-dictionary-search-history-file
-        (expand-file-name "youdao" maple-cache-directory)
-        youdao-dictionary-use-chinese-word-segmentation t)
   (maple-evil-map youdao-dictionary-mode-map))
 
 (use-package figlet)

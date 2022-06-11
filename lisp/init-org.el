@@ -45,19 +45,21 @@
         (list (concat "- \t('\"{"            "[:nonascii:]")
               (concat "- \t.,:!?;'\")}\\["   "[:nonascii:]")
               " \t\r\n,\"'" "." 1))
+  :custom
+  (org-imenu-depth 5)
+  (org-image-actual-width '(300))
+  (org-export-with-sub-superscripts '{})
+  (org-export-with-broken-links t)
+  (org-export-use-babel nil) ;; 禁止在导出时执行src代码
+  (org-descriptive-links nil) ;; 不要锁定连接，保持原样
+  (org-src-window-setup 'split-window-right)
+  (org-adapt-indentation t)
+  (org-log-done t)
+  (org-todo-keywords
+   '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+     (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
+     (sequence "WAITING(w@/!)" "HOLD(h)" "|" "CANCELLED(c@/!)")))
   :config
-  (setq org-imenu-depth 5
-        org-image-actual-width '(300)
-        org-export-with-sub-superscripts '{}
-        org-export-with-broken-links t
-        org-descriptive-links nil ;; 不要锁定连接，保持原样
-        org-src-window-setup 'split-window-right
-        org-adapt-indentation t
-        org-log-done t
-        org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
-          (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
-          (sequence "WAITING(w@/!)" "HOLD(h)" "|" "CANCELLED(c@/!)")))
 
   (advice-add 'org-todo :after 'org-save-all-org-buffers)
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -85,28 +87,17 @@
 (use-package org-crypt
   :ensure nil
   :after org :demand
+  :custom
+  (org-crypt-tag-matcher "secret")
+  (org-tags-exclude-from-inheritance '("secret"))
+  (org-crypt-key "21305E7E")
   :config
-  (org-crypt-use-before-save-magic)
-  (setq org-crypt-tag-matcher "secret"
-        org-tags-exclude-from-inheritance '("secret")
-        org-crypt-key "21305E7E"))
+  (org-crypt-use-before-save-magic))
 
-(use-package ob
+(use-package ob-python
   :ensure nil
   :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)
-     (dot . t)
-     (octave . t)
-     (sqlite . t)
-     (perl . t)
-     (C . t)))
-  (use-package ob-python
-    :ensure nil
-    :config
-    (add-to-list 'org-babel-default-header-args:python
-                 '(:results . "output"))))
+  (add-to-list 'org-babel-default-header-args:python '(:results . "output")))
 
 (use-package ox-md
   :ensure nil
@@ -125,15 +116,15 @@
 
 (use-package org-agenda
   :ensure nil
+  :custom
+  (org-agenda-restore-windows-after-quit t)
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-inhibit-startup t)   ;; ~50x speedup
+  (org-agenda-use-tag-inheritance nil)
   :config
-  (setq org-agenda-restore-windows-after-quit t
-        org-agenda-window-setup 'current-window
-        org-agenda-inhibit-startup t   ;; ~50x speedup
-        org-agenda-use-tag-inheritance nil)
   (advice-add 'org-agenda-todo :after 'org-save-all-org-buffers)
 
   (maple-org/agenda-init)
-
   :keybind (:map org-agenda-mode-map
                  ("j" . org-agenda-next-line)
                  ("k" . org-agenda-previous-line)
@@ -144,8 +135,8 @@
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
-  :config
-  (setq org-bullets-bullet-list '("①" "②" "③" "④" "⑤")))
+  :custom
+  (org-bullets-bullet-list '("①" "②" "③" "④" "⑤")))
 
 (use-package org-download
   :commands
@@ -153,13 +144,14 @@
    org-download-delete
    org-download-screenshot
    maple/org-download-yank)
+  :custom
+  (:default
+   (org-download-image-dir "images/")
+   (org-download-heading-lvl nil)
+   (org-download-display-inline-images nil)
+   (org-download-screenshot-method
+    (if maple-system-is-mac "screencapture -i %s" "scrot -s %s")))
   :config
-  (setq-default org-download-image-dir "images/"
-                org-download-heading-lvl nil
-                org-download-display-inline-images nil
-                org-download-screenshot-method
-                (if maple-system-is-mac "screencapture -i %s" "scrot -s %s"))
-
   (defun maple/org-download-yank()
     (interactive)
     (let* ((file  org-download-screenshot-file)

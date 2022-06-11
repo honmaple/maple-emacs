@@ -123,7 +123,7 @@
 
 (use-package maple-scratch
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-scratch")
-  :hook (window-setup . maple-scratch-init)
+  :hook (maple-theme . maple-scratch-init)
   :config
   (maple-evil-map maple-scratch-mode-map)
   (setq maple-scratch-source nil

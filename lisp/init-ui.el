@@ -43,8 +43,8 @@
 (use-package display-line-numbers
   :ensure nil
   :hook ((prog-mode text-mode) . display-line-numbers-mode)
-  :config
-  (setq display-line-numbers-type 'relative))
+  :custom
+  (display-line-numbers-type 'relative))
 
 ;; 高亮括号
 (use-package rainbow-delimiters
@@ -55,21 +55,22 @@
 (use-package paren
   :ensure nil
   :hook (maple-init . show-paren-mode)
-  :config
-  (setq show-paren-when-point-inside-paren t
-        show-paren-when-point-in-periphery t))
+  :custom
+  (show-paren-when-point-inside-paren t)
+  (show-paren-when-point-in-periphery t))
 
 ;; 外置高亮括号
 (use-package highlight-parentheses
   :hook (prog-mode . highlight-parentheses-mode)
-  :config
-  (setq hl-paren-colors '("Springgreen3"
-                          "IndianRed1"
-                          "#51afef"
-                          "IndianRed3"
-                          "#da8548"
-                          "IndianRed4"))
-  (set-face-attribute 'hl-paren-face nil :weight 'ultra-bold)
+  :custom
+  (hl-paren-colors '("Springgreen3"
+                     "IndianRed1"
+                     "#51afef"
+                     "IndianRed3"
+                     "#da8548"
+                     "IndianRed4"))
+  (:face
+   (hl-paren-face ((t (:inherit hl-paren-face :weight ultra-bold)))))
   :diminish highlight-parentheses-mode)
 
 ;; 颜色
@@ -93,9 +94,9 @@
 (use-package highlight-indent-guides
   :if (display-graphic-p)
   :hook ((prog-mode yaml-mode) . highlight-indent-guides-mode)
-  :config
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-character ?\|)
+  :custom
+  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
 
 (use-package fontawesome
@@ -106,12 +107,11 @@
 
 (use-package all-the-icons
   :if maple-icon
-  :config
-  (setq all-the-icons-icon-alist
-        (append
-         (list '("\\.go$" all-the-icons-fileicon "golo" :height 1.0 :face all-the-icons-blue))
-         (butlast all-the-icons-icon-alist)
-         (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
+  :custom
+  (all-the-icons-icon-alist (append
+                             (list '("\\.go$" all-the-icons-fileicon "golo" :height 1.0 :face all-the-icons-blue))
+                             (butlast all-the-icons-icon-alist)
+                             (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here

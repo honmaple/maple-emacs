@@ -7,12 +7,12 @@
 ;;; Code:
 (use-package magit
   :commands (magit-status)
+  :custom
+  (magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+  (magit-process-popup-time 3)
+  (magit-diff-refine-hunk t)
+  (magit-section-visibility-indicator nil)
   :config
-  (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     ")
-        magit-process-popup-time 3
-        magit-diff-refine-hunk t
-        magit-section-visibility-indicator nil)
-
   ;; https://github.com/magit/transient/issues/18
   (use-package transient
     :config

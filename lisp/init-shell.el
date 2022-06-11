@@ -27,8 +27,8 @@
 (use-package comint
   :ensure nil
   :hook (comint-mode . maple-process-exit)
-  :config
-  (setq comint-prompt-read-only t)
+  :custom
+  (comint-prompt-read-only t)
   :keybind
   (:map comint-mode-map
         ("<up>" . comint-previous-input)
@@ -37,16 +37,17 @@
 
 (use-package xterm-color
   :hook (comint-preoutput-filter-functions . xterm-color-filter)
-  :config
-  (setq comint-output-filter-functions
-        (remove 'ansi-color-process-output comint-output-filter-functions)))
+  :custom
+  (comint-output-filter-functions
+   (remove 'ansi-color-process-output comint-output-filter-functions)))
 
 (use-package term
   :ensure nil
   :commands (maple/shell)
   :hook (term-mode . maple-process-exit)
+  :custom
+  (term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
   :config
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
 
   (defun term-send-tab ()
     "Send tab in term mode."

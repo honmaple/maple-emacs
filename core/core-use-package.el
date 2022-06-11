@@ -108,26 +108,17 @@
             ;; maybe define prop multi times
             (when tail (maple-use-package/plist-get tail prop)))))
 
-(defun maple-use-package/hydra(args)
-  "Evil bind ARGS."
-  `((defhydra ,@args)))
-
 (defun maple-use-package/custom-keyword(args)
   "Custom variable with ARGS."
   (pcase (car args)
     (:face `((apply 'custom-set-faces ',(cdr args))))
-    (:function `((progn ,@(cdr args))))
-    (:variable (let ((vs (maple-use-package/plist-get args :variable))
-                     (fs (maple-use-package/plist-get args :function))
-                     (ds (maple-use-package/plist-get args :default)))
-                 (append
-                  (when vs `((setq ,@(apply 'append vs))))
-                  (when ds `((setq-default ,@(apply 'append ds))))
-                  (when fs `((progn ,@fs))))))
     (:mode (let ((mode (cadr args)))
-             (unless (featurep 'mode-local) (require 'mode-local))
              (cl-loop for i in (if (listp mode) mode (list mode)) collect
-                      `(setq-mode-local ,i ,@(apply 'append (cddr args))))))
+                      `(progn (unless (featurep 'mode-local) (require 'mode-local))
+                              (setq-mode-local ,i ,@(apply 'append (cddr args)))))))
+    (:default  `((setq-default ,@(apply 'append (cdr args)))))
+    (:variable `((setq ,@(apply 'append (cdr args)))))
+    (:function `((progn ,@(cdr args))))
     (:language `((maple-language ',(cadr args) ,@(cddr args))))))
 
 (defun maple-use-package/custom(args)
@@ -183,7 +174,7 @@
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
    `((with-eval-after-load 'hydra
-       ,@(mapcan 'maple-use-package/hydra args)))
+       ,@(mapcar (lambda(body) `(defhydra ,@body)) args)))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:language (name _keyword args rest state)
@@ -195,7 +186,7 @@
 (defun use-package-handler/:dependencies (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   `(,@(mapcan (lambda(body) `((use-package ,@body))) args))
+   `(,@(mapcar (lambda(body) `(use-package ,@body)) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-normalize/:quelpa (name keyword args)

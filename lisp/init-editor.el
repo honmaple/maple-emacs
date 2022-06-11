@@ -62,16 +62,6 @@
   :custom
   (tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no"))
 
-(use-package isearch
-  :ensure nil
-  :hook (isearch-mode . (lambda() (when (use-region-p)
-                                    (isearch-yank-string
-                                     (buffer-substring-no-properties
-                                      (region-beginning) (1+ (region-end))))
-                                    (deactivate-mark))))
-  :keybind (:map isearch-mode-map
-                 ([remap isearch-delete-char] . isearch-del-char)))
-
 (use-package eldoc
   :ensure nil
   :diminish eldoc-mode)
@@ -90,6 +80,16 @@
 
 (use-package origami
   :diminish origami-mode)
+
+(use-package isearch
+  :ensure nil
+  :hook (isearch-mode . (lambda() (when (use-region-p)
+                                    (isearch-yank-string
+                                     (buffer-substring-no-properties
+                                      (region-beginning) (1+ (region-end))))
+                                    (deactivate-mark))))
+  :keybind (:map isearch-mode-map
+                 ([remap isearch-delete-char] . isearch-del-char)))
 
 (use-package anzu
   :diminish anzu-mode
@@ -160,10 +160,8 @@
   :custom
   (projectile-sort-order 'recentf)
   (projectile-current-project-on-switch 'keep)
-  (projectile-cache-file
-   (expand-file-name "projectile.cache" maple-cache-directory))
-  (projectile-known-projects-file
-   (expand-file-name "projectile-bookmarks.eld" maple-cache-directory))
+  (projectile-cache-file (maple-cache-file "projectile.cache"))
+  (projectile-known-projects-file (maple-cache-file "projectile-bookmarks.eld"))
   (:function
    (add-to-list 'projectile-project-root-files-bottom-up "go.mod" t)))
 

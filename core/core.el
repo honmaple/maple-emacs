@@ -71,6 +71,12 @@
   "Run `maple-theme-hook'."
   (run-hooks 'maple-theme-hook))
 
+(defun maple-cache-file(file &optional isdir)
+  "Get cache FILE name with ISDIR."
+  (let ((dir (expand-file-name file maple-cache-directory)))
+    (when (and isdir (not (file-exists-p dir))) (make-directory dir t))
+    dir))
+
 (defun maple-require (path &rest pkgs)
   "Load PKGS from PATH."
   (mapc (lambda(pkg) (require `,pkg (format "%s/%s.el" (expand-file-name path user-emacs-directory) pkg))) pkgs))

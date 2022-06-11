@@ -102,9 +102,7 @@
   :diminish tern-mode
   :hook (js2-mode . tern-mode)
   :config
-  (add-to-list 'tern-command "--no-port-file" 'append)
-  :dependencies
-  (company-tern))
+  (add-to-list 'tern-command "--no-port-file" 'append))
 
 (use-package npm-mode
   :hook (js2-mode . npm-mode))

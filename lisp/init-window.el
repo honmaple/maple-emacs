@@ -42,12 +42,12 @@
 
 (use-package zoom
   :hook (maple-init . zoom-mode)
+  :custom
+  (zoom-size '(0.618 . 0.618))
+  (zoom-ignored-major-modes
+   '(term-mode shell-mode flycheck-error-list-mode ediff-mode))
+  (zoom-ignored-buffer-names '(" *Org todo*"))
   :config
-  (setq zoom-size '(0.618 . 0.618)
-        zoom-ignored-major-modes
-        '(term-mode shell-mode flycheck-error-list-mode ediff-mode)
-        zoom-ignored-buffer-names '(" *Org todo*"))
-
   (defun maple/balance-windows(func &optional window-or-frame)
     (unless (zoom--window-ignored-p)
       (let ((pre-redisplay-functions nil)
@@ -58,25 +58,25 @@
 
 (use-package shackle
   :hook (maple-init . shackle-mode)
-  :config
-  (setq shackle-default-size 0.3
-        shackle-default-alignment 'below
-        shackle-default-rule nil
-        shackle-rules
-        '((("*compilation*" "*Completions*" "*ert*" "*Warnings*" "*Messages*")
-           :align 'below :autoclose t)
-          (("*Help*" "*Backtrace*")
-           :select t :align 'below :autoclose t)
-          (("^\\*.*Shell Command.*\\*$" "\\*[Wo]*Man.*\\*")
-           :regexp t :align 'below :autoclose t)
-          (" *undo-tree*"
-           :select t :autoclose t)
+  :custom
+  (shackle-default-size 0.3)
+  (shackle-default-alignment 'below)
+  (shackle-default-rule nil)
+  (shackle-rules
+   '((("*compilation*" "*Completions*" "*ert*" "*Warnings*" "*Messages*")
+      :align 'below :autoclose t)
+     (("*Help*" "*Backtrace*")
+      :select t :align 'below :autoclose t)
+     (("^\\*.*Shell Command.*\\*$" "\\*[Wo]*Man.*\\*")
+      :regexp t :align 'below :autoclose t)
+     (" *undo-tree*"
+      :select t :autoclose t)
 
-          (flycheck-error-list-mode :select t :align 'below :autoclose t)
-          (inferior-python-mode :select t)
-          (comint-mode :align 'below)
-          (term-mode :align 'below :select t :size 15)
-          (process-menu-mode :select t :align 'below :autoclose t))))
+     (flycheck-error-list-mode :select t :align 'below :autoclose t)
+     (inferior-python-mode :select t)
+     (comint-mode :align 'below)
+     (term-mode :align 'below :select t :size 15)
+     (process-menu-mode :select t :align 'below :autoclose t))))
 
 (provide 'init-window)
 ;;; init-window.el ends here

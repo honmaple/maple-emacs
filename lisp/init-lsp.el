@@ -30,20 +30,20 @@
 (use-package lsp-mode
   :diminish "LSP"
   :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
+  :custom
+  (lsp-restart 'auto-restart)
+  (lsp-auto-guess-root t)
+  (lsp-signature-auto-activate nil)
+  (lsp-keep-workspace-alive nil)
+  (lsp-enable-snippet nil)
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-completion-provider :none)
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-modeline-code-actions-enable nil)
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-session-file (maple-cache-file "lsp-session-v1"))
   :config
-  (setq lsp-restart 'auto-restart
-        lsp-auto-guess-root t
-        lsp-signature-auto-activate nil
-        lsp-keep-workspace-alive nil
-        lsp-enable-snippet nil
-        lsp-enable-file-watchers nil
-        lsp-enable-symbol-highlighting nil
-        lsp-completion-provider :none
-        lsp-headerline-breadcrumb-enable nil
-        lsp-modeline-code-actions-enable nil
-        lsp-modeline-diagnostics-enable nil
-        lsp-session-file (expand-file-name "lsp-session-v1" maple-cache-directory))
-
   (defun maple/lsp-project-root(func session file-name)
     (let ((result (funcall func session file-name)))
       (if result (or (lsp-find-session-folder session file-name) result)
@@ -65,24 +65,24 @@
 
   (use-package lsp-diagnostics
     :ensure nil
-    :config
-    (setq lsp-diagnostics-provider :none))
+    :custom
+    (lsp-diagnostics-provider :none))
 
   ;; pip install python-language-server
   (use-package lsp-pyls
     :ensure nil
+    :custom
+    (lsp-pyls-configuration-sources ["flake8"])
+    ;; synax check
+    (lsp-pyls-plugins-flake8-enabled t)
+    (lsp-pyls-plugins-mccabe-enabled nil)
+    (lsp-pyls-plugins-pyflakes-enabled nil)
+    (lsp-pyls-plugins-pycodestyle-enabled nil)
+    ;; format
+    (lsp-pyls-plugins-autopep8-enabled nil)
+    (lsp-pyls-plugins-yapf-enabled t)
+    (lsp-pyls-disable-warning t)
     :config
-    (setq lsp-pyls-configuration-sources ["flake8"]
-          ;; synax check
-          lsp-pyls-plugins-flake8-enabled t
-          lsp-pyls-plugins-mccabe-enabled nil
-          lsp-pyls-plugins-pyflakes-enabled nil
-          lsp-pyls-plugins-pycodestyle-enabled nil
-          ;; format
-          lsp-pyls-plugins-autopep8-enabled nil
-          lsp-pyls-plugins-yapf-enabled t
-          lsp-pyls-disable-warning t)
-
     (defun lsp-pyls-get-pyenv-environment()
       (if lsp-pyls-plugins-jedi-environment
           lsp-pyls-plugins-jedi-environment
@@ -100,8 +100,8 @@
   ;; go get golang.org/x/tools/cmd/gopls
   (use-package lsp-go
     :ensure nil
-    :config
-    (setq lsp-go-codelenses nil))
+    :custom
+    (lsp-go-codelenses nil))
 
   ;; npm install -g yaml-language-server
   (use-package lsp-yaml
@@ -111,11 +111,11 @@
 
   (use-package lsp-rust
     :ensure nil
-    :config
-    (setq lsp-rust-server 'rls
-          lsp-rust-library-directories
-          (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
-                (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
+    :custom
+    (lsp-rust-server 'rls)
+    (lsp-rust-library-directories
+     (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
+           (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
 
   :language
   ('(yaml-mode python-mode)
@@ -126,13 +126,13 @@
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-border (face-foreground 'default))
+  (lsp-ui-doc-position 'top)
+  (lsp-ui-imenu-enable nil)
+  (lsp-ui-sideline-enable nil)
   :config
-  (setq lsp-ui-doc-enable t
-        lsp-ui-doc-border (face-foreground 'default)
-        lsp-ui-doc-position 'top
-        lsp-ui-imenu-enable nil
-        lsp-ui-sideline-enable nil)
-
   (defun maple/lsp-ui-doc-format(func string symbol)
     (funcall func (replace-regexp-in-string "^\s*\n" "" string) symbol))
 

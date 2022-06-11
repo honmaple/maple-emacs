@@ -86,21 +86,21 @@
   :hook (maple-init . global-evil-matchit-mode))
 
 (use-package evil-escape
-  :hook (maple-init . evil-escape-mode)
   :diminish 'evil-escape-mode
-  :config
-  (setq evil-escape-key-sequence "jj"
-        evil-escape-delay 0.4
-        evil-escape-excluded-major-modes '(dired-mode
-                                           neotree-mode
-                                           help-mode
-                                           magit-mode
-                                           shell-mode
-                                           term-mode
-                                           org-agenda-mode
-                                           undo-tree-visualizer-mode)
-        evil-escape-inhibit-functions '(evil-visual-state-p
-                                        evil-escape--is-magit-buffer)))
+  :hook (maple-init . evil-escape-mode)
+  :custom
+  (evil-escape-key-sequence "jj")
+  (evil-escape-delay 0.4)
+  (evil-escape-excluded-major-modes '(dired-mode
+                                      neotree-mode
+                                      help-mode
+                                      magit-mode
+                                      shell-mode
+                                      term-mode
+                                      org-agenda-mode
+                                      undo-tree-visualizer-mode))
+  (evil-escape-inhibit-functions '(evil-visual-state-p
+                                   evil-escape--is-magit-buffer)))
 
 (use-package evil-collection
   :init

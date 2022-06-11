@@ -27,10 +27,10 @@
 (use-package flycheck
   :diminish flycheck-mode "ⓢ"
   :hook (prog-mode . flycheck-mode)
+  :custom
+  (flycheck-check-syntax-automatically '(save idle-buffer-switch idle-change mode-enabled))
+  (flycheck-idle-change-delay 0.8)
   :config
-  (setq flycheck-check-syntax-automatically '(save idle-buffer-switch idle-change mode-enabled)
-        flycheck-idle-change-delay 0.8)
-
   (let ((govet (flycheck-checker-get 'go-vet 'command)))
     (when (equal (cadr govet) "tool")
       (setf (cdr govet) (cddr govet))))
@@ -84,11 +84,11 @@
 ;; 显示tooltip
 (use-package flycheck-pos-tip
   :hook (flycheck-mode . flycheck-pos-tip-mode)
-  :config
-  (setq pos-tip-background-color (face-attribute 'default :background nil t)
-        pos-tip-foreground-color (face-attribute 'default :foreground nil t)
-        pos-tip-internal-border-width 5
-        flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+  :custom
+  (pos-tip-background-color (face-attribute 'default :background nil t))
+  (pos-tip-foreground-color (face-attribute 'default :foreground nil t))
+  (pos-tip-internal-border-width 5)
+  (flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (provide 'init-flycheck)
 ;;; init-flycheck.el ends here

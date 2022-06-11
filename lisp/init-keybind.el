@@ -234,10 +234,10 @@
   )
 
 (maple-define-key
-  [remap keyboard-quit] 'maple/escape
+  [remap keyboard-quit] 'maple-escape
   [f5] 'maple-language/call-run
   [f6] 'maple-language/call-format
-  [tab] 'maple/company-or-indent
+  [tab] 'maple-company-or-indent
 
   :map 'evil-normal-state-map
   "M-J" 'evil-window-move-very-bottom

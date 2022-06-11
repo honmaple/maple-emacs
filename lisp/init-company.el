@@ -39,9 +39,9 @@
         (lambda(name) (concat (unless company-tooltip-align-annotations " -> ") name " (Snip)"))
         company-backends (maple-language/complete-backend))
 
-  (unless nil
-    (setq company-format-margin-function 'company-text-icons-margin)
-    (setq company-format-margin-function nil))
+  ;; (unless maple-icon
+  ;;   (setq company-format-margin-function 'company-text-icons-margin))
+  (setq company-format-margin-function nil)
 
   (defun maple/company-yasnippet ()
     (interactive)
@@ -95,7 +95,7 @@
 (use-package company-prescient
   :hook (company-mode . company-prescient-mode)
   :custom
-  (prescient-save-file (expand-file-name "prescient-save.el" maple-cache-directory)))
+  (prescient-save-file (maple-cache-file "prescient-save.el")))
 
 (use-package company-english-helper
   :quelpa (:fetcher github :repo "manateelazycat/company-english-helper")

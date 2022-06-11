@@ -28,7 +28,7 @@
 ;; 必须的,使用频率排序
 (use-package smex
   :config
-  (setq smex-save-file (concat maple-cache-directory "smex-items")))
+  (setq smex-save-file (maple-cache-file "smex-items")))
 
 (use-package swiper)
 
@@ -211,6 +211,9 @@
          ("C-s" . maple/counsel-ag-parent-dir)
          :map swiper-map
          ([tab] . ivy-done)))
+
+(use-package counsel-projectile
+  :commands (counsel-projectile-ag))
 
 (use-package ivy-rich
   :hook (counsel-mode . ivy-rich-mode)

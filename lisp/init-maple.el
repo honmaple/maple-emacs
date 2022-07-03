@@ -106,16 +106,16 @@
   :commands (maple-iedit-match-all maple-iedit-match-next maple-iedit-match-previous)
   :custom-face
   (iedit-occurrence ((t (:background "chocolate" :foreground "#272822"))))
-  :hydra
+  :transient
   (maple/iedit
    ()
-   ("n" maple-iedit-match-next "next")
-   ("t" maple-iedit-skip-and-match-next "skip and next")
-   ("T" maple-iedit-skip-and-match-previous "skip and previous")
-   ("p" maple-iedit-match-previous "prev"))
+   [[("n" "next" maple-iedit-match-next :transient t)]
+    [("p" "prev" maple-iedit-match-previous :transient t)]
+    [("t" "skip and next" maple-iedit-skip-and-match-next :transient t)]
+    [("T" "skip and previous" maple-iedit-skip-and-match-previous :transient t)]])
   :keybind
   (:states visual
-           ("n" . maple/iedit/body)
+           ("n" . maple/iedit)
            ("C-n" . maple-iedit-match-next)
            ("C-p" . maple-iedit-match-previous)
            ("C-t" . maple-iedit-skip-and-match-next))

@@ -13,11 +13,6 @@
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil)
   :config
-  ;; https://github.com/magit/transient/issues/18
-  (use-package transient
-    :config
-    (transient-bind-q-to-quit)
-    (setq transient-mode-line-format nil))
 
   ;; https://github.com/syl20bnr/spacemacs/issues/15448
   (with-eval-after-load 'evil-surround

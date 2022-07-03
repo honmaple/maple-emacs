@@ -114,6 +114,7 @@
   "pw"  'counsel-projectile-ag
 
 
+  "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all
   "ss" 'anzu-query-replace-regexp
   "sd" 'delete-matching-lines
@@ -121,6 +122,7 @@
   "sp" 'flyspell-correct-word-generic
   "sh" 'shell-command
   "sj" 'counsel-semantic-or-imenu
+
   "sq" '(:ignore t :desc "sql")
   "sql" 'sql-sqlite
   "sqp" 'sql-postgres
@@ -135,7 +137,7 @@
   "tn" 'display-line-numbers-mode
   "tv" 'smooth-scrolling-mode
   "tV" 'visual-line-mode
-  "th" 'maple-theme/switch/body
+  "th" 'maple-theme/switch
 
   "w" '(:ignore t :desc "window")
   ;; "ww" 'split-window-horizontally-instead
@@ -145,16 +147,12 @@
   "wc"  'delete-window
   "wH"  'evil-window-move-far-left
   "wh"  'evil-window-left
-  "w <left>"  'evil-window-left
   "wJ"  'evil-window-move-very-bottom
   "wj"  'evil-window-down
-  "w <down>"  'evil-window-down
   "wK"  'evil-window-move-very-top
   "wk"  'evil-window-up
-  "w <up>"  'evil-window-up
   "wL"  'evil-window-move-far-right
   "wl"  'evil-window-right
-  "w <right>"  'evil-window-right
   "wo"  'other-frame
   "ws"  'split-window-below
   "wU"  'winner-redo
@@ -173,13 +171,13 @@
   "cc" 'maple-language/comment
   "cC" 'maple-language/copy-and-comment
   "u"  'undo-tree-visualize
-  "'" 'maple/shell
-  "=" 'maple-language/call-format
+  "'"  'maple/shell
+  "="  'maple-language/call-format
   "h"  'help
   "rc" 'recentf-cleanup
   "rr" 'maple-run
-  "," 'counsel-M-x
-  "/" 'counsel-grep-or-swiper
+  ","  'counsel-M-x
+  "/"  'counsel-grep-or-swiper
 
   "dn" 'maple-diff:next-sign
   "dp" 'maple-diff:previous-sign
@@ -239,7 +237,7 @@
   [f6] 'maple-language/call-format
   [tab] 'maple-company-or-indent
 
-  :map 'evil-normal-state-map
+  :states '(normal motion)
   "M-J" 'evil-window-move-very-bottom
   "M-K" 'evil-window-move-very-top
   "M-L" 'evil-window-move-far-right
@@ -256,13 +254,13 @@
   "gd" 'maple-language/call-definition
   "za" 'maple-language/call-fold
 
-  :map 'evil-insert-state-map
+  :states 'insert
   "C-h" 'left-char
   "C-l" 'right-char
   "C-j" 'next-line
   "C-k" 'previous-line
 
-  :map 'evil-visual-state-map
+  :states 'visual
   "H" "^"
   "L" (lambda ()
         (interactive)

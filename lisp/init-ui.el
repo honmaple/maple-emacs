@@ -24,20 +24,19 @@
 ;;
 
 ;;; Code:
-(use-package maple-theme
-  :ensure nil
-  :commands (maple-theme/switch/body maple-theme/next maple-theme/previous)
-  :hydra
-  (maple-theme/switch
-   ()
-   ("n" maple-theme/next "next theme")
-   ("p" maple-theme/previous "prev theme")))
-
 (use-package monokai-theme)
 (use-package solarized-theme)
 (use-package spacemacs-theme)
 (use-package doom-themes
   :custom-face (show-paren-match ((t (:background "#51afef")))))
+
+(use-package maple-theme
+  :ensure nil
+  :transient
+  (maple-theme/switch
+   ()
+   [[("n" "next theme" maple-theme/next :transient t)]
+    [("p" "prev theme" maple-theme/previous :transient t)]]))
 
 ;; this is ugly
 (use-package display-line-numbers

@@ -145,6 +145,17 @@
   :custom-face
   (hydra-face-red ((t (:foreground "chocolate" :weight bold)))))
 
+(use-package transient
+  :config
+  ;; https://github.com/magit/transient/issues/18
+  (with-no-warnings (transient-bind-q-to-quit))
+  :custom
+  (transient-mode-line-format nil)
+  (transient-enable-popup-navigation nil)
+  :custom-face
+  (transient-argument
+   ((t :inherit font-lock-warning-face :slant normal :weight bold :underline nil))))
+
 (use-package which-key
   :diminish which-key-mode
   :hook

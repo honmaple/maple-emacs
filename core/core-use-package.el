@@ -23,7 +23,7 @@
 ;; define evil bind with use-package.
 ;;
 ;; (use-package package-name
-;;   :evil-bind
+;;   :keybind
 ;;   (:state normal :map python-mode-map
 ;;           ("C-c" . run-python))
 ;;   (:state (normal insert) :map python-mode-map
@@ -38,21 +38,6 @@
 ;;   :evil-state
 ;;   (comint-mode . insert)
 ;;   (sql-interactive-mode . insert)
-;;   :evil
-;;   (normal :map python-mode-map
-;;           ("C-c" . run-python))
-;;   (:bind
-;;    (:state normal :map python-mode-map
-;;            ("C-c" . run-python)))
-;;   (:state (comint-mode . insert)
-;;           (sql-interactive-mode . insert))
-;;   (:leader
-;;    ("C-c" . run-python)
-;;    (("C-c" . run-python)
-;;     ("C-s" . run-python))
-;;    (:mode python-mode
-;;           ("C-s" . run-python)
-;;           ("C-c" . run-python)))
 ;;   :custom
 ;;   (:mode org-mode
 ;;          company-tooltip-align-annotations nil)
@@ -64,6 +49,7 @@
 (require 'use-package)
 
 (defalias 'use-package-normalize/:hydra 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:transient 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:keybind 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-leader 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:evil-state 'use-package-normalize-forms)
@@ -132,6 +118,20 @@
         (setq comment (format "Customized %s with use-package" variable)))
       `((customize-set-variable (quote ,variable) ,value ,comment)))))
 
+(defun maple-use-package/hydra(args)
+  "Use hydra with ARGS."
+  `((unless (featurep ',(car args))
+      (autoload ',(car args) "hydra" nil t))
+    (with-eval-after-load 'hydra
+      (defhydra ,@args))))
+
+(defun maple-use-package/transient(args)
+  "Use transient with ARGS."
+  `((unless (featurep ',(car args))
+      (autoload ',(car args) "transient" nil t))
+    (with-eval-after-load 'transient
+      (transient-define-prefix ,@args))))
+
 (defun maple-use-package/evil-state(args)
   "Evil bind ARGS."
   (cl-loop for i in args collect `(evil-set-initial-state ',(car i) ',(cdr i))))
@@ -173,8 +173,13 @@
 (defun use-package-handler/:hydra (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   `((with-eval-after-load 'hydra
-       ,@(mapcar (lambda(body) `(defhydra ,@body)) args)))
+   `(,@(mapcan 'maple-use-package/hydra args))
+   (use-package-process-keywords name rest state)))
+
+(defun use-package-handler/:transient (name _keyword args rest state)
+  "NAME KEYWORD ARGS REST STATE."
+  (use-package-concat
+   `(,@(mapcan 'maple-use-package/transient args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:language (name _keyword args rest state)
@@ -222,6 +227,7 @@
 
 (maple-use-package/set-keyword
  '(:hydra
+   :transient
    :keybind
    :evil-state
    :evil-leader

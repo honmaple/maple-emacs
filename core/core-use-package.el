@@ -231,11 +231,9 @@
    :keybind
    :evil-state
    :evil-leader
+   :language
    :dependencies)
  'after :init)
-(maple-use-package/set-keyword
- :language
- 'after :config)
 (maple-use-package/set-keyword
  :quelpa
  'after :unless)

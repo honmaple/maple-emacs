@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+(defalias 'maple-buffer/kill 'kill-this-buffer)
 (defalias 'maple-buffer/switch 'counsel-switch-buffer)
 
 (maple-define-key
@@ -30,7 +31,7 @@
   :states '(normal motion)
   "b" '(:ignore t :desc "buffer")
   "TAB" 'maple-buffer/switch-to-previous
-  "bk" 'kill-this-buffer
+  "bk" 'maple-buffer/kill
   "bb" 'maple-buffer/switch
   "be" 'maple-buffer/safe-erase
   "bh" 'maple-buffer/switch-to-scratch
@@ -112,7 +113,6 @@
   "pc"  'projectile-cleanup-known-projects
   "pa"  'projectile-add-known-project
   "pw"  'counsel-projectile-ag
-
 
   "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all

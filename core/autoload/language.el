@@ -223,26 +223,30 @@
 (defun maple-language (mode &rest args)
   "Language define with MODE ARGS."
   (cl-destructuring-bind (&key tab run fold format checker complete definition references documentation) args
-    (let ((forms (list (when run `(setq maple-language/run ',run))
-                       (when fold  `(setq maple-language/fold ',fold))
-                       (when format `(setq maple-language/format ',format))
-                       (when definition `(setq maple-language/definition ',definition))
-                       (when references `(setq maple-language/references ',references))
-                       (when documentation `(setq maple-language/documentation ',documentation))
-                       (when tab (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil)))
-                       (when complete
-                         `(with-eval-after-load 'company
-                            (setq-local company-backends (maple-language/complete-backend ',complete))))
-                       (when checker
-                         `(with-eval-after-load 'flycheck
-                            (let ((checkers (maple-language/checker-backend ',checker)))
-                              (when (car checkers) (setq-local flycheck-checkers (car checkers)))
-                              (when (cdr checkers) (setq-local flycheck-disabled-checkers (cdr checkers)))))))))
+    (let (forms)
+      (when run (push `(setq maple-language/run ',run) forms))
+      (when fold (push `(setq maple-language/fold ',fold) forms))
+      (when format (push `(setq maple-language/format ',format) forms))
+      (when definition (push `(setq maple-language/definition ',definition) forms))
+      (when references (push `(setq maple-language/references ',references) forms))
+      (when documentation (push `(setq maple-language/documentation ',documentation) forms))
+      (when tab (push (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil)) forms))
+      (when complete
+        (push
+         `(with-eval-after-load 'company
+            (setq-local company-backends (maple-language/complete-backend ',complete)))
+         forms))
+      (when checker
+        (push
+         `(with-eval-after-load 'flycheck
+            (let ((checkers (maple-language/checker-backend ',checker)))
+              (when (car checkers) (setq-local flycheck-checkers (car checkers)))
+              (when (cdr checkers) (setq-local flycheck-disabled-checkers (cdr checkers)))))
+         forms))
       (when forms
-        (let* ((fn `(lambda() ,@(cl-loop for form in forms when form collect form)))
-               (hooks (if (listp mode)
-                          (cl-loop for m in mode collect (intern (format "%s-hook" m)))
-                        (list (intern (format "%s-hook" mode))))))
-          (dolist (hook hooks) (add-hook hook fn)))))))
+        (let ((fn `(lambda() ,@forms))
+              (ms mode))
+          (unless (listp ms) (setq ms (list ms)))
+          (dolist (m ms) (add-hook (intern (format "%s-hook" m)) fn)))))))
 
 ;;; language.el ends here

@@ -97,9 +97,13 @@
       (let ((inhibit-message t))
         (shell-command
          "osascript -e 'tell application \"System Events\"
-                        key code 49 using control down
+                             tell process \"TextInputMenuAgent\"
+                                set currentLayout to menu bar item 1 of menu bar 2
+                             end tell
+                             if description of currentLayout is not \"ABC\" then
+                                key code 49 using control down
+                             end if
                         end tell' &>/dev/null"))))
-
   (add-function :after after-focus-change-function 'maple/mac-switch-input-source)
   (with-eval-after-load 'evil
     (add-hook 'evil-insert-state-exit-hook 'maple/mac-switch-input-source)))

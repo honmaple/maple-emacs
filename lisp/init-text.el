@@ -44,14 +44,17 @@
   (maple-add-hook 'markdown-mode-hook
     (add-hook 'after-save-hook 'cleanup-org-tables  nil 'make-it-local))
 
-  (use-package markdown-toc)
   :language
-  (markdown-mode :run 'markdown-toggle-markup-hiding))
+  (markdown-mode :run 'markdown-toggle-markup-hiding)
+  :dependencies
+  (markdown-toc))
 
 (use-package yaml-mode
   :hook (yaml-mode . (lambda() (setq tab-width 2) (origami-mode 1)))
   :language
-  (yaml-mode :fold 'origami-toggle-node))
+  (yaml-mode :fold 'origami-toggle-node)
+  :dependencies
+  (origami :diminish origami-mode))
 
 (use-package writeroom-mode
   :custom

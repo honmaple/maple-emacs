@@ -78,9 +78,6 @@
         (overlay-put ov 'display (propertize (format "...#%d" nlines) 'face face)))))
   (setq hs-set-up-overlay 'maple/hs-overlay))
 
-(use-package origami
-  :diminish origami-mode)
-
 (use-package isearch
   :ensure nil
   :hook (isearch-mode . (lambda() (when (use-region-p)

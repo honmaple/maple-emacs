@@ -117,10 +117,18 @@
      (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
            (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
 
+  ;; npm install -g vls
+  ;; npm install -g typescript-language-server
+  ;; npm install -g typescript
+  (use-package lsp-javascript
+    :ensure nil
+    :custom
+    (lsp-vetur-ignore-project-warning t))
+
   :language
-  ('(yaml-mode python-mode)
+  ((yaml-mode python-mode js-mode)
    :format 'lsp-format-buffer)
-  ('lsp-mode
+  (lsp-mode
    :definition 'lsp-find-definition
    :complete   '(company-capf :with company-yasnippet)))
 

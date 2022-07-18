@@ -59,7 +59,7 @@
   (web-mode
    :run      'browse-url-of-file
    :fold     'maple/web-mode-fold-or-unfold
-   :complete '(company-web-html company-css company-tern :with company-yasnippet))
+   :complete '(company-web-html company-css :with company-yasnippet))
   :dependencies
   (company-web))
 
@@ -79,8 +79,6 @@
   (js2-bounce-indent-p nil)
   (js2-mode-show-parse-errors nil)
   (js2-mode-show-strict-warnings nil)
-  :language
-  (js2-mode :complete '(company-tern))
   :dependencies
   (coffee-mode)
   (typescript-mode))
@@ -97,12 +95,6 @@
                       (if (bound-and-true-p yas-minor-mode)
                           (call-interactively 'emmet-expand-yas)
                         (call-interactively 'emmet-expand-line))))))
-
-(use-package tern
-  :diminish tern-mode
-  :hook (js2-mode . tern-mode)
-  :config
-  (add-to-list 'tern-command "--no-port-file" 'append))
 
 (use-package npm-mode
   :hook (js2-mode . npm-mode))

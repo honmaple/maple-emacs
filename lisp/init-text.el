@@ -51,6 +51,12 @@
 
 (use-package yaml-mode
   :hook (yaml-mode . (lambda() (setq tab-width 2) (origami-mode 1)))
+  :config
+  (with-eval-after-load 'expand-region
+    (defun maple/yaml-expand-region(func regex &optional next-indent-level)
+      (funcall func regex 1000))
+
+    (advice-add 'er/mark-yaml-block-base :around 'maple/yaml-expand-region))
   :language
   (yaml-mode :fold 'origami-toggle-node)
   :dependencies

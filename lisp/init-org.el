@@ -82,7 +82,9 @@
            ("RET" . org-open-at-point)
            ("t" . org-todo))
   (:states (normal insert) :map org-mode-map
-           ([tab] . org-cycle)))
+           ([tab] . org-cycle))
+  :dependencies
+  (htmlize))
 
 (use-package org-crypt
   :ensure nil

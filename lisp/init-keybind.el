@@ -112,7 +112,8 @@
   "pi"  'projectile-invalidate-cache
   "pc"  'projectile-cleanup-known-projects
   "pa"  'projectile-add-known-project
-  "pw"  'counsel-projectile-ag
+  "pw"  'counsel-projectile-git-grep
+  "pW"  'counsel-projectile-ag
 
   "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all
@@ -179,6 +180,7 @@
   ","  'counsel-M-x
   "/"  'counsel-grep-or-swiper
 
+  "d"  '(:ignore t :desc "diff")
   "dn" 'maple-diff:next-sign
   "dp" 'maple-diff:previous-sign
 

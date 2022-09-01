@@ -42,8 +42,8 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-preview" :files ("*.el" "index.html" "static"))
   :commands (maple-preview-mode)
   :dependencies
-  (websocket)
-  (simple-httpd :pin melpa-stable))
+  (web-server)
+  (websocket))
 
 (use-package maple-note
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")

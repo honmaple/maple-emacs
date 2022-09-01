@@ -110,15 +110,6 @@
       (deactivate-mark) (buffer-substring-no-properties beg (min end eol)))))
 
 ;;;###autoload
-(defun maple/region-string()
-  "Get region string."
-  (if (not (use-region-p)) ""
-    (let* ((beg (region-beginning))
-           (end (region-end))
-           (eol (save-excursion (goto-char beg) (line-end-position))))
-      (deactivate-mark) (buffer-substring-no-properties beg (min end eol)))))
-
-;;;###autoload
 (defun maple-truncate-lines()
   "Turn on `truncate-lines`."
   (interactive)

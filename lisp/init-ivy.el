@@ -157,6 +157,7 @@
                 '(swiper
                   counsel-ag
                   counsel-grep
+                  counsel-git-grep
                   counsel-find-file)))
 
   (defun maple/ivy-dired-occur()
@@ -181,36 +182,36 @@
       (counsel-ag ivy-text (file-name-directory (directory-file-name default-directory)))))
 
   ;; custom counsel-ag
-  (defun maple/counsel-ag(-counsel-ag &optional initial-input initial-directory extra-ag-args ag-prompt)
-    (let ((int (or initial-input (maple-region-string)))
-          (dir (or initial-directory default-directory)))
-      (funcall -counsel-ag int dir extra-ag-args
-               (concat ag-prompt (abbreviate-file-name (directory-file-name dir)) ": "))))
+  (defun maple/counsel-ag(oldfunc &optional initial-input initial-directory extra-ag-args ag-prompt &key caller)
+    (let* ((int (or initial-input (maple-region-string)))
+           (dir (or initial-directory default-directory))
+           (prompt (concat ag-prompt (abbreviate-file-name (directory-file-name dir)) ": ")))
+      (funcall oldfunc int dir extra-ag-args prompt :caller caller)))
 
   (advice-add 'counsel-ag :around #'maple/counsel-ag)
 
   :keybind (("M-x" . counsel-M-x)
-         ("C-x C-m" . counsel-M-x)
-         ("M-y" . counsel-yank-pop)
-         :map ivy-minibuffer-map
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         ("C-h" . maple/ivy-c-h)
-         ("C-c C-e" . maple/ivy-edit)
-         ([tab] . maple/ivy-done)
-         ([escape] . minibuffer-keyboard-quit)
-         ([backspace] . maple/ivy-backward-delete-char)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         :map counsel-find-file-map
-         ("C-<return>" . ivy-immediate-done)
-         ([tab] . maple/ivy-done)
-         ([backspace] . maple/ivy-backward-delete-char)
-         :map counsel-ag-map
-         ([tab] . ivy-call)
-         ("C-s" . maple/counsel-ag-parent-dir)
-         :map swiper-map
-         ([tab] . ivy-done)))
+            ("C-x C-m" . counsel-M-x)
+            ("M-y" . counsel-yank-pop)
+            :map ivy-minibuffer-map
+            ("C-j" . ivy-next-line)
+            ("C-k" . ivy-previous-line)
+            ("C-h" . maple/ivy-c-h)
+            ("C-c C-e" . maple/ivy-edit)
+            ([tab] . maple/ivy-done)
+            ([escape] . minibuffer-keyboard-quit)
+            ([backspace] . maple/ivy-backward-delete-char)
+            :map ivy-switch-buffer-map
+            ("C-k" . ivy-previous-line)
+            :map counsel-find-file-map
+            ("C-<return>" . ivy-immediate-done)
+            ([tab] . maple/ivy-done)
+            ([backspace] . maple/ivy-backward-delete-char)
+            :map counsel-ag-map
+            ([tab] . ivy-call)
+            ("C-s" . maple/counsel-ag-parent-dir)
+            :map swiper-map
+            ([tab] . ivy-done)))
 
 (use-package counsel-projectile
   :commands (counsel-projectile-ag))

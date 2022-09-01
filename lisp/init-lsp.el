@@ -59,9 +59,21 @@
 
   (advice-add 'lsp--init-if-visible :around 'maple/lsp--init-if-visible)
 
+  (defun maple/lsp-shutdown-all()
+    (interactive)
+    (dolist (workspace (lsp--session-workspaces (lsp-session)))
+      (let ((lsp--cur-workspace workspace))
+        (lsp--shutdown-workspace))))
+
   (defun maple/lsp-shutdown()
     (interactive)
-    (lsp--global-teardown))
+    (let* ((ws (mapcar (lambda(w) (cons (format "%s --> %s"
+                                                (lsp--workspace-root w)
+                                                (lsp--workspace-print w))
+                                        w))
+                       (lsp--session-workspaces (lsp-session))))
+           (lsp--cur-workspace (cdr (assoc (completing-read "Shutdown workspace: " ws) ws))))
+      (lsp--shutdown-workspace)))
 
   (use-package lsp-diagnostics
     :ensure nil

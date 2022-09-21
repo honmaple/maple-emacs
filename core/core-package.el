@@ -112,7 +112,11 @@
   :ensure nil
   :custom
   (browse-url-generic-program (if maple-system-is-mac "open" "google-chrome-stable"))
-  (browse-url-browser-function 'browse-url-generic))
+  (browse-url-browser-function (cond (maple-system-is-mac
+                                      'browse-url-default-macosx-browser)
+                                     (maple-system-is-windows
+                                      'browse-url-default-windows-browser)
+                                     (t 'browse-url-generic))))
 
 (use-package ediff
   :ensure nil

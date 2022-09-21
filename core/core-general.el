@@ -46,6 +46,7 @@
       initial-major-mode 'fundamental-mode
       initial-scratch-message "")
 
+;; (setq visible-bell t)            ;; 禁止警示音, mac下使用jj evil-escape时会出现上下边框
 (setq use-file-dialog nil
       use-dialog-box nil
       indicate-empty-lines t

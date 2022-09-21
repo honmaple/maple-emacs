@@ -49,3 +49,6 @@
 [submodule "site-lisp/maple-diff"]
 	path = site-lisp/maple-diff
 	url = git@github.com:honmaple/emacs-maple-diff
+[submodule "site-lisp/maple-header"]
+	path = site-lisp/maple-header
+	url = git@github.com:honmaple/emacs-maple-header.git

@@ -41,6 +41,7 @@
     (setq electric-pair-pairs '((?\' . ?\'))))
 
   :custom
+  (web-mode-code-indent-offset 2)
   (web-mode-markup-indent-offset 2)
   (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
   (web-mode-enable-current-element-highlight t)

@@ -210,6 +210,10 @@
             :map counsel-ag-map
             ([tab] . ivy-call)
             ("C-s" . maple/counsel-ag-parent-dir)
+            :map counsel-grep-map
+            ([tab] . ivy-call)
+            :map counsel-git-grep-map
+            ([tab] . ivy-call)
             :map swiper-map
             ([tab] . ivy-done)))
 

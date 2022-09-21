@@ -31,10 +31,8 @@
 (use-package org-faces
   :ensure nil
   :config
-  (when (display-graphic-p)
-    ;; (set-face-attribute 'org-table nil :font "-Misc-Fixed-normal-normal-normal-*-18-*-*-*-c-90-iso10646-1")
-    ;; (set-face-attribute 'org-table nil :font "-jis-fixed-medium-r-normal--16-*-75-75-c-160-jisx0208.1983-0")
-    ;; (set-face-attribute 'org-table nil :font "-Sony-Sony Fixed-normal-normal-normal-*-16-*-*-*-c-80-iso10646-1")
+  (when (and (display-graphic-p)
+             (find-font (font-spec :name "Inconsolata")))
     (set-face-attribute 'org-table nil :font "Inconsolata 12")))
 
 (use-package org

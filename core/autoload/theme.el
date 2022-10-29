@@ -26,8 +26,8 @@
 ;;; Code:
 (declare-function powerline-reset 'powerline)
 
-;; (defvar maple-theme/alist
-;;   (mapcar 'symbol-name (custom-available-themes)))
+;; (defvar maple-theme/alist (custom-available-themes))
+
 ;; (defvar maple-theme/alist
 ;;   (delete "doom-one-light" (mapcar 'symbol-name (custom-available-themes))))
 
@@ -40,7 +40,8 @@
     doom-one
     doom-horizon
     doom-peacock
-    doom-vibrant))
+    doom-vibrant
+    doom-tomorrow-day))
 
 (defun maple-theme/cycle (&optional backward)
   "Theme switch with BACKWARD."

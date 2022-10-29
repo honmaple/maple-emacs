@@ -64,6 +64,8 @@
 
   (defun maple/org-as-html()
     (interactive)
+    (unless (featurep 'ox-html)
+      (require 'ox-html))
     (let ((org-html-head-include-scripts nil)
           (org-html-head-include-default-style nil))
       (org-html-export-as-html nil nil nil t)))

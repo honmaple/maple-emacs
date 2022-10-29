@@ -65,6 +65,8 @@
   (company-web))
 
 (use-package css-mode
+  :custom
+  (css-indent-offset 2)
   :language
   (css-mode :complete '(company-css :with company-yasnippet))
   :dependencies

@@ -51,9 +51,6 @@
         (join-line 1)
         (delete-horizontal-space)
         (insert sep))))
-
-  :custom-face
-  (region ((t (:background "gray" :foreground "#272822"))))
   :keybind (:map evil-normal-state-map
                  ("C-k" . evil-scroll-up)
                  ("C-j" . evil-scroll-down)))

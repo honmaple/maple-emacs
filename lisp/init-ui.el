@@ -32,6 +32,8 @@
 
 (use-package maple-theme
   :ensure nil
+  :custom-face
+  (region ((t (:background "gray" :foreground "#272822"))))
   :transient
   (maple-theme/switch
    ()
@@ -62,14 +64,13 @@
 (use-package highlight-parentheses
   :hook (prog-mode . highlight-parentheses-mode)
   :custom
-  (hl-paren-colors '("Springgreen3"
-                     "IndianRed1"
-                     "#51afef"
-                     "IndianRed3"
-                     "#da8548"
-                     "IndianRed4"))
-  (:face
-   (hl-paren-face ((t (:inherit hl-paren-face :weight ultra-bold)))))
+  (highlight-parentheses-colors '("Springgreen3"
+                                  "IndianRed1"
+                                  "#51afef"
+                                  "IndianRed3"
+                                  "#da8548"
+                                  "IndianRed4"))
+  :custom-face (highlight-parentheses-highlight ((nil (:weight ultra-bold))))
   :diminish highlight-parentheses-mode)
 
 ;; 颜色

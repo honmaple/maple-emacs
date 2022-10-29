@@ -27,10 +27,8 @@
 
 ;; 必须的,使用频率排序
 (use-package smex
-  :config
-  (setq smex-save-file (maple-cache-file "smex-items")))
-
-(use-package swiper)
+  :custom
+  (smex-save-file (maple-cache-file "smex-items")))
 
 (use-package ivy
   :diminish (ivy-mode)
@@ -139,10 +137,11 @@
   :custom-face
   (ivy-highlight-face ((t (:background nil))))
   :dependencies
+  (swiper)
   (ivy-xref
-   :init
-   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs
-         xref-show-definitions-function #'ivy-xref-show-defs)))
+   :custom
+   (xref-show-xrefs-function #'ivy-xref-show-xrefs)
+   (xref-show-definitions-function #'ivy-xref-show-defs)))
 
 (use-package counsel
   :diminish (counsel-mode)
@@ -223,8 +222,7 @@
 (use-package ivy-rich
   :hook (counsel-mode . ivy-rich-mode)
   :config
-  (setq ivy-rich-path-style 'abbrev
-        ivy-rich-switch-buffer-align-virtual-buffer t)
+  (setq ivy-rich-path-style 'abbrev)
 
   (defun ivy-rich-format (candidate columns &optional delimiter)
     (mapconcat
@@ -248,7 +246,6 @@
     (advice-add 'all-the-icons-ivy-rich-file-id :override #'(lambda(x) ""))
 
     (advice-add 'all-the-icons-ivy-rich--format-icon :filter-return 'string-trim-left)
-    (advice-add 'ivy-rich-bookmark-type :override 'all-the-icons-ivy-rich-bookmark-type)
     (setq ivy-rich-display-transformers-list all-the-icons-ivy-rich-display-transformers-list)))
 
 (provide 'init-ivy)

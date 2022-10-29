@@ -168,7 +168,6 @@
   "w4"  'select-window-4
   "w5"  'select-window-5
 
-
   "cc" 'maple-language/comment
   "cC" 'maple-language/copy-and-comment
   "u"  'undo-tree-visualize
@@ -221,16 +220,14 @@
   "oe" 'org-export-dispatch
   "ot" 'org-set-tags
   "o." 'org-time-stamp
-  "op" 'org-priority
+  ;; "op" 'org-priority
   "oP" 'org-pomodoro
   "or" 'org-decrypt-entry
   "ow" 'org-refile
   "td" 'org-deadline
   "ts" 'org-schedule
   "tm" 'org-toggle-inline-images
-  "im" 'maple/capture-screenshot
-  "em" 'maple/org-md-export-to-markdown
-  "eh" 'maple/org-html-export-to-html
+  "im" 'maple-org/capture-screenshot
   )
 
 (maple-define-key

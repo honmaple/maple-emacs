@@ -141,7 +141,7 @@ is equivalent to
                keywords nil))
         ((pred keywordp)
          (let ((preset (alist-get first maple-keybind-preset-alist)))
-           (when preset (setq keywords (append preset keywords)))))
+           (when preset (setq args (append preset args)))))
         (_
          (if (consp first)
              (setq key (car-safe first)

@@ -1,6 +1,6 @@
 ;;; init-tool.el --- Initialize tool configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2022 lin.jiang
+;; Copyright (C) 2015-2023 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs

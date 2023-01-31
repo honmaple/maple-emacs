@@ -154,6 +154,7 @@
   (setq ivy-initial-inputs-alist
         (mapcar (lambda(x) (cons x 'maple-region-string))
                 '(swiper
+                  counsel-rg
                   counsel-ag
                   counsel-grep
                   counsel-git-grep
@@ -170,15 +171,21 @@
        (wdired-change-to-wdired-mode)
        (when (bound-and-true-p evil-local-mode) (evil-normal-state)))))
 
-  (defun maple/counsel-ag-directory()
+  (defun maple/counsel-grep(&optional initial-input initial-directory)
     (interactive)
-    (counsel-ag nil (read-directory-name "Search in directory: ")))
+    (cond ((executable-find "rg") (counsel-rg initial-input initial-directory))
+          ((executable-find "ag") (counsel-ag initial-input initial-directory))
+          (t (counsel-grep initial-input))))
 
-  (defun maple/counsel-ag-parent-dir ()
+  (defun maple/counsel-grep-dir()
+    (interactive)
+    (maple/counsel-grep nil (read-directory-name "Search in directory: ")))
+
+  (defun maple/counsel-grep-parent-dir ()
     "Search upwards in the directory tree."
     (interactive)
     (ivy-quit-and-run
-      (counsel-ag ivy-text (file-name-directory (directory-file-name default-directory)))))
+      (maple/counsel-grep ivy-text (file-name-directory (directory-file-name default-directory)))))
 
   ;; custom counsel-ag
   (defun maple/counsel-ag(oldfunc &optional initial-input initial-directory extra-ag-args ag-prompt &key caller)
@@ -206,9 +213,12 @@
             ("C-<return>" . ivy-immediate-done)
             ([tab] . maple/ivy-done)
             ([backspace] . maple/ivy-backward-delete-char)
+            :map counsel-rg-map
+            ([tab] . ivy-call)
+            ("C-s" . maple/counsel-grep-parent-dir)
             :map counsel-ag-map
             ([tab] . ivy-call)
-            ("C-s" . maple/counsel-ag-parent-dir)
+            ("C-s" . maple/counsel-grep-parent-dir)
             :map counsel-grep-map
             ([tab] . ivy-call)
             :map counsel-git-grep-map
@@ -217,7 +227,14 @@
             ([tab] . ivy-done)))
 
 (use-package counsel-projectile
-  :commands (counsel-projectile-ag))
+  :commands (maple/counsel-projectile-grep)
+  :config
+  (defun maple/counsel-projectile-grep()
+    (interactive)
+    (call-interactively
+     (cond ((executable-find "rg") 'counsel-projectile-rg)
+           ((executable-find "ag") 'counsel-projectile-ag)
+           (t 'counsel-projectile-grep)))))
 
 (use-package ivy-rich
   :hook (counsel-mode . ivy-rich-mode)

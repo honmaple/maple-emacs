@@ -65,6 +65,10 @@
 (defconst maple-system-is-windows
   (eq system-type 'windows-nt))
 
+(defconst maple-system-is-wsl
+  (and (eq system-type 'gnu/linux)
+       (string-match "-[Mm]icrosoft" operating-system-release)))
+
 (defvar user-handler-alist file-name-handler-alist)
 
 (defadvice load-theme (after run-maple-theme-hook activate)
@@ -94,6 +98,9 @@
         gc-cons-threshold (* 256 1024 1024)
         gc-cons-percentage 0.6
         file-name-handler-alist nil)
+
+  (when (and maple-system-is-wsl (display-graphic-p))
+    (set-face-attribute 'default nil :height 140))
 
   (require 'core-autoload)
   (require 'core-general)

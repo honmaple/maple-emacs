@@ -76,8 +76,8 @@
   "ff" 'find-file
   "fF" 'counsel-file-jump
   "fr" 'counsel-recentf
-  "fw" 'counsel-ag
-  "fW" 'maple/counsel-ag-directory
+  "fw" 'maple/counsel-grep
+  "fW" 'maple/counsel-grep-dir
 
   "g" '(:ignore t :desc "git")
   "gi" 'magit-init
@@ -112,8 +112,7 @@
   "pi"  'projectile-invalidate-cache
   "pc"  'projectile-cleanup-known-projects
   "pa"  'projectile-add-known-project
-  "pw"  'counsel-projectile-git-grep
-  "pW"  'counsel-projectile-ag
+  "pw"  'maple/counsel-projectile-grep
 
   "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all

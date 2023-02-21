@@ -76,7 +76,9 @@
               x-wait-for-event-timeout nil
               truncate-lines t
               truncate-partial-width-windows nil
-              ad-redefinition-action 'accept)
+              ad-redefinition-action 'accept
+              ;; 不要增加新行在文件末尾
+              mode-require-final-newline nil)
 
 (setq mouse-yank-at-point t
       mouse-wheel-scroll-amount '(1 ((shift) . 1))

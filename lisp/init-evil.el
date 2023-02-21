@@ -56,21 +56,19 @@
                  ("C-j" . evil-scroll-down)))
 
 (use-package evil-numbers
-  :after evil
   :keybind (:map evil-normal-state-map
                  ("+" . evil-numbers/inc-at-pt)
                  ("-" . evil-numbers/dec-at-pt)))
 
 (use-package expand-region
-  :after evil
   :keybind (:map evil-visual-state-map
                  ("v" . er/expand-region)
                  ("V" . er/contract-region)))
 
-(use-package evil-leader
-  :hook (maple-init . global-evil-leader-mode)
-  :config
-  (evil-leader/set-leader ","))
+;; (use-package evil-leader
+;;   :hook (maple-init . global-evil-leader-mode)
+;;   :config
+;;   (evil-leader/set-leader ","))
 
 (use-package evil-surround
   :hook (maple-init . global-evil-surround-mode)
@@ -83,7 +81,6 @@
   :hook (maple-init . global-evil-matchit-mode))
 
 (use-package evil-escape
-  :diminish 'evil-escape-mode
   :hook (maple-init . evil-escape-mode)
   :custom
   (evil-escape-key-sequence "jj")

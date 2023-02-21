@@ -52,6 +52,7 @@
   (org-descriptive-links nil) ;; 不要锁定连接，保持原样
   (org-src-window-setup 'split-window-right)
   (org-adapt-indentation t)
+  (org-edit-src-content-indentation 0) ;; org src中不要缩进
   (org-log-done t)
   (org-todo-keywords
    '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")

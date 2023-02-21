@@ -56,9 +56,9 @@
   (load maple-autoload-file nil 'nomessage)
   (message "generate autoload file: %s done." maple-autoload-file))
 
-(unless (file-exists-p maple-autoload-file)
+(if (file-exists-p maple-autoload-file)
+    (load maple-autoload-file nil 'nomessage)
   (maple-autoload/reload))
-(load maple-autoload-file nil 'nomessage)
 
 (provide 'core-autoload)
 ;;; core-autoload.el ends here

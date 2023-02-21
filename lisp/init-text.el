@@ -57,6 +57,32 @@
       (funcall func regex 1000))
 
     (advice-add 'er/mark-yaml-block-base :around 'maple/yaml-expand-region))
+
+  (defun maple/yaml-compute-indentation()
+    (let ((ci (current-indentation))
+          (im (looking-at yaml-hash-key-re)))
+      (save-excursion
+        (beginning-of-line)
+        (if (looking-at yaml-document-delimiter-re) 0
+          (forward-line -1)
+          (while (and (looking-at yaml-blank-line-re)
+                      (> (point) (point-min)))
+            (forward-line -1))
+          (let ((li (current-indentation)))
+            ;; 如果上一行是hash key, 当前行不是, 或者当前行的缩进大于上一行
+            (if (or (> li ci) (and im (= li ci))) ci
+              (+ li
+                 (if (looking-at yaml-nested-map-re) yaml-indent-offset 0)
+                 (if (looking-at yaml-nested-sequence-re) yaml-indent-offset 0)
+                 (if (looking-at yaml-block-literal-re) yaml-indent-offset 0))))))))
+
+  (defun maple/yaml-indent-region(func &rest args)
+    (if (derived-mode-p 'yaml-mode)
+        (letf (((symbol-function 'yaml-compute-indentation) 'maple/yaml-compute-indentation))
+          (apply func args))
+      (apply func args)))
+
+  (advice-add 'indent-region :around 'maple/yaml-indent-region)
   :language
   (yaml-mode :fold 'origami-toggle-node)
   :dependencies

@@ -138,7 +138,7 @@
     (lsp-vetur-ignore-project-warning t))
 
   :language
-  ((yaml-mode python-mode js-mode)
+  ((python-mode js-mode)
    :format 'lsp-format-buffer)
   (lsp-mode
    :definition 'lsp-find-definition

@@ -46,7 +46,8 @@
   :commands (browse-at-remote)
   :config
   ;; github.com.cnpmjs.org -> github.com
-  (add-to-list 'browse-at-remote-remote-type-regexps '("^github\\.com.*$" . "github")))
+  (add-to-list 'browse-at-remote-remote-type-regexps '(:host "^github\\.com.*$" :type "github"))
+  )
 
 (provide 'init-git)
 ;;; init-git.el ends here

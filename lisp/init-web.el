@@ -42,7 +42,7 @@
 
   :custom
   (web-mode-code-indent-offset 2)
-  (web-mode-markup-indent-offset 2)
+  (web-mode-markup-indent-offset 4)
   (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-auto-indentation nil)
@@ -66,7 +66,7 @@
 
 (use-package css-mode
   :custom
-  (css-indent-offset 2)
+  (css-indent-offset 4)
   :language
   (css-mode :complete '(company-css :with company-yasnippet))
   :dependencies
@@ -78,7 +78,7 @@
   :mode ("\\.js\\'" . js2-mode)
   :hook (js2-mode . js2-imenu-extras-mode)
   :custom
-  (js-indent-level 2)
+  (js-indent-level 4)
   (js2-bounce-indent-p nil)
   (js2-mode-show-parse-errors nil)
   (js2-mode-show-strict-warnings nil)

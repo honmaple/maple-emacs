@@ -29,7 +29,7 @@
 
 (use-package lsp-mode
   :diminish "LSP"
-  :hook ((python-mode go-mode yaml-mode) . lsp-deferred)
+  :hook ((python-mode go-mode js-mode) . lsp-deferred)
   :custom
   (lsp-restart 'auto-restart)
   (lsp-auto-guess-root t)
@@ -45,9 +45,7 @@
   (lsp-session-file (maple-cache-file "lsp-session-v1"))
   :config
   (defun maple/lsp-project-root(func session file-name)
-    (let ((result (funcall func session file-name)))
-      (if result (or (lsp-find-session-folder session file-name) result)
-        (lsp--find-root-interactively session))))
+    (or (funcall func session file-name) (lsp--find-root-interactively session)))
 
   (advice-add 'lsp--calculate-root :around 'maple/lsp-project-root)
 

@@ -112,7 +112,7 @@
   (avy-all-windows t)
   (avy-background t)
   :keybind
-  (:states normal :map prog-mode-map ("F" . avy-goto-char)))
+  (:states (normal visual) ("F" . avy-goto-char)))
 
 (use-package ace-pinyin
   :diminish ace-pinyin-mode

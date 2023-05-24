@@ -26,27 +26,13 @@
 ;;; Code:
 (use-package web-mode
   :mode ("\\.\\(xml\\|vue\\|html?\\)$")
-  :config
-  (fset 'maple/put-text-property (symbol-function 'put-text-property))
-  (defun maple/web-mode-put-text(p q prop value)
-    (if (and (eq prop 'invisible) value) (hs-make-overlay p q 'code)
-      (maple/put-text-property p q prop value)))
-
-  (defun maple/web-mode-fold-or-unfold()
-    (interactive)
-    (cl-letf (((symbol-function 'put-text-property) 'maple/web-mode-put-text))
-      (web-mode-fold-or-unfold)))
-
-  (maple-add-hook 'web-mode-hook
-    (setq electric-pair-pairs '((?\' . ?\'))))
-
   :custom
-  (web-mode-code-indent-offset 2)
-  (web-mode-markup-indent-offset 4)
+  (web-mode-code-indent-offset 4)
+  (web-mode-markup-indent-offset 2)
   (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
-  (web-mode-enable-current-element-highlight t)
   (web-mode-enable-auto-indentation nil)
   (web-mode-enable-css-colorization nil)
+  (web-mode-enable-current-element-highlight t)
   (web-mode-engines-alist '(("django" . "\\.\\(xml\\|vue\\|html?\\)$")))
   (web-mode-engines-auto-pairs '(("django" . (("{{ " . " }")
                                               ("{% " . " %")
@@ -59,7 +45,7 @@
   :language
   (web-mode
    :run      'browse-url-of-file
-   :fold     'maple/web-mode-fold-or-unfold
+   :fold     'web-mode-fold-or-unfold
    :complete '(company-web-html company-css :with company-yasnippet))
   :dependencies
   (company-web))
@@ -74,15 +60,11 @@
   (sass-mode)
   (scss-mode))
 
-(use-package js2-mode
-  :mode ("\\.js\\'" . js2-mode)
-  :hook (js2-mode . js2-imenu-extras-mode)
-  :custom
-  (js-indent-level 4)
-  (js2-bounce-indent-p nil)
-  (js2-mode-show-parse-errors nil)
-  (js2-mode-show-strict-warnings nil)
+(use-package js-mode
+  :ensure nil
   :dependencies
+  (npm-mode
+   :hook (js-mode . npm-mode))
   (coffee-mode)
   (typescript-mode))
 
@@ -90,17 +72,14 @@
   :commands (web-beautify-html web-beautify-css web-beautify-js))
 
 (use-package emmet-mode
-  :diminish emmet-mode
   :hook ((html-mode sgml-mode web-mode) . emmet-mode)
   :keybind
   (:states insert :map emmet-mode-keymap
            ([tab] . (lambda() (interactive)
                       (if (bound-and-true-p yas-minor-mode)
                           (call-interactively 'emmet-expand-yas)
-                        (call-interactively 'emmet-expand-line))))))
-
-(use-package npm-mode
-  :hook (js2-mode . npm-mode))
+                        (call-interactively 'emmet-expand-line)))))
+  :diminish emmet-mode)
 
 (provide 'init-web)
 ;;; init-web.el ends here

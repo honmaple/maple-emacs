@@ -27,9 +27,13 @@
 ;; (use-package eglot
 ;;   :hook ((python-mode go-mode yaml-mode) . eglot-ensure))
 
+(use-package lsp-dart
+  :custom
+  (lsp-dart-flutter-fringe-colors nil))
+
 (use-package lsp-mode
   :diminish "LSP"
-  :hook ((python-mode go-mode js-mode) . lsp-deferred)
+  :hook ((python-mode go-mode js-mode dart-mode) . lsp-deferred)
   :custom
   (lsp-restart 'auto-restart)
   (lsp-auto-guess-root t)

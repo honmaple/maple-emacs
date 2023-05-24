@@ -21,7 +21,9 @@
   :keybind
   (:map magit-mode-map
         ("<tab>" . magit-section-cycle)
-        ("C-<tab>" . magit-section-toggle)))
+        ("C-<tab>" . magit-section-toggle)
+        :states (normal visual)
+        ("F" . magit-pull)))
 
 (use-package git-modes)
 
@@ -46,8 +48,7 @@
   :commands (browse-at-remote)
   :config
   ;; github.com.cnpmjs.org -> github.com
-  (add-to-list 'browse-at-remote-remote-type-regexps '(:host "^github\\.com.*$" :type "github"))
-  )
+  (add-to-list 'browse-at-remote-remote-type-regexps '(:host "^github\\.com.*$" :type "github")))
 
 (provide 'init-git)
 ;;; init-git.el ends here

@@ -33,19 +33,11 @@
 ;;; Code:
 (use-package python
   :ensure nil
-  :config
-  (defun maple/run-python ()
-    (interactive)
-    (or (python-shell-get-process) (call-interactively 'run-python))
-    (if (use-region-p)
-        (python-shell-send-region (region-beginning) (region-end) t)
-      (python-shell-send-buffer t)))
   :custom
   (python-indent-offset 4)
   (python-indent-guess-indent-offset nil)
   (python-shell-completion-native-enable nil)
   (:language python-mode
-             :run 'maple/run-python
              :checker '(:disable python-pylint))
   :dependencies
   (pyenv-mode

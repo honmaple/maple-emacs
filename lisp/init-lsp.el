@@ -56,11 +56,6 @@
   (defun maple/lsp-restart-workspace(&rest _)
     (call-interactively 'lsp-restart-workspace))
 
-  (defun maple/lsp--init-if-visible(func &rest args)
-    (unless (bound-and-true-p git-timemachine-mode) (apply func args)))
-
-  (advice-add 'lsp--init-if-visible :around 'maple/lsp--init-if-visible)
-
   (defun maple/lsp-shutdown-all()
     (interactive)
     (dolist (workspace (lsp--session-workspaces (lsp-session)))

@@ -88,7 +88,7 @@ is equivalent to
         (when (stringp key) (setq key (string-to-vector key)))
         (when (stringp def) (setq def (string-to-vector def)))
         (cl-destructuring-bind (&key if ignore states package desc) args
-          (when (and package (symbolp def))
+          (when (and package def (symbolp def))
             (push `(unless (fboundp ',def)
                      (autoload #',def ,(if (stringp package) package (symbol-name package))))
                   forms))

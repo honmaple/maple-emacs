@@ -120,6 +120,9 @@
     (maple-add-hook 'find-file-hook
       'maple-file/check-large)
 
+    (maple-add-hook 'find-file-not-found-functions
+      'maple-file/mkdir-maybe)
+
     (maple-add-path (expand-file-name "site-lisp" user-emacs-directory))))
 
 (add-to-list 'load-path (file-name-directory load-file-name))

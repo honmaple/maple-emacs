@@ -136,6 +136,15 @@
                (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
 ;;;###autoload
+(defun maple-file/mkdir-maybe ()
+  "Create parent directory if not exists while visiting file."
+  (let ((dir (file-name-directory buffer-file-name)))
+    (unless (file-exists-p dir)
+      (if (y-or-n-p (format "Directory %s does not exist,do you want you create it? " dir))
+          (make-directory dir t)
+        (keyboard-quit)))))
+
+;;;###autoload
 (defun maple-file/show-and-copy-buffer-filename ()
   "Show the full path to the current file in the minibuffer."
   (interactive)

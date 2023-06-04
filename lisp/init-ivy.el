@@ -112,16 +112,6 @@
     (run-with-idle-timer 0 nil 'ivy-wgrep-change-to-wgrep-mode)
     (ivy-occur))
 
-  (defun maple/ivy-make-directory-maybe ()
-    "Create parent directory if not exists while visiting file."
-    (let ((dir (file-name-directory buffer-file-name)))
-      (unless (file-exists-p dir)
-        (if (y-or-n-p (format "Directory %s does not exist,do you want you create it? " dir))
-            (make-directory dir t)
-          (keyboard-quit)))))
-
-  (add-to-list 'find-file-not-found-functions 'maple/ivy-make-directory-maybe nil #'eq)
-
   ;; completion-system
   (with-eval-after-load 'evil
     (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
@@ -160,17 +150,6 @@
                   counsel-git-grep
                   counsel-find-file)))
 
-  (defun maple/ivy-dired-occur()
-    (interactive)
-    (find-name-dired
-     (or (projectile-project-root) default-directory) (concat (ivy--input) "*"))
-    (ivy-exit-with-action
-     (lambda (_)
-       (pop-to-buffer (get-buffer "*Find*"))
-       (dired-hide-details-mode)
-       (wdired-change-to-wdired-mode)
-       (when (bound-and-true-p evil-local-mode) (evil-normal-state)))))
-
   (defun maple/counsel-grep(&optional initial-input initial-directory)
     (interactive)
     (cond ((executable-find "rg") (counsel-rg initial-input initial-directory))
@@ -196,9 +175,13 @@
 
   (advice-add 'counsel-ag :around #'maple/counsel-ag)
 
-  :keybind (("M-x" . counsel-M-x)
-            ("C-x C-m" . counsel-M-x)
-            ("M-y" . counsel-yank-pop)
+  :keybind (([remap imenu]                    . counsel-semantic-or-imenu)
+            ([remap yank-pop]                 . counsel-yank-pop)
+            ([remap bookmark-jump]            . counsel-bookmark)
+            ([remap switch-to-buffer]         . counsel-switch-buffer)
+            ([remap recentf-open-files]       . counsel-recentf)
+            ([remap execute-extended-command] . counsel-M-x)
+            ([remap isearch-backward]         . counsel-grep-or-swiper)
             :map ivy-minibuffer-map
             ("C-j" . ivy-next-line)
             ("C-k" . ivy-previous-line)

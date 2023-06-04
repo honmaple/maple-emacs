@@ -23,8 +23,16 @@
 ;;
 
 ;;; Code:
+(defalias 'find-file-jump 'counsel-file-jump)
+
+(defalias 'projectile-git 'counsel-git)
+(defalias 'projectile-grep-or-other 'maple/counsel-projectile-grep)
+
+(defalias 'maple-file/grep 'maple/counsel-grep)
+(defalias 'maple-file/grep-dir 'maple/counsel-grep-dir)
+
 (defalias 'maple-buffer/kill 'kill-this-buffer)
-(defalias 'maple-buffer/switch 'counsel-switch-buffer)
+(defalias 'maple-buffer/switch 'switch-to-buffer)
 
 (maple-define-key
   :prefix ","
@@ -73,12 +81,13 @@
   "fCu" 'maple-file/dos2unix
   "fD"  'maple-file/delete
   "fR"  'maple-file/rename
-  "ff" 'find-file
-  "fF" 'counsel-file-jump
-  "fr" 'counsel-recentf
-  "fw" 'maple/counsel-grep
-  "fW" 'maple/counsel-grep-dir
+  "ff"  'find-file
+  "fF"  'find-file-jump
+  "fr"  'recentf-open-files
+  "fw"  'maple-file/grep
+  "fW"  'maple-file/grep-dir
 
+  :package 'magit
   "g" '(:ignore t :desc "git")
   "gi" 'magit-init
   "gs" 'magit-status
@@ -86,8 +95,10 @@
   "gd" 'magit-diff-dwim
   "gD" 'magit-branch-delete
   "gc" 'magit-branch-or-checkout
-  "gt" 'git-timemachine
+  "gf" 'magit-file-dispatch
+  "gt" 'magit-blob-previous
 
+  :package nil
   "n" '(:ignore t :desc "narrow")
   "nr" 'narrow-to-region
   "np" 'narrow-to-page
@@ -105,14 +116,14 @@
   "p" '(:ignore t :desc "project")
   "pb"  'projectile-switch-to-buffer
   "pd"  'projectile-find-dir
-  "pf"  'counsel-git
+  "pf"  'projectile-git
   "pF"  'projectile-find-file
   "pp"  'projectile-switch-project
   "pr"  'projectile-recentf
   "pi"  'projectile-invalidate-cache
   "pc"  'projectile-cleanup-known-projects
   "pa"  'projectile-add-known-project
-  "pw"  'maple/counsel-projectile-grep
+  "pw"  'projectile-grep-or-other
 
   "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all
@@ -121,7 +132,7 @@
   "sD" 'delete-non-matching-lines
   "sp" 'flyspell-correct-word-generic
   "sh" 'shell-command
-  "sj" 'counsel-semantic-or-imenu
+  "sj" 'imenu
 
   "sq" '(:ignore t :desc "sql")
   "sql" 'sql-sqlite
@@ -169,14 +180,14 @@
 
   "cc" 'maple-language/comment
   "cC" 'maple-language/copy-and-comment
-  "u"  'undo-tree-visualize
-  "'"  'maple/shell
   "="  'maple-language/call-format
-  "h"  'help
+  "'"  'maple/shell
   "rc" 'recentf-cleanup
   "rr" 'maple-run
-  ","  'counsel-M-x
-  "/"  'counsel-grep-or-swiper
+  "u"  'undo-tree-visualize
+  "h"  'help
+  ","  'execute-extended-command
+  "/"  'isearch-backward
 
   "d"  '(:ignore t :desc "diff")
   "dn" 'maple-diff:next-sign
@@ -247,8 +258,6 @@
   "H" "^"
   "L" "$"
   "U" 'undo-tree-redo
-  ;; (kbd "RET") 'maple-evil/insert-line-below
-  "S-<return>" 'maple-evil/insert-line-above
   "gd" 'maple-language/call-definition
   "za" 'maple-language/call-fold
 

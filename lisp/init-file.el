@@ -42,11 +42,12 @@
 ;;; Code:
 (use-package dired
   :ensure nil
-  :config
-  (setq dired-recursive-copies 'always ;;递归拷贝
-        dired-recursive-deletes 'always
-        dired-dwim-target t)
-  (put 'dired-find-alternate-file 'disabled nil)  ;; 只有一个buffer
+  :custom
+  (dired-dwim-target t)
+  (dired-recursive-copies 'always) ;;递归拷贝
+  (dired-recursive-deletes 'always)
+  (:function
+   (put 'dired-find-alternate-file 'disabled nil))  ;; 只有一个buffer
   :keybind (:map dired-mode-map
                  ("RET" . dired-find-alternate-file)
                  ("C-c C-e" . wdired-change-to-wdired-mode)))
@@ -137,8 +138,8 @@
   (neo-show-hidden-files nil)
   (neo-auto-indent-point t)
   (neo-vc-integration '(face))
-  :config
-  (maple-evil-map neotree-mode-map)
+  (:function
+   (maple-evil-map neotree-mode-map))
   :keybind (([f2] . neotree-toggle)
             :map neotree-mode-map
             ("C" . neotree-copy-node)

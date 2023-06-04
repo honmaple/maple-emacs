@@ -1,8 +1,28 @@
-;;; init-git.el --- git stuff
+;;; init-git.el --- Initialize vcs configurations.	-*- lexical-binding: t -*-
+
+;; Copyright (C) 2015-2023 lin.jiang
+
+;; Author: lin.jiang <mail@honmaple.com>
+;; URL: https://github.com/honmaple/maple-emacs
+
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
-
+;; Vcs configurations.
+;;
+;; git-timemachine 由 magit-blob-previous 代替
 
 ;;; Code:
 (use-package magit
@@ -13,11 +33,9 @@
   (magit-diff-refine-hunk t)
   (magit-section-visibility-indicator nil)
   :config
-
   ;; https://github.com/syl20bnr/spacemacs/issues/15448
   (with-eval-after-load 'evil-surround
     (add-hook 'magit-status-mode-hook #'turn-off-evil-surround-mode))
-
   :keybind
   (:map magit-mode-map
         ("<tab>" . magit-section-cycle)
@@ -29,17 +47,6 @@
 
 (use-package git-commit
   :hook (git-commit-mode . goto-address-mode))
-
-(use-package git-timemachine
-  :config
-  (maple-evil-map git-timemachine-mode-map)
-
-  ;; force update evil keymaps after git-timemachine-mode loaded
-  (with-eval-after-load 'evil
-    (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps))
-  :keybind
-  (:states normal :map git-timemachine-mode-map
-           ("gg" . evil-goto-first-line)))
 
 (use-package blamer
   :commands (blamer-mode))

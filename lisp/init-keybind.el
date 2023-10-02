@@ -26,7 +26,7 @@
 (defalias 'find-file-jump 'counsel-file-jump)
 
 (defalias 'projectile-git 'counsel-git)
-(defalias 'projectile-grep-or-other 'maple/counsel-projectile-grep)
+(defalias 'projectile-grep-or-other 'counsel-git-grep)
 
 (defalias 'maple-file/grep 'maple/counsel-grep)
 (defalias 'maple-file/grep-dir 'maple/counsel-grep-dir)
@@ -109,8 +109,8 @@
   "oa" 'org-agenda
   "oc" 'org-capture
   "ob" 'org-switchb
-  "od" 'youdao-dictionary-search-at-point+
-  "oD" 'youdao-dictionary-search-at-point
+  "od" 'maple-translate
+  "oD" 'maple-translate+
   "op" 'browse-at-remote
 
   "p" '(:ignore t :desc "project")
@@ -140,13 +140,7 @@
   "sqm" 'sql-mysql
 
   "t" '(:ignore t :desc "toggle mode")
-  "tg" 'golden-ratio-mode
-  "tS" 'flyspell-mode
-  "ts" 'flycheck-mode
-  "tc" 'company-mode
-  "tf" 'fci-mode
   "tn" 'display-line-numbers-mode
-  "tv" 'smooth-scrolling-mode
   "tV" 'visual-line-mode
   "th" 'maple-theme/switch
 
@@ -221,7 +215,7 @@
 
   :map 'go-mode-map
   "ri" 'go-goto-imports
-  "rI" 'go-remove-unused-imports
+  ;; "rI" 'go-remove-unused-imports
   "ra" 'go-import-add
   "rd" 'godef-describe
   "rt" 'go-add-tags

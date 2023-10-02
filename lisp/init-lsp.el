@@ -110,7 +110,8 @@
   (use-package lsp-go
     :ensure nil
     :custom
-    (lsp-go-codelenses nil))
+    (lsp-go-codelenses nil)
+    :keybind (:prefix "," :states normal :map go-mode-map ("rI" . lsp-organize-imports)))
 
   ;; npm install -g yaml-language-server
   (use-package lsp-yaml

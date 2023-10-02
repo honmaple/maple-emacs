@@ -24,17 +24,6 @@
 ;;
 
 ;;; Code:
-
-(use-package docker-tramp)
-
-(use-package youdao-dictionary
-  :custom
-  (url-automatic-caching t)
-  (youdao-dictionary-search-history-file (maple-cache-file "youdao"))
-  (youdao-dictionary-use-chinese-word-segmentation t)
-  :config
-  (maple-evil-map youdao-dictionary-mode-map))
-
 (use-package figlet)
 
 (use-package esup

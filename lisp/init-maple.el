@@ -58,6 +58,11 @@
   (web-server)
   (websocket))
 
+(use-package maple-translate
+  :ensure nil
+  :quelpa (:fetcher github :repo "honmaple/emacs-maple-translate")
+  :commands (maple-translate maple-translate+))
+
 (use-package maple-note
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
   :commands (maple-note)

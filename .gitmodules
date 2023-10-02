@@ -52,3 +52,6 @@
 [submodule "site-lisp/maple-header"]
 	path = site-lisp/maple-header
 	url = git@github.com:honmaple/emacs-maple-header.git
+[submodule "site-lisp/maple-translate"]
+	path = site-lisp/maple-translate
+	url = git@github.com:honmaple/emacs-maple-translate.git

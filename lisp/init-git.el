@@ -36,12 +36,20 @@
   ;; https://github.com/syl20bnr/spacemacs/issues/15448
   (with-eval-after-load 'evil-surround
     (add-hook 'magit-status-mode-hook #'turn-off-evil-surround-mode))
+
+  (defun magit-blob-quit()
+    (interactive)
+    (while (bound-and-true-p magit-blob-mode)
+      (magit-kill-this-buffer)))
+
   :keybind
   (:map magit-mode-map
         ("<tab>" . magit-section-cycle)
         ("C-<tab>" . magit-section-toggle)
         :states (normal visual)
-        ("F" . magit-pull)))
+        ("F" . magit-pull))
+  (:map magit-blob-mode-map
+        ("q" . magit-blob-quit)))
 
 (use-package git-modes)
 

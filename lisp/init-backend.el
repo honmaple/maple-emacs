@@ -27,7 +27,7 @@
 ;; go get -u github.com/rogpeppe/godef
 ;; go get -u github.com/golang/lint/golint
 ;; go get -u github.com/haya14busa/gopkgs/cmd/gopkgs
-;; GO111MODULE=on go get golang.org/x/tools/gopls@latest
+;; go install golang.org/x/tools/gopls@latest
 ;;
 
 ;;; Code:
@@ -56,30 +56,25 @@
   (go-rename)
   (go-add-tags))
 
-(use-package rust-mode
-  :dependencies
-  (flycheck-rust
-   :hook (rust-mode . flycheck-rust-setup)))
+(use-package rust-mode)
 
 (use-package cc-mode
   :custom
   (c-default-style "linux")
-  (c-basic-offset 4)
-  (:language c-mode :complete 'company-c-headers)
-  :dependencies
-  (company-c-headers))
+  (c-basic-offset 4))
 
 (use-package lua-mode
-  :diminish lua-mode
   :custom
   (lua-indent-level 4)
-  (lua-indent-string-contents t)
-  (:language lua-mode :complete 'company-lua)
-  :dependencies
-  (company-lua))
+  (lua-indent-string-contents t))
 
-(use-package dart-mode
-  :diminish)
+(use-package dart-mode)
+
+(use-package protobuf-mode
+  :dependencies
+  (flymake-buf-lint
+   :ensure nil
+   :hook (protobuf-mode . flymake-buf-lint-setup)))
 
 (use-package sh-mode
   :ensure nil
@@ -92,8 +87,7 @@
   (sql-interactive-mode . maple-truncate-lines)
   (sql-interactive-mode . maple-process-exit)
   :custom
-  (sql-input-ring-file-name
-   (expand-file-name "sql.history" user-emacs-directory))
+  (sql-input-ring-file-name (maple-cache-file "sql.history"))
   (sql-postgres-login-params
    '((user :default "postgres")
      (database :default "postgres")

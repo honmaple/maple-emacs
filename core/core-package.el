@@ -156,6 +156,7 @@
   :custom
   (transient-mode-line-format nil)
   (transient-enable-popup-navigation nil)
+  (transient-history-file (maple-cache-file "transient.el"))
   :custom-face
   (transient-argument
    ((t :inherit font-lock-warning-face :slant normal :weight bold :underline nil))))

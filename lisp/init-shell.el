@@ -64,6 +64,11 @@
     (interactive)
     (cl-letf (((symbol-function 'switch-to-buffer) 'pop-to-buffer))
       (term "/bin/bash")))
+
+  (defun maple/term-handle-exit (&optional process-name msg)
+    (quit-window t))
+
+  (advice-add 'term-handle-exit :after 'maple/term-handle-exit)
   :keybind
   (:states insert :map term-raw-map
            ("C-c C-d" . term-send-eof)

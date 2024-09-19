@@ -113,5 +113,15 @@
                              (butlast all-the-icons-icon-alist)
                              (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
 
+(use-package nerd-icons
+  :if maple-icon
+  ;; :config
+  ;; (let ((url-proxy-services
+  ;;        '(("http" . "127.0.0.1:1086")
+  ;;          ("https" . "127.0.0.1:1086"))))
+  ;;   (nerd-icons-install-fonts t))
+  )
+
+
 (provide 'init-ui)
 ;;; init-ui.el ends here

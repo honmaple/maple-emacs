@@ -45,16 +45,11 @@
   :language
   (web-mode
    :run      'browse-url-of-file
-   :fold     'web-mode-fold-or-unfold
-   :complete '(company-web-html company-css :with company-yasnippet))
-  :dependencies
-  (company-web))
+   :fold     'web-mode-fold-or-unfold))
 
 (use-package css-mode
   :custom
   (css-indent-offset 4)
-  :language
-  (css-mode :complete '(company-css :with company-yasnippet))
   :dependencies
   (less-css-mode)
   (sass-mode)
@@ -62,6 +57,7 @@
 
 (use-package js-mode
   :ensure nil
+  :hook (js-mode . (lambda() (indent-tabs-mode -1)))
   :dependencies
   (npm-mode
    :hook (js-mode . npm-mode))

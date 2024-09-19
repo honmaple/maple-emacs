@@ -105,7 +105,7 @@
     (:default  `((setq-default ,@(apply 'append (cdr args)))))
     (:variable `((setq ,@(apply 'append (cdr args)))))
     (:function `((progn ,@(cdr args))))
-    (:language `((maple-language ',(cadr args) ,@(cddr args))))))
+    (:language `((maple-language-define ',(cadr args) ,@(cddr args))))))
 
 (defun maple-use-package/custom(args)
   "Custom variable with ARGS."
@@ -185,7 +185,7 @@
 (defun use-package-handler/:language (name _keyword args rest state)
   "NAME KEYWORD ARGS REST STATE."
   (use-package-concat
-   `(,@(mapcar (lambda(body) `(maple-language ',(car body) ,@(cdr body))) args))
+   `(,@(mapcar (lambda(body) `(maple-language-define ',(car body) ,@(cdr body))) args))
    (use-package-process-keywords name rest state)))
 
 (defun use-package-handler/:dependencies (name _keyword args rest state)

@@ -23,30 +23,33 @@
 ;;
 
 ;;; Code:
+;; (defalias 'maple/projectile-grep 'maple/consult-project-grep)
+
+;; (defalias 'find-file-jump 'maple/consult-find)
+;; (defalias 'maple-file/grep 'maple/consult-grep)
+;; (defalias 'maple-file/grep-prompt 'maple/consult-prompt-grep)
+
+(defalias 'maple/projectile-grep 'counsel-projectile-rg)
+(defalias 'maple/projectile-find-file 'counsel-git)
+
 (defalias 'find-file-jump 'counsel-file-jump)
 
-(defalias 'projectile-git 'counsel-git)
-(defalias 'projectile-grep-or-other 'counsel-git-grep)
-
 (defalias 'maple-file/grep 'maple/counsel-grep)
-(defalias 'maple-file/grep-dir 'maple/counsel-grep-dir)
-
-(defalias 'maple-buffer/kill 'kill-this-buffer)
-(defalias 'maple-buffer/switch 'switch-to-buffer)
+(defalias 'maple-file/grep-prompt 'maple/counsel-grep-dir)
 
 (maple-define-key
   :prefix ","
   :states '(normal motion)
   "b" '(:ignore t :desc "buffer")
-  "TAB" 'maple-buffer/switch-to-previous
-  "bk" 'maple-buffer/kill
-  "bb" 'maple-buffer/switch
+  "bk" 'kill-this-buffer
+  "bb" 'switch-to-buffer
   "be" 'maple-buffer/safe-erase
   "bh" 'maple-buffer/switch-to-scratch
   "bK" 'maple-buffer/kill-others
   "bR" 'maple-buffer/safe-revert
   "bP" 'maple-buffer/copy-clipboard
   "bY" 'maple-buffer/copy-to-clipboard
+  "TAB" 'maple-buffer/switch-to-previous
   "bm" 'bookmark-set
   "bj" 'bookmark-jump
   "bs" 'bookmark-save
@@ -56,12 +59,18 @@
   "bl" 'maple-note
   "bi" 'maple-explorer-file
 
-  "e"  '(:ignore t :desc "flycheck")
-  "el" 'flycheck-list-errors
-  "ec" 'flycheck-clear
-  "es" 'flycheck-select-checker
-  "en" 'flycheck-next-error
-  "ep" 'flycheck-previous-error
+  ;; "e"  '(:ignore t :desc "flycheck")
+  ;; "el" 'flycheck-list-errors
+  ;; "ec" 'flycheck-clear
+  ;; "es" 'flycheck-select-checker
+  ;; "en" 'flycheck-next-error
+  ;; "ep" 'flycheck-previous-error
+
+  "e"  '(:ignore t :desc "flymake")
+  "el" 'flymake-show-buffer-diagnostics
+  "ec" 'flymake-proc-stop-all-syntax-checks
+  "en" 'flymake-goto-next-error
+  "ep" 'flymake-goto-prev-error
 
   "f"  '(:ignore t :desc "file")
   "fj"  'dired-jump
@@ -85,7 +94,7 @@
   "fF"  'find-file-jump
   "fr"  'recentf-open-files
   "fw"  'maple-file/grep
-  "fW"  'maple-file/grep-dir
+  "fW"  'maple-file/grep-prompt
 
   :package 'magit
   "g" '(:ignore t :desc "git")
@@ -115,15 +124,14 @@
 
   "p" '(:ignore t :desc "project")
   "pb"  'projectile-switch-to-buffer
-  "pd"  'projectile-find-dir
-  "pf"  'projectile-git
-  "pF"  'projectile-find-file
   "pp"  'projectile-switch-project
   "pr"  'projectile-recentf
   "pi"  'projectile-invalidate-cache
   "pc"  'projectile-cleanup-known-projects
   "pa"  'projectile-add-known-project
-  "pw"  'projectile-grep-or-other
+  "pd"  'projectile-find-dir
+  "pf"  'maple/projectile-find-file
+  "pw"  'maple/projectile-grep
 
   "s"  '(:ignore t :desc "search and replace")
   "se" 'maple-iedit-match-all
@@ -172,9 +180,10 @@
   "w4"  'select-window-4
   "w5"  'select-window-5
 
-  "cc" 'maple-language/comment
-  "cC" 'maple-language/copy-and-comment
-  "="  'maple-language/call-format
+  "c"  '(:ignore t :desc "comment")
+  "cc" 'maple-language-comment
+  "cC" 'maple-language-comment-and-copy
+  "="  'maple-language-format
   "'"  'maple/shell
   "rc" 'recentf-cleanup
   "rr" 'maple-run
@@ -194,8 +203,6 @@
   "qr" 'restart-emacs
   "qR" 'maple/restart-emacs
   "qk" 'kill-emacs
-  "qc" 'maple/reload-user-init-file
-  "qQ" 'maple/kill-emacs
 
   :map 'web-mode-map
   "ra" 'web-mode-element-clone
@@ -236,9 +243,8 @@
 
 (maple-define-key
   [remap keyboard-quit] 'maple-escape
-  [f5] 'maple-language/call-run
-  [f6] 'maple-language/call-format
-  [tab] 'maple-company-or-indent
+  [f5] 'maple-language-run
+  [f6] 'maple-language-format
 
   :states '(normal motion)
   "M-J" 'evil-window-move-very-bottom
@@ -252,8 +258,8 @@
   "H" "^"
   "L" "$"
   "U" 'undo-tree-redo
-  "gd" 'maple-language/call-definition
-  "za" 'maple-language/call-fold
+  "za" 'maple-language-fold
+  "gd" 'maple-language-find-definition
 
   :states 'insert
   "C-h" 'left-char
@@ -265,7 +271,7 @@
   "H" "^"
   "L" (lambda ()
         (interactive)
-        (evil-end-of-line))
+        (end-of-line))
   "<" (lambda ()
         (interactive)
         (call-interactively 'evil-shift-left)

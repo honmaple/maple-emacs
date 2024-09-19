@@ -45,7 +45,7 @@
   :custom
   (zoom-size '(0.618 . 0.618))
   (zoom-ignored-major-modes
-   '(term-mode shell-mode flycheck-error-list-mode ediff-mode))
+   '(term-mode shell-mode flycheck-error-list-mode flymake-diagnostics-buffer-mode ediff-mode))
   (zoom-ignored-buffer-names '(" *Org todo*"))
   :config
   (defun maple/balance-windows(func &optional window-or-frame)
@@ -58,25 +58,23 @@
 
 (use-package shackle
   :hook (maple-init . shackle-mode)
+  :config
+  (advice-add 'shackle-match :filter-return
+              (lambda(x) (when x (append x '(:align 'below :autoclose t)))))
   :custom
   (shackle-default-size 0.3)
-  (shackle-default-alignment 'below)
   (shackle-default-rule nil)
   (shackle-rules
-   '((("*compilation*" "*Completions*" "*ert*" "*Warnings*" "*Messages*")
-      :align 'below :autoclose t)
-     (("*Help*" "*Backtrace*")
-      :select t :align 'below :autoclose t)
+   '((("*compilation*" "*Completions*" "*ert*" "*Warnings*" "*Messages*"))
+     (("*Help*" "*Backtrace*" " *undo-tree*")
+      :select t)
      (("^\\*.*Shell Command.*\\*$" "\\*[Wo]*Man.*\\*")
-      :regexp t :align 'below :autoclose t)
-     (" *undo-tree*"
-      :select t :autoclose t)
+      :regexp t)
 
-     (flycheck-error-list-mode :select t :align 'below :autoclose t)
-     (inferior-python-mode :select t)
-     (comint-mode :align 'below)
-     (term-mode :align 'below :select t :size 15)
-     (process-menu-mode :select t :align 'below :autoclose t))))
+     ((term-mode comint-mode inferior-python-mode)
+      :select t :popup t)
+     ((process-menu-mode flycheck-error-list-mode flymake-diagnostics-buffer-mode)
+      :select t))))
 
 (provide 'init-window)
 ;;; init-window.el ends here

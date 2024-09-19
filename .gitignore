@@ -16,4 +16,5 @@ init.el~
 newsticker/
 recentf~
 url/
+tmp/
 tramp

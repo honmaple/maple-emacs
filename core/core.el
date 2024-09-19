@@ -39,6 +39,12 @@
 (defvar maple-python 'python3
   "Use python2 or python3.")
 
+(defvar maple-lsp 'eglot
+  "Language server.")
+
+(defvar maple-syntax-checker 'flymake
+  "Syntax checker.")
+
 (defvar maple-package-archive 'tuna
   "Elpa package mirror.")
 
@@ -88,7 +94,7 @@
 (defun maple-finish()
   "Restore defalut values after init."
   (setq file-name-handler-alist user-handler-alist
-        gc-cons-threshold 800000
+        gc-cons-threshold (* 8 1024 1024)
         gc-cons-percentage 0.1))
 
 (defun maple-initialize ()

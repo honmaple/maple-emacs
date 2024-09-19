@@ -59,8 +59,14 @@
   (websocket))
 
 (use-package maple-translate
-  :ensure nil
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-translate")
+  :custom
+  (maple-translate-sdcv-dicts
+   '(("lazyworm-ec" . "stardict/stardict-lazyworm-ec-2.4.2")
+     ("lazyworm-ce" . "stardict/stardict-lazyworm-ce-2.4.2")))
+  (maple-translate-google-proxies
+   '(("http" . "127.0.0.1:1086")
+     ("https" . "127.0.0.1:1086")))
   :commands (maple-translate maple-translate+))
 
 (use-package maple-note
@@ -162,8 +168,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-explorer")
   :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf maple-explorer-search)
   :config
-  (when (and (display-graphic-p) maple-icon) (maple-explorer-icon-mode))
-  (setq maple-explorer-file-display-alist '((side . left) (slot . -1))))
+  (when (and (display-graphic-p) maple-icon) (maple-explorer-icon-mode)))
 
 (use-package maple-env
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-env")

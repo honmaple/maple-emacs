@@ -42,15 +42,15 @@
     init-maple
     init-editor      ;; 自动补全括号等
     init-evil
-    init-ivy
     init-file        ;; 文件操作
     init-window
     init-keybind))
 
 (defvar maple-develops
-  '(init-company
-    init-flycheck
+  '(init-ivy
     init-lsp
+    init-check
+    init-completion
     init-git
     init-web
     init-backend

@@ -33,85 +33,23 @@
   "Display minibuffer with another frame."
   :group 'maple)
 
-(defcustom maple-language/run nil
-  "Language run script."
-  :type 'function
+(defcustom maple-language-alist nil
+  "Language alist configuration."
+  :type 'list
   :group 'maple-language)
 
-(make-variable-buffer-local 'maple-language/run)
+(defvar maple-language--alist nil)
 
-(defcustom maple-language/fold 'maple-language/default-fold
-  "Language toggle fold."
-  :type 'function
-  :group 'maple-language)
+(make-variable-buffer-local 'maple-language--alist)
 
-(make-variable-buffer-local 'maple-language/fold)
+(defun maple-language--plist-get(mode key &optional default)
+  "Custom `plist-get` with ARGS and MODE KEY DEFAULT."
+  (let ((args (or maple-language--alist
+                  (cdr (assoc mode maple-language-alist))
+                  (cdr (assoc t maple-language-alist)))))
+    (or (plist-get args key) default)))
 
-(defcustom maple-language/format 'maple-language/default-format
-  "Language call indent format."
-  :type 'function
-  :group 'maple-language)
-
-(make-variable-buffer-local 'maple-language/format)
-
-(defcustom maple-language/definition 'maple-language/default-definition
-  "Language find definition."
-  :type 'function
-  :group 'maple-language)
-
-(make-variable-buffer-local 'maple-language/definition)
-
-(defcustom maple-language/references 'xref-find-references
-  "Language find references."
-  :type 'function
-  :group 'maple-language)
-
-(make-variable-buffer-local 'maple-language/references)
-
-(defcustom maple-language/documentation nil
-  "Language find documentation."
-  :type 'function
-  :group 'maple-language)
-
-(make-variable-buffer-local 'maple-language/documentation)
-
-(defcustom maple-language/complete-enable-snippet t
-  "Language auto completion enable company-yasnippet."
-  :type 'boolean
-  :group 'maple-language)
-
-(defcustom maple-language/complete-backends
-  '((company-dabbrev-code
-     company-capf
-     company-keywords
-     company-files
-     :with company-yasnippet)
-    (company-dabbrev
-     company-gtags
-     company-etags
-     :with company-yasnippet))
-  "Language auto completion default backends."
-  :type '(list)
-  :group 'maple-language)
-
-;;;###autoload
-(defun maple-language/complete-backend(&optional backend with-snippet)
-  "Return BACKENDs WITH-SNIPPET or not."
-  (if (not backend) maple-language/complete-backends
-    (let ((backend (if (listp backend) backend (list backend))))
-      (append (list (if with-snippet (maple-language/complete-backend-with-snippet backend) backend))
-              maple-language/complete-backends))))
-
-(defun maple-language/complete-backend-with-snippet(backend)
-  "Return BACKEND with company-yasnippet."
-  (if (or (not maple-language/complete-enable-snippet)
-          (and (listp backend)
-               (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-
-(defun maple-language/checker-backend(backend)
+(defun maple-language--checker-backend(backend)
   "Return BACKEND."
   (cl-loop for checker in backend
            if (eq checker :disable)
@@ -121,24 +59,8 @@
            else collect checker into a
            finally (return (cons a b))))
 
-(defun maple-language/imenu-items()
-  "Get all definition with imenu."
-  (unless (featurep 'imenu)
-    (require 'imenu nil t))
-  (let* ((imenu-max-item-length "Unlimited")
-         (imenu-auto-rescan t)
-         (imenu-auto-rescan-maxout (buffer-size))
-         (items (imenu--make-index-alist t))
-         (items (delete (assoc "*Rescan*" items) items)))
-    (ignore imenu-max-item-length)
-    (ignore imenu-auto-rescan)
-    (ignore imenu-auto-rescan-maxout)
-    items))
-
-;;;###autoload
-(defun maple-language/comment(&optional paste)
+(defun maple-language--comment(&optional paste)
   "Call comment.Yank selected region if PASTE."
-  (interactive)
   (save-excursion
     (when (and (bound-and-true-p hs-minor-mode) (hs-already-hidden-p))
       (set-mark (line-beginning-position))
@@ -152,101 +74,97 @@
       (comment-or-uncomment-region beg end))))
 
 ;;;###autoload
-(defun maple-language/copy-and-comment()
+(defun maple-language-comment-and-copy()
   "Copy and comment."
   (interactive)
-  (maple-language/comment t))
+  (maple-language--comment t))
 
 ;;;###autoload
-(defun maple-language/default-format()
-  "Call default indent format."
-  (interactive)
-  (save-excursion
-    (if (use-region-p)
-        (indent-region (region-beginning) (region-end) nil)
-      (indent-region (point-min) (point-max) nil))))
-
-;;;###autoload
-(defun maple-language/default-fold()
-  "Call default fold."
-  (interactive)
-  (call-interactively (cond ((bound-and-true-p evil-mode)
-                             'evil-toggle-fold)
-                            (t 'hs-toggle-hiding))))
-
-;;;###autoload
-(defun maple-language/default-definition()
-  "Call default definition."
-  (interactive)
-  (let (xref-prompt-for-identifier)
-    (ignore xref-prompt-for-identifier)
-    (call-interactively
-     (if (bound-and-true-p lsp-mode) 'lsp-find-definition #'xref-find-definitions))))
-
-;;;###autoload
-(defun maple-language/call-run()
-  "Call run."
-  (interactive)
-  (call-interactively maple-language/run))
-
-;;;###autoload
-(defun maple-language/call-fold()
+(defun maple-language-comment()
   "Call fold."
   (interactive)
-  (call-interactively maple-language/fold))
+  (let ((fn (maple-language--plist-get major-mode :comment)))
+    (if fn (call-interactively fn)
+      (maple-language--comment))))
 
 ;;;###autoload
-(defun maple-language/call-format()
+(defun maple-language-run()
+  "Call run."
+  (interactive)
+  (let ((fn (maple-language--plist-get major-mode :run)))
+    (call-interactively fn)))
+
+;;;###autoload
+(defun maple-language-fold()
+  "Call fold."
+  (interactive)
+  (let ((fn (maple-language--plist-get major-mode :fold)))
+    (call-interactively
+     (or fn (cond ((bound-and-true-p evil-mode)
+                   'evil-toggle-fold)
+                  (t 'hs-toggle-hiding))))))
+
+;;;###autoload
+(defun maple-language-format()
   "Call indent format."
   (interactive)
-  (call-interactively maple-language/format))
+  (let ((fn (maple-language--plist-get major-mode :format)))
+    (if fn (call-interactively fn)
+      (save-excursion
+        (if (use-region-p)
+            (indent-region (region-beginning) (region-end) nil)
+          (indent-region (point-min) (point-max) nil))))))
 
 ;;;###autoload
-(defun maple-language/call-definition()
+(defun maple-language-find-definition()
   "Call definition."
   (interactive)
-  (call-interactively maple-language/definition))
+  (let ((fn (maple-language--plist-get major-mode :definition)))
+    (call-interactively
+     (or fn 'xref-find-definitions))))
 
 ;;;###autoload
-(defun maple-language/call-references()
+(defun maple-language-find-references()
   "Call references."
   (interactive)
-  (call-interactively maple-language/references))
+  (let ((fn (maple-language--plist-get major-mode :references)))
+    (call-interactively
+     (or fn 'xref-find-references))))
 
 ;;;###autoload
-(defun maple-language/call-documentation()
+(defun maple-language-find-documentation()
   "Call documentation."
   (interactive)
-  (call-interactively maple-language/documentation))
+  (let ((fn (maple-language--plist-get major-mode :documentation)))
+    (call-interactively fn)))
 
 ;;;###autoload
-(defun maple-language (mode &rest args)
+(defun maple-language-define (mode &rest args)
   "Language define with MODE ARGS."
-  (cl-destructuring-bind (&key tab run fold format checker complete definition references documentation) args
-    (let (forms)
-      (when run (push `(setq maple-language/run ',run) forms))
-      (when fold (push `(setq maple-language/fold ',fold) forms))
-      (when format (push `(setq maple-language/format ',format) forms))
-      (when definition (push `(setq maple-language/definition ',definition) forms))
-      (when references (push `(setq maple-language/references ',references) forms))
-      (when documentation (push `(setq maple-language/documentation ',documentation) forms))
-      (when tab (push (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil)) forms))
-      (when complete
-        (push
-         `(with-eval-after-load 'company
-            (setq-local company-backends (maple-language/complete-backend ',complete)))
-         forms))
-      (when checker
-        (push
-         `(with-eval-after-load 'flycheck
-            (let ((checkers (maple-language/checker-backend ',checker)))
-              (when (car checkers) (setq-local flycheck-checkers (car checkers)))
-              (when (cdr checkers) (setq-local flycheck-disabled-checkers (cdr checkers)))))
-         forms))
-      (when forms
-        (let ((fn `(lambda() ,@forms))
-              (ms mode))
-          (unless (listp ms) (setq ms (list ms)))
-          (dolist (m ms) (add-hook (intern (format "%s-hook" m)) fn)))))))
+  (let ((tab (plist-get args :tab))
+        (checker (plist-get args :checker))
+        (complete (plist-get args :complete))
+        (forms `((setq maple-language--alist ',args))))
+    (when tab
+      (push
+       (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil))
+       forms))
+    (when complete
+      (push
+       `(with-eval-after-load 'company
+          (setq-local company-backends (maple-language--complete-backend ',complete)))
+       forms))
+    (when checker
+      (push
+       `(with-eval-after-load 'flycheck
+          (let ((checkers (maple-language--checker-backend ',checker)))
+            (when (car checkers) (setq-local flycheck-checkers (car checkers)))
+            (when (cdr checkers) (setq-local flycheck-disabled-checkers (cdr checkers)))))
+       forms))
+    (when forms
+      (let ((fn `(lambda() ,@forms))
+            (ms mode))
+        (unless (listp ms) (setq ms (list ms)))
+        (dolist (m ms) (add-hook (intern (format "%s-hook" m)) fn))))))
 
 ;;; language.el ends here

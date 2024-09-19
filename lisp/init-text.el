@@ -27,8 +27,11 @@
 (use-package json-mode)
 (use-package vimrc-mode)
 (use-package nginx-mode)
-(use-package protobuf-mode)
 (use-package dockerfile-mode)
+
+(use-package diff-mode
+  :ensure nil
+  :hook (diff-mode . (lambda() (setq indent-region-function 'ignore))))
 
 (use-package markdown-mode
   :config

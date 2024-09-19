@@ -31,16 +31,21 @@
   (magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
   (magit-process-popup-time 3)
   (magit-diff-refine-hunk t)
+  (magit-show-long-lines-warning nil)
   (magit-section-visibility-indicator nil)
   :config
+  (with-eval-after-load 'evil
+    (add-hook 'magit-blob-mode-hook 'evil-normalize-keymaps))
+
   ;; https://github.com/syl20bnr/spacemacs/issues/15448
   (with-eval-after-load 'evil-surround
     (add-hook 'magit-status-mode-hook #'turn-off-evil-surround-mode))
 
-  (defun magit-blob-quit()
-    (interactive)
-    (while (bound-and-true-p magit-blob-mode)
-      (magit-kill-this-buffer)))
+  (define-advice magit-blob-visit (:around (orig-fun &rest args) kill-all-blob-after-quit)
+    (let ((prev-buffer (current-buffer)))
+      (apply orig-fun args)
+      (unless (and magit-buffer-file-name (equal magit-buffer-file-name (buffer-file-name prev-buffer)))
+        (kill-buffer prev-buffer))))
 
   :keybind
   (:map magit-mode-map
@@ -49,12 +54,10 @@
         :states (normal visual)
         ("F" . magit-pull))
   (:map magit-blob-mode-map
-        ("q" . magit-blob-quit)))
+        ("n" . magit-blob-next)
+        ("p" . magit-blob-previous)))
 
 (use-package git-modes)
-
-(use-package git-commit
-  :hook (git-commit-mode . goto-address-mode))
 
 (use-package blamer
   :commands (blamer-mode))

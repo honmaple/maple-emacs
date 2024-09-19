@@ -125,7 +125,7 @@
     (setq magit-completing-read-function 'ivy-completing-read))
 
   :custom-face
-  (ivy-highlight-face ((t (:background nil))))
+  (ivy-highlight-face ((t (:background unspecified))))
   :dependencies
   (swiper)
   (ivy-xref

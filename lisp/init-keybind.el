@@ -1,5 +1,5 @@
 ;;; init-keybind.el --- Keybind configurations.	-*- lexical-binding: t -*-
-;; Copyright (C) 2015-2023 lin.jiang
+;; Copyright (C) 2015-2024 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs

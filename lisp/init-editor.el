@@ -1,6 +1,6 @@
 ;;; init-editor.el --- Initialize editor configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2023 lin.jiang
+;; Copyright (C) 2015-2024 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -104,8 +104,16 @@
 (use-package wgrep
   :custom
   (wgrep-auto-save-buffer t)
-  :keybind (:map wgrep-mode-map
-                 ("C-c C-c" . wgrep-finish-edit)))
+  :config
+  (maple-evil-map grep-mode-map)
+  (maple-evil-map wgrep-mode-map)
+  :keybind
+  (:map wgrep-mode-map
+        ("C-c C-c" . wgrep-finish-edit)
+        :map grep-mode-map
+        ("q" . maple-quit-window))
+  (:states normal :map wgrep-mode-map
+           ([remap evil-write] . wgrep-finish-edit)))
 
 (use-package avy
   :custom

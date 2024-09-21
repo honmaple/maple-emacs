@@ -1,6 +1,6 @@
 ;;; core/autoload/help.el ---  custom function.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2023 lin.jiang
+;; Copyright (C) 2015-2024 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -84,14 +84,6 @@
   (setq indent-tabs-mode (not indent-tabs-mode)))
 
 ;;;###autoload
-(defun maple-company-or-indent ()
-  "Company buffer or indent."
-  (interactive)
-  (if (minibufferp)
-      (minibuffer-complete)
-    (company-indent-or-complete-common)))
-
-;;;###autoload
 (defun maple-escape ()
   "Run maple-escape."
   (interactive)
@@ -121,6 +113,12 @@
   "Make MAP evil with STATE."
   (with-eval-after-load 'evil
     (evil-make-overriding-map map (or state 'normal))))
+
+;;;###autoload
+(defun maple-quit-window (&optional window)
+  "Quit WINDOW and kill buffer."
+  (interactive "P")
+  (quit-window 'kill-buffer window))
 
 ;;;###autoload
 (defun maple-kill-emacs ()

@@ -1,6 +1,6 @@
 ;;; maple-use-package.el --- define evil bind with use-package.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2018-2020 lin.jiang
+;; Copyright (C) 2018-2024 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/emacs-maple-modeline

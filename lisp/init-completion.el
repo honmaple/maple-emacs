@@ -1,6 +1,6 @@
-;;; init-completion.el --- Initialize ivy configurations.	-*- lexical-binding: t -*-
+;;; init-completion.el --- Initialize completion configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2023 lin.jiang
+;; Copyright (C) 2015-2024 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 ;;
-;; Ivy configurations.
+;; Completion configurations.
 ;;
 
 ;;; Code:
@@ -97,11 +97,11 @@
    :initial (maple-region-string)
    :preview-key '(:debounce 0.2 any))
 
-  (defun maple/file-completion-table (cands)
+  (defun maple/completion-table (cands &optional category)
     (lambda (string pred action)
       (cond
        ((eq action 'metadata)
-        '(metadata . ((category . file))))
+        (cons 'metadata (list (cons 'category (or category 'file)))))
        (t
         (complete-with-action action cands string pred)))))
 
@@ -109,7 +109,7 @@
     (interactive)
     (let* ((cmd "rg --files --color=never")
            (cands (split-string (shell-command-to-string cmd) "\n" t))
-           (file (completing-read "Find file: " (maple/file-completion-table cands) nil t)))
+           (file (completing-read "Find file: " (maple/completion-table cands) nil t)))
       (find-file file)))
 
   (defun maple/project-find-file ()
@@ -147,12 +147,18 @@
   :custom
   (which-key-use-C-h-commands nil)
   (prefix-help-command #'embark-prefix-help-command)
+  :config
+
+  (defun maple/embark-export ()
+    (interactive)
+    (run-with-idle-timer 0 nil 'wgrep-change-to-wgrep-mode)
+    (embark-export))
+
   :keybind
-  (:map minibuffer-mode-map
-        ("C-c C-e" . embark-export))
+  (:map minibuffer-mode-map ("C-c C-e" . maple/embark-export))
   :dependencies
   (embark-consult
-   :commands (embark-export)))
+   :after embark :demand))
 
 (use-package marginalia
   :hook (maple-init . marginalia-mode))

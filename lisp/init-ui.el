@@ -122,6 +122,5 @@
   ;;   (nerd-icons-install-fonts t))
   )
 
-
 (provide 'init-ui)
 ;;; init-ui.el ends here

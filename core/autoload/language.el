@@ -120,8 +120,9 @@
   "Call definition."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :definition)))
-    (call-interactively
-     (or fn 'xref-find-definitions))))
+    (if fn (call-interactively fn)
+      (let (xref-prompt-for-identifier)
+        (call-interactively #'xref-find-definitions)))))
 
 ;;;###autoload
 (defun maple-language-find-references()

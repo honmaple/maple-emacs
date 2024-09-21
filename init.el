@@ -47,7 +47,7 @@
     init-keybind))
 
 (defvar maple-develops
-  '(init-ivy
+  '(;; init-ivy
     init-lsp
     init-check
     init-completion

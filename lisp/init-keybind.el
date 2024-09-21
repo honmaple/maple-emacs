@@ -23,19 +23,21 @@
 ;;
 
 ;;; Code:
-;; (defalias 'maple/projectile-grep 'maple/consult-project-grep)
+(defalias 'maple/projectile-grep 'maple/consult-project-grep)
+(defalias 'maple/projectile-find-file 'maple/project-find-file)
 
-;; (defalias 'find-file-jump 'maple/consult-find)
-;; (defalias 'maple-file/grep 'maple/consult-grep)
-;; (defalias 'maple-file/grep-prompt 'maple/consult-prompt-grep)
+(defalias 'find-file-jump 'maple/find-file)
 
-(defalias 'maple/projectile-grep 'counsel-projectile-rg)
-(defalias 'maple/projectile-find-file 'counsel-git)
+(defalias 'maple-file/grep 'maple/consult-grep)
+(defalias 'maple-file/grep-prompt 'maple/consult-prompt-grep)
 
-(defalias 'find-file-jump 'counsel-file-jump)
+;; (defalias 'maple/projectile-grep 'counsel-projectile-rg)
+;; (defalias 'maple/projectile-find-file 'counsel-git)
 
-(defalias 'maple-file/grep 'maple/counsel-grep)
-(defalias 'maple-file/grep-prompt 'maple/counsel-grep-dir)
+;; (defalias 'find-file-jump 'counsel-file-jump)
+
+;; (defalias 'maple-file/grep 'maple/counsel-grep)
+;; (defalias 'maple-file/grep-prompt 'maple/counsel-grep-dir)
 
 (maple-define-key
   :prefix ","
@@ -67,7 +69,7 @@
   ;; "ep" 'flycheck-previous-error
 
   "e"  '(:ignore t :desc "flymake")
-  "el" 'flymake-show-buffer-diagnostics
+  "el" 'consult-flymake
   "ec" 'flymake-proc-stop-all-syntax-checks
   "en" 'flymake-goto-next-error
   "ep" 'flymake-goto-prev-error
@@ -222,7 +224,6 @@
 
   :map 'go-mode-map
   "ri" 'go-goto-imports
-  ;; "rI" 'go-remove-unused-imports
   "ra" 'go-import-add
   "rd" 'godef-describe
   "rt" 'go-add-tags

@@ -73,7 +73,7 @@
 (use-package protobuf-mode
   :dependencies
   (flymake-buf-lint
-   :ensure nil
+   :quelpa (:fetcher github :repo "honmaple/buf-lint-checker")
    :hook (protobuf-mode . flymake-buf-lint-setup)))
 
 (use-package sh-mode

@@ -32,7 +32,14 @@
      :config
      (setq flymake-no-changes-timeout 0.8)
      (fset 'flymake-eldoc-function 'ignore)
-     (maple-evil-map flymake-diagnostics-buffer-mode-map))
+     (maple-evil-map flymake-diagnostics-buffer-mode-map)
+     (maple-evil-map flymake-project-diagnostics-mode-map)
+
+     (with-eval-after-load 'zoom
+       (add-to-list 'zoom-ignored-major-modes 'flymake-diagnostics-buffer-mode)
+       (add-to-list 'zoom-ignored-major-modes 'flymake-project-diagnostics-mode))
+     (with-eval-after-load 'shackle
+       (add-to-list 'shackle-rules '((flymake-diagnostics-buffer-mode flymake-project-diagnostics-mode) :select t))))
 
    (use-package flymake-popon
      :hook (flymake-mode . flymake-popon-mode)
@@ -69,6 +76,11 @@
                  #b00000000))
 
        (flycheck-redefine-standard-error-levels nil 'maple/flycheck-fringe-indicator))
+
+     (with-eval-after-load 'zoom
+       (add-to-list 'zoom-ignored-major-modes 'flycheck-error-list-mode))
+     (with-eval-after-load 'shackle
+       (add-to-list 'shackle-rules '((flycheck-error-list-mode) :select t)))
      :keybind
      (:states normal :map flycheck-error-list-mode-map
               ("q" . quit-window)

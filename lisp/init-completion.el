@@ -70,6 +70,27 @@
                  ([tab] . maple/vertico-done)
                  ([escape] . minibuffer-keyboard-quit)))
 
+(use-package vertico-multiform
+  :ensure vertico
+  :hook (vertico-mode . vertico-multiform-mode)
+  :config
+  (defvar vertico-transform-function nil)
+
+  (cl-defmethod vertico--format-candidate :around
+    (cand prefix suffix index start &context ((not vertico-transform-function) null))
+    (dolist (fun (ensure-list vertico-transform-function))
+      (setq cand (funcall fun cand)))
+    (cl-call-next-method cand prefix suffix index start))
+
+  (defun maple/vertico-highlight-directory (file)
+    (if (string-suffix-p "/" file)
+        (propertize file 'face 'dired-directory)
+      file))
+
+  (let ((cand '(vertico-transform-function . maple/vertico-highlight-directory)))
+    (add-to-list 'vertico-multiform-categories (list 'file cand))
+    (add-to-list 'vertico-multiform-categories (list 'project-file cand))))
+
 (use-package consult
   :commands (consult-recent-file maple/find-file maple/project-find-file maple/consult-grep maple/consult-project-grep)
   :custom
@@ -132,6 +153,11 @@
     (let ((this-command 'consult-ripgrep))
       (consult-ripgrep dir initial)))
 
+  (defun maple/consult-project-flymake ()
+    (interactive)
+    (let ((this-command 'consult-flymake))
+      (consult-flymake t)))
+
   :keybind
   (([remap imenu]                    . consult-imenu)
    ([remap yank]                     . consult-yank-from-kill-ring)
@@ -151,7 +177,10 @@
 
   (defun maple/embark-export ()
     (interactive)
-    (run-with-idle-timer 0 nil 'wgrep-change-to-wgrep-mode)
+    (with-eval-after-load 'wgrep
+      (run-with-idle-timer 0 nil 'wgrep-change-to-wgrep-mode))
+    (with-eval-after-load 'evil
+      (run-with-idle-timer 0 nil 'evil-normal-state))
     (embark-export))
 
   :keybind
@@ -167,7 +196,7 @@
   :if maple-icon
   :hook (marginalia-mode . nerd-icons-completion-mode)
   :custom-face
-  (nerd-icons-completion-dir-face ((t (:inherit font-lock-doc-face)))))
+  (nerd-icons-completion-dir-face ((t (:inherit dired-directory)))))
 
 (use-package corfu
   :hook ((prog-mode . corfu-mode)

@@ -92,6 +92,7 @@
                                       shell-mode
                                       term-mode
                                       org-agenda-mode
+                                      grep-mode wgrep-mode
                                       undo-tree-visualizer-mode))
   (evil-escape-inhibit-functions '(evil-visual-state-p
                                    evil-escape--is-magit-buffer)))

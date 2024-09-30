@@ -98,6 +98,16 @@
   "fw"  'maple-file/grep
   "fW"  'maple-file/grep-prompt
 
+  "i" '(:ignore t :desc "insert icon")
+  "ii" 'all-the-icons-insert
+  "if" 'all-the-icons-insert-faicon
+  "im" 'all-the-icons-insert-material
+
+  "in" '(:ignore t :desc "insert nerd icon")
+  "ini" 'nerd-icons-insert
+  "inf" 'nerd-icons-insert-faicon
+  "inm" 'nerd-icons-insert-mdicon
+
   :package 'magit
   "g" '(:ignore t :desc "git")
   "gi" 'magit-init

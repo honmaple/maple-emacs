@@ -109,9 +109,7 @@
   (maple-evil-map wgrep-mode-map)
   :keybind
   (:map wgrep-mode-map
-        ("C-c C-c" . wgrep-finish-edit)
-        :map grep-mode-map
-        ("q" . maple-quit-window))
+        ("C-c C-c" . wgrep-finish-edit))
   (:states normal :map wgrep-mode-map
            ([remap evil-write] . wgrep-finish-edit)))
 

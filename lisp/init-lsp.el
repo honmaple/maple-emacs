@@ -34,9 +34,11 @@
      (eglot-autoshutdown t)
      (eglot-events-buffer-size 0)
      (eglot-send-changes-idle-time 0.1)
+     (eglot-connect-timeout 10)
      (eglot-stay-out-of '(eldoc))
+     (eglot-report-progress nil)
      (eglot-ignored-server-capabilities
-      '(:inlayHintProvider :hoverProvider))
+      '(:inlayHintProvider :hoverProvider ::documentHighlightProvider))
      (eglot-workspace-configuration
       '(:pyls (:plugins (:flake8
                          (:enabled t)

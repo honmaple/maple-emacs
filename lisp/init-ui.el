@@ -99,28 +99,16 @@
   (highlight-indent-guides-character ?\|)
   :diminish highlight-indent-guides-mode)
 
-(use-package fontawesome
-  :commands (counsel-fontawesome))
-
 (use-package default-text-scale
   :commands (default-text-scale-increase default-text-scale-decrease))
 
 (use-package all-the-icons
   :if maple-icon
-  :custom
-  (all-the-icons-icon-alist (append
-                             (list '("\\.go$" all-the-icons-fileicon "golo" :height 1.0 :face all-the-icons-blue))
-                             (butlast all-the-icons-icon-alist)
-                             (list '("." all-the-icons-octicon "book" :height 1.0 :v-adjust 0.0 :face all-the-icons-lcyan)))))
+  :commands (all-the-icons-insert all-the-icons-insert-faicon all-the-icons-insert-material))
 
 (use-package nerd-icons
   :if maple-icon
-  ;; :config
-  ;; (let ((url-proxy-services
-  ;;        '(("http" . "127.0.0.1:1086")
-  ;;          ("https" . "127.0.0.1:1086"))))
-  ;;   (nerd-icons-install-fonts t))
-  )
+  :commands (nerd-icons-insert nerd-icons-insert-faicon nerd-icons-insert-mdicon))
 
 (provide 'init-ui)
 ;;; init-ui.el ends here

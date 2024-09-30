@@ -33,7 +33,9 @@
 
 (use-package winner
   :ensure nil
-  :hook (maple-init . winner-mode))
+  :hook (maple-init . winner-mode)
+  :config
+  (add-to-list 'winner-boring-buffers-regexp "[^\s]\\*.*\\*"))
 
 (use-package window-numbering
   :hook (maple-theme . window-numbering-mode)
@@ -45,7 +47,7 @@
   :custom
   (zoom-size '(0.618 . 0.618))
   (zoom-ignored-major-modes
-   '(term-mode shell-mode flycheck-error-list-mode flymake-diagnostics-buffer-mode ediff-mode))
+   '(term-mode shell-mode ediff-mode))
   (zoom-ignored-buffer-names '(" *Org todo*"))
   :config
   (defun maple/balance-windows(func &optional window-or-frame)
@@ -73,7 +75,7 @@
 
      ((term-mode comint-mode inferior-python-mode)
       :select t :popup t)
-     ((process-menu-mode flycheck-error-list-mode flymake-diagnostics-buffer-mode)
+     ((process-menu-mode)
       :select t))))
 
 (provide 'init-window)

@@ -70,7 +70,6 @@
                                   "IndianRed3"
                                   "#da8548"
                                   "IndianRed4"))
-  :custom-face (highlight-parentheses-highlight ((nil (:weight ultra-bold))))
   :diminish highlight-parentheses-mode)
 
 ;; 颜色

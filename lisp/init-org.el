@@ -89,7 +89,7 @@
 
 (use-package org-crypt
   :ensure nil
-  :after org :demand
+  :after-call org-mode-hook
   :custom
   (org-crypt-tag-matcher "secret")
   (org-tags-exclude-from-inheritance '("secret"))

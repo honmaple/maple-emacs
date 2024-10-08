@@ -55,6 +55,9 @@
 (defalias 'use-package-normalize/:evil-state 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:language 'use-package-normalize-forms)
 (defalias 'use-package-normalize/:dependencies 'use-package-normalize-forms)
+(defalias 'use-package-normalize/:after-call #'use-package-normalize-symlist)
+
+(defvar maple--deferred-packages-alist '(t))
 
 (defun maple-use-package/set-keyword (keyword &optional position refer)
   "Execute KEYWORD forms before or after REFER POSITION."
@@ -194,6 +197,42 @@
    `(,@(mapcar (lambda(body) `(use-package ,@body)) args))
    (use-package-process-keywords name rest state)))
 
+(defun use-package-handler/:after-call (name _keyword hooks rest state)
+  "NAME HOOKS REST STATE."
+  (if (plist-get state :demand)
+      (use-package-process-keywords name rest state)
+    (let ((fn (make-symbol (format "use-package--after-call-%s-h" name))))
+      (use-package-concat
+       `((fset ',fn
+               (lambda (&rest _)
+                 ;; (message "use-package: lazy loading %s from %s" ',name ',fn)
+                 (condition-case e
+                     ;; If `default-directory' is a directory that doesn't
+                     ;; exist or is unreadable, Emacs throws up file-missing
+                     ;; errors, so we set it to a directory we know exists and
+                     ;; is readable.
+                     (let ((default-directory user-emacs-directory))
+                       (require ',name))
+                   ((debug error)
+                    (message "Failed to load deferred package %s: %s" ',name e)))
+                 (when-let (deferral-list (assq ',name maple--deferred-packages-alist))
+                   (dolist (hook (cdr deferral-list))
+                     (advice-remove hook #',fn)
+                     (remove-hook hook #',fn))
+                   (setq maple--deferred-packages-alist (delq deferral-list maple--deferred-packages-alist))
+                   (unintern ',fn nil)))))
+       (let (forms)
+         (dolist (hook hooks forms)
+           (push (if (string-match-p "-\\(?:functions\\|hook\\)$" (symbol-name hook))
+                     `(add-hook ',hook #',fn)
+                   `(advice-add #',hook :before #',fn))
+                 forms)))
+       `((unless (assq ',name maple--deferred-packages-alist)
+           (push '(,name) maple--deferred-packages-alist))
+         (nconc (assq ',name maple--deferred-packages-alist)
+                '(,@hooks)))
+       (use-package-process-keywords name rest state)))))
+
 (defun use-package-normalize/:quelpa (name keyword args)
   "NAME KEYWORD ARGS."
   (use-package-only-one (symbol-name keyword) args
@@ -234,6 +273,11 @@
    :language
    :dependencies)
  'after :init)
+
+(maple-use-package/set-keyword
+ :after-call
+ 'after :after)
+
 (maple-use-package/set-keyword
  :quelpa
  'after :unless)

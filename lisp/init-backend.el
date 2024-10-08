@@ -28,6 +28,7 @@
 ;; go get -u github.com/golang/lint/golint
 ;; go get -u github.com/haya14busa/gopkgs/cmd/gopkgs
 ;; go install golang.org/x/tools/gopls@latest
+;; go install honnef.co/go/tools/cmd/staticcheck@latest
 ;;
 
 ;;; Code:
@@ -73,8 +74,13 @@
 (use-package protobuf-mode
   :dependencies
   (flymake-buf-lint
+   :if (eq maple-syntax-checker 'flymake)
    :quelpa (:fetcher github :repo "honmaple/buf-lint-checker")
-   :hook (protobuf-mode . flymake-buf-lint-setup)))
+   :hook (protobuf-mode . flymake-buf-lint-setup))
+  (flycheck-buf-lint
+   :if (eq maple-syntax-checker 'flycheck)
+   :quelpa (:fetcher github :repo "honmaple/buf-lint-checker")
+   :hook (protobuf-mode . flycheck-buf-lint-setup)))
 
 (use-package sh-mode
   :ensure nil

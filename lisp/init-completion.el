@@ -27,7 +27,7 @@
 (defvar maple-icon)
 
 (use-package orderless
-  :demand t
+  :after-call maple-init-hook
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles partial-completion)))))
@@ -88,8 +88,7 @@
       file))
 
   (let ((cand '(vertico-transform-function . maple/vertico-highlight-directory)))
-    (add-to-list 'vertico-multiform-categories (list 'file cand))
-    (add-to-list 'vertico-multiform-categories (list 'project-file cand))))
+    (add-to-list 'vertico-multiform-categories (list 'file cand))))
 
 (use-package consult
   :commands (consult-recent-file maple/find-file maple/project-find-file maple/consult-grep maple/consult-project-grep)
@@ -187,7 +186,7 @@
   (:map minibuffer-mode-map ("C-c C-e" . maple/embark-export))
   :dependencies
   (embark-consult
-   :after embark :demand))
+   :after-call maple/embark-export))
 
 (use-package marginalia
   :hook (maple-init . marginalia-mode))
@@ -199,20 +198,24 @@
   (nerd-icons-completion-dir-face ((t (:inherit dired-directory)))))
 
 (use-package corfu
-  :hook ((prog-mode . corfu-mode)
-         (corfu-mode . corfu-popupinfo-mode))
+  :hook (prog-mode . corfu-mode)
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.1)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
   (corfu-preview-current nil)
-  (corfu-popupinfo-delay '(0.4 . 0.2))
   :keybind (:map corfu-map
                  ("TAB" . corfu-next)
                  ([tab] . corfu-next)
                  ("S-TAB" . corfu-previous)
                  ([backtab] . corfu-previous)))
+
+(use-package corfu-popupinfo
+  :ensure corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.4 . 0.2)))
 
 (use-package corfu-terminal
   :unless (display-graphic-p)
@@ -223,13 +226,9 @@
   :hook (corfu-mode . (lambda() (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))))
 
 (use-package cape
-  :after corfu :demand
-  :config
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev))
+  :after-call maple-init-hook
+  :custom
+  (completion-at-point-functions (list (cape-capf-super 'cape-file 'cape-dabbrev 'cape-abbrev 'cape-keyword))))
 
 (use-package yasnippet
   :hook (maple-init . yas-global-mode)

@@ -33,28 +33,27 @@
      (read-process-output-max (* 256 1024)) ;; 改善性能
      (eglot-autoshutdown t)
      (eglot-events-buffer-size 0)
-     (eglot-send-changes-idle-time 0.1)
+     (eglot-send-changes-idle-time 0.2)
      (eglot-connect-timeout 10)
      (eglot-stay-out-of '(eldoc))
      (eglot-report-progress nil)
      (eglot-ignored-server-capabilities
-      '(:inlayHintProvider :hoverProvider ::documentHighlightProvider))
+      '(:inlayHintProvider :hoverProvider :documentHighlightProvider))
      (eglot-workspace-configuration
-      '(:pyls (:plugins (:flake8
-                         (:enabled t)
-                         :pyflakes
-                         (:enabled :json-false)
-                         :pycodestyle
-                         (:enabled :json-false)
-                         :maccabe
-                         (:enabled :json-false)
-                         :yapf
-                         (:enabled t)))))
+      '((pyls . ((plugins . ((flake8      . (enabled t))
+                             (pyflakes    . (enabled :json-false))
+                             (pycodestyle . (enabled :json-false))
+                             (maccabe     . (enabled :json-false))
+                             (yapf        . (enabled t))))))
+        (gopls . ((staticcheck . t)
+                  (matcher . "CaseSensitive")))))
      :config
      (fset 'jsonrpc--log-event 'ignore)
      :language
      ((python-mode go-mode js-mode dart-mode)
       :format 'eglot-format)
+     (eglot-managed-mode
+      :complete '(:buster eglot-completion-at-point))
      :keybind
      (:prefix "," :states normal :map (dart-mode-map go-mode-map)
               ("rI" . eglot-code-action-organize-imports))))

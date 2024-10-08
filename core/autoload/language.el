@@ -28,6 +28,9 @@
 
 (declare-function imenu--make-index-alist 'imenu)
 (declare-function hs-already-hidden-p 'hideshow)
+(declare-function cape-capf-super 'cape)
+(declare-function cape-capf-buster 'cape)
+(declare-function cape-capf-predicate 'cape)
 
 (defgroup maple-language nil
   "Display minibuffer with another frame."
@@ -50,14 +53,30 @@
     (or (plist-get args key) default)))
 
 (defun maple-language--checker-backend(backend)
-  "Return BACKEND."
-  (cl-loop for checker in backend
-           if (eq checker :disable)
-           collect t into tmp
-           else if tmp
-           collect checker into b
-           else collect checker into a
-           finally (return (cons a b))))
+  "Return checker BACKEND."
+  (let ((disable nil)
+        checkers disabled-checkers)
+    (dolist (checker backend)
+      (if (eq checker :disable)
+          (setq disable t)
+        (push checker (if disable disabled-checkers checkers))))
+    (cons checkers disabled-checkers)))
+
+(defun maple-language--complete-backend(backend)
+  "Return completion BACKEND."
+  (unless (listp backend)
+    (setq backend (list backend)))
+  (if (not (car backend)) '()
+    (let ((args (apply 'append (mapcar 'maple-language--complete-backend (cdr backend)))))
+      (pcase (car backend)
+        (:super
+         (list (apply 'cape-capf-super (append args (default-value 'completion-at-point-functions)))))
+        (:buster
+         (list (apply 'cape-capf-buster args)))
+        (:predicate
+         (list (apply 'cape-capf-predicate args)))
+        (_
+         (append (list (car backend)) args))))))
 
 (defun maple-language--comment(&optional paste)
   "Call comment.Yank selected region if PASTE."
@@ -145,15 +164,14 @@
   (let ((tab (plist-get args :tab))
         (checker (plist-get args :checker))
         (complete (plist-get args :complete))
-        (forms `((setq maple-language--alist ',args))))
+        (forms `((setq maple-language--alist (append ',args maple-language--alist)))))
     (when tab
       (push
        (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil))
        forms))
     (when complete
       (push
-       `(with-eval-after-load 'company
-          (setq-local company-backends (maple-language--complete-backend ',complete)))
+       `(setq-local completion-at-point-functions (maple-language--complete-backend ',complete))
        forms))
     (when checker
       (push

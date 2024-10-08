@@ -156,6 +156,19 @@
                       space-before-tab space-after-tab))
   :diminish whitespace-mode "ⓦ")
 
+(use-package project
+  :ensure nil
+  :config
+  ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+  (defun project-find-go-module (dir)
+    (when-let ((root (locate-dominating-file dir "go.mod")))
+      (cons 'go-module root)))
+
+  (cl-defmethod project-root ((project (head go-module)))
+    (cdr project))
+
+  (add-hook 'project-find-functions 'project-find-go-module))
+
 (use-package projectile
   :diminish projectile-mode "ⓟ"
   :hook (maple-init . projectile-mode)

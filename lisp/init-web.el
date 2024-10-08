@@ -44,8 +44,8 @@
                                               ("<% " . " %>")))))
   :language
   (web-mode
-   :run      'browse-url-of-file
-   :fold     'web-mode-fold-or-unfold))
+   :run  'browse-url-of-file
+   :fold 'web-mode-fold-or-unfold))
 
 (use-package css-mode
   :custom

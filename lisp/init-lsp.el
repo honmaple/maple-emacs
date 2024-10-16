@@ -45,10 +45,36 @@
                              (pycodestyle . (enabled :json-false))
                              (maccabe     . (enabled :json-false))
                              (yapf        . (enabled t))))))
-        (gopls . ((staticcheck . t)
-                  (matcher . "CaseSensitive")))))
+        (gopls . ((staticcheck . t)))))
      :config
-     (fset 'jsonrpc--log-event 'ignore)
+
+     (maple-add-hook 'go-mode-hook
+       (add-to-list 'eglot-stay-out-of 'imenu))
+
+     (defvar maple/eglot-ignored-modes
+       '(magit-blob-mode))
+
+     (defvar maple/eglot-ignored-major-modes nil)
+
+     ;; 无法使用around eglot-ensure, magit-blob-mode总是为nil
+     ;; 可以使用(memq this-command '(magit-blob-previous magit-blob-next))判断
+     (defun eglot-ensure@override ()
+       (let ((buffer (current-buffer)))
+         (cl-labels
+             ((maybe-connect
+                ()
+                (eglot--when-live-buffer buffer
+                  (remove-hook 'post-command-hook #'maybe-connect t)
+                  (unless (or eglot--managed-mode
+                              (memq major-mode maple/eglot-ignored-major-modes)
+                              (cl-loop for mode in maple/eglot-ignored-modes
+                                       if (and (boundp mode) (symbol-value mode))
+                                       return t))
+                    (apply #'eglot--connect (eglot--guess-contact))))))
+           (when buffer-file-name
+             (add-hook 'post-command-hook #'maybe-connect 'append t)))))
+
+     (advice-add 'eglot-ensure :override 'eglot-ensure@override)
      :language
      ((python-mode go-mode js-mode dart-mode)
       :format 'eglot-format)

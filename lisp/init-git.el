@@ -41,12 +41,13 @@
   (with-eval-after-load 'evil-surround
     (add-hook 'magit-status-mode-hook #'turn-off-evil-surround-mode))
 
-  (define-advice magit-blob-visit (:around (orig-fun &rest args) kill-all-blob-after-quit)
+  (defun magit-blob-visit@kill-buffer(oldfunc &rest args)
     (let ((prev-buffer (current-buffer)))
-      (apply orig-fun args)
+      (apply oldfunc args)
       (unless (and magit-buffer-file-name (equal magit-buffer-file-name (buffer-file-name prev-buffer)))
         (kill-buffer prev-buffer))))
 
+  (advice-add 'magit-blob-visit :around 'magit-blob-visit@kill-buffer)
   :keybind
   (:map magit-mode-map
         ("<tab>" . magit-section-cycle)

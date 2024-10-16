@@ -70,6 +70,7 @@
 
   "e"  '(:ignore t :desc "flymake")
   "el" 'consult-flymake
+  "eL" 'maple/consult-project-flymake
   "ec" 'flymake-proc-stop-all-syntax-checks
   "en" 'flymake-goto-next-error
   "ep" 'flymake-goto-prev-error

@@ -172,21 +172,28 @@
   :custom
   (which-key-use-C-h-commands nil)
   (prefix-help-command #'embark-prefix-help-command)
+  (embark-prompter 'embark-completing-read-prompter)
+  (embark-indicators '(embark-minimal-indicator
+                       embark-highlight-indicator
+                       embark-isearch-highlight-indicator))
   :config
+  (defun embark-export@ensure ()
+    (pcase (completion-metadata-get (embark--metadata) 'category)
+      ('consult-grep
+       (with-eval-after-load 'wgrep
+         (run-with-idle-timer 0 nil 'wgrep-change-to-wgrep-mode))))
 
-  (defun maple/embark-export ()
-    (interactive)
-    (with-eval-after-load 'wgrep
-      (run-with-idle-timer 0 nil 'wgrep-change-to-wgrep-mode))
     (with-eval-after-load 'evil
-      (run-with-idle-timer 0 nil 'evil-normal-state))
-    (embark-export))
+      (run-with-idle-timer 0 nil 'evil-normal-state)))
 
+  (advice-add 'embark-export :before 'embark-export@ensure)
   :keybind
-  (:map minibuffer-mode-map ("C-c C-e" . maple/embark-export))
+  (:map minibuffer-mode-map
+        ("C-c a"   . embark-act)
+        ("C-c C-e" . embark-export))
   :dependencies
   (embark-consult
-   :after-call maple/embark-export))
+   :after-call embark-export))
 
 (use-package marginalia
   :hook (maple-init . marginalia-mode))

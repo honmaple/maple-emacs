@@ -29,8 +29,16 @@
 (use-package orderless
   :after-call maple-init-hook
   :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles partial-completion)))))
+  ;; 不要添加这一行，会导致目录搜索有问题
+  ;; (completion-category-overrides '((file (styles basic partial-completion))))
+  (completion-styles '(orderless basic)))
+
+(use-package pinyinlib
+  :after-call orderless
+  :config
+  (defun orderless-pinyin (str)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (add-to-list 'orderless-matching-styles 'orderless-pinyin))
 
 (use-package vertico
   :hook ((maple-init . vertico-mode)
@@ -114,6 +122,7 @@
    :keymap maple/consult-preview-map
    :preview-key "<tab>"
    consult-line
+   consult-imenu
    :initial (maple-region-string)
    :preview-key '(:debounce 0.2 any))
 

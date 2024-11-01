@@ -47,14 +47,17 @@
                              (yapf        . (enabled t))))))
         (gopls . ((staticcheck . t)))))
      :config
-
-     (maple-add-hook 'go-mode-hook
-       (add-to-list 'eglot-stay-out-of 'imenu))
+     (defvar maple/eglot-init-hook nil)
 
      (defvar maple/eglot-ignored-modes
        '(magit-blob-mode))
 
      (defvar maple/eglot-ignored-major-modes nil)
+
+     (maple-add-hook 'maple/eglot-init-hook
+       (pcase major-mode
+         ('go-mode
+          (setq-local eglot-stay-out-of '(eldoc imenu)))))
 
      ;; 无法使用around eglot-ensure, magit-blob-mode总是为nil
      ;; 可以使用(memq this-command '(magit-blob-previous magit-blob-next))判断
@@ -70,6 +73,7 @@
                               (cl-loop for mode in maple/eglot-ignored-modes
                                        if (and (boundp mode) (symbol-value mode))
                                        return t))
+                    (run-hooks 'maple/eglot-init-hook)
                     (apply #'eglot--connect (eglot--guess-contact))))))
            (when buffer-file-name
              (add-hook 'post-command-hook #'maybe-connect 'append t)))))

@@ -46,10 +46,8 @@
   (dired-dwim-target t)
   (dired-recursive-copies 'always) ;;递归拷贝
   (dired-recursive-deletes 'always)
-  (:function
-   (put 'dired-find-alternate-file 'disabled nil))  ;; 只有一个buffer
+  (dired-kill-when-opening-new-dired-buffer t)
   :keybind (:map dired-mode-map
-                 ("RET" . dired-find-alternate-file)
                  ("C-c C-e" . wdired-change-to-wdired-mode)))
 
 (use-package dired-async

@@ -78,18 +78,9 @@
 ;;   :init (benchmark-init/activate)
 ;;   :hook (after-init . (lambda() (run-with-idle-timer 0.2 nil (lambda() (benchmark-init/deactivate))))))
 
-(use-package restart-emacs
-  :commands (maple/restart-emacs)
-  :config
-  (defun maple/restart-emacs()
-    "Restart Emacs."
-    (interactive)
-    (setq restart-emacs-restore-frames t)
-    (restart-emacs)))
-
 (use-package server
   :ensure nil
-  :commands (server-running-p)
+  :autoload (server-running-p)
   :hook (maple-init . (lambda() (unless (server-running-p) (server-start)))))
 
 (use-package startup
@@ -140,6 +131,13 @@
   :hook (visual-line-mode . adaptive-wrap-prefix-mode)
   :custom
   (adaptive-wrap-extra-indent 1))
+
+(use-package exec-path-from-shell
+  :if maple-system-is-mac
+  :hook (maple-init . exec-path-from-shell-initialize)
+  :config
+  (define-advice exec-path-from-shell-initialize (:after (&rest _) custom-exec-path)
+    (add-to-list 'exec-path (expand-file-name "bin" user-emacs-directory) t)))
 
 (use-package xclip
   :if maple-system-is-linux

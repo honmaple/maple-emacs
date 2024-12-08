@@ -187,11 +187,7 @@
           "golang.org/x/tools/cmd/gopls"
           "github.com/cweill/gotests/...")
         maple-env:npm-packages
-        '("js-beautify" "tern" "yaml-language-server"))
-
-  (use-package exec-path-from-shell
-    :if maple-system-is-mac
-    :init (exec-path-from-shell-initialize)))
+        '("js-beautify" "tern" "yaml-language-server")))
 
 (provide 'init-maple)
 ;;; init-maple.el ends here

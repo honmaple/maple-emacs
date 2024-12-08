@@ -214,7 +214,6 @@
   "vu" 'downcase-dwim
 
   "qr" 'restart-emacs
-  "qR" 'maple/restart-emacs
   "qk" 'kill-emacs
 
   :map 'web-mode-map
@@ -234,8 +233,7 @@
   "rI" 'py-isort-buffer
 
   :map 'go-mode-map
-  "ri" 'go-goto-imports
-  "ra" 'go-import-add
+  "ri" 'go-import-add
   "rd" 'godef-describe
   "rt" 'go-add-tags
 
@@ -243,8 +241,6 @@
   "oe" 'org-export-dispatch
   "ot" 'org-set-tags
   "o." 'org-time-stamp
-  ;; "op" 'org-priority
-  "oP" 'org-pomodoro
   "or" 'org-decrypt-entry
   "ow" 'org-refile
   "td" 'org-deadline

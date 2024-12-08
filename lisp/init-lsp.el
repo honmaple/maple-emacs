@@ -54,6 +54,9 @@
 
      (defvar maple/eglot-ignored-major-modes nil)
 
+     (maple-add-hook 'go-mode-hook
+       (setq-local eglot-stay-out-of '(eldoc imenu)))
+
      (maple-add-hook 'maple/eglot-init-hook
        (pcase major-mode
          ('go-mode
@@ -86,7 +89,16 @@
       :complete '(:buster eglot-completion-at-point))
      :keybind
      (:prefix "," :states normal :map (dart-mode-map go-mode-map)
-              ("rI" . eglot-code-action-organize-imports))))
+              ("ra" . eglot-code-actions)
+              ("rx" . eglot-code-action-quickfix)
+              ("rI" . eglot-code-action-organize-imports)))
+
+   (use-package eglot-booster
+     :quelpa (:fetcher github :repo "jdtsmith/eglot-booster")
+     :hook (maple/eglot-init . (lambda() (when (executable-find "emacs-lsp-booster") (eglot-booster-mode))))
+     :custom
+     (eglot-booster-no-remote-boost t)))
+
   ('lsp-mode
    (use-package lsp-mode
      :diminish "LSP"

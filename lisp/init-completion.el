@@ -29,6 +29,7 @@
 (use-package orderless
   :after-call maple-init-hook
   :custom
+  (completion-ignore-case t)
   ;; 不要添加这一行，会导致目录搜索有问题
   ;; (completion-category-overrides '((file (styles basic partial-completion))))
   (completion-styles '(orderless basic)))

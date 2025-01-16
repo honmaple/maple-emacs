@@ -25,7 +25,9 @@
 
 ;;; Code:
 (use-package web-mode
-  :mode ("\\.\\(xml\\|vue\\|html?\\)$")
+  :mode
+  ("\\.vue\\'" . vue-mode)
+  ("\\.\\(xml\\|html?\\)$" . web-mode)
   :custom
   (web-mode-code-indent-offset 4)
   (web-mode-markup-indent-offset 2)
@@ -42,6 +44,8 @@
                                               ("{{{" . " | }}")
                                               ("{# " . " #")
                                               ("<% " . " %>")))))
+  :config
+  (define-derived-mode vue-mode web-mode "Vue")
   :language
   (web-mode
    :run  'browse-url-of-file

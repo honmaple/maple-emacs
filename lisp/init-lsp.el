@@ -28,7 +28,7 @@
   ('eglot
    ;; eglot 补全速度太慢了
    (use-package eglot
-     :hook ((python-mode go-mode js-mode dart-mode) . eglot-ensure)
+     :hook ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode) . eglot-ensure)
      :custom
      (read-process-output-max (* 256 1024)) ;; 改善性能
      (eglot-autoshutdown t)
@@ -40,12 +40,12 @@
      (eglot-ignored-server-capabilities
       '(:inlayHintProvider :hoverProvider :documentHighlightProvider))
      (eglot-workspace-configuration
-      '((pyls . ((plugins . ((flake8      . (enabled t))
-                             (pyflakes    . (enabled :json-false))
-                             (pycodestyle . (enabled :json-false))
-                             (maccabe     . (enabled :json-false))
-                             (yapf        . (enabled t))))))
-        (gopls . ((staticcheck . t)))))
+      (maple-ht '(("pyls.plugins.flake8.enabled" t)
+                  ("pyls.plugins.pyflakes.enabled" :json-false)
+                  ("pyls.plugins.pycodestyle.enabled" :json-false)
+                  ("pyls.plugins.maccabe.enabled" :json-false)
+                  ("pyls.plugins.yapf.enabled" t)
+                  ("gopls.staticcheck" t))))
      :config
      (defvar maple/eglot-init-hook nil)
 
@@ -82,8 +82,27 @@
              (add-hook 'post-command-hook #'maybe-connect 'append t)))))
 
      (advice-add 'eglot-ensure :override 'eglot-ensure@override)
+
+     (defun eglot-volar-find (package &optional global)
+       (let ((path (string-trim-right
+                    (shell-command-to-string
+                     (format "npm list %s --parseable %s | head -n1" (if global "-g" "") package)))))
+         (if (or global (not (string= path ""))) path
+           (eglot-volar-find package t))))
+
+     (add-to-list 'eglot-server-programs
+                  `((web-mode :language-id "html") . ,(eglot-alternatives '(("vscode-html-language-server" "--stdio")
+                                                                            ("vscode-css-language-server" "--stdio")
+                                                                            ("typescript-language-server" "--stdio")))))
+     (add-to-list 'eglot-server-programs
+                  `(vue-mode . ("vue-language-server" "--stdio"
+                                :initializationOptions
+                                ,(maple-ht
+                                  `(("vue.hybridMode" :json-false)
+                                    ("typescript.tsdk" ,(expand-file-name "lib" (eglot-volar-find "typescript"))))))))
+
      :language
-     ((python-mode go-mode js-mode dart-mode)
+     ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode)
       :format 'eglot-format)
      (eglot-managed-mode
       :complete '(:buster eglot-completion-at-point))
@@ -102,7 +121,7 @@
   ('lsp-mode
    (use-package lsp-mode
      :diminish "LSP"
-     :hook ((python-mode go-mode js-mode dart-mode) . lsp-deferred)
+     :hook ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode) . lsp-deferred)
      :custom
      (read-process-output-max (* 256 1024)) ;; 改善lsp-dart性能
      (lsp-restart 'auto-restart)

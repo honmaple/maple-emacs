@@ -28,6 +28,36 @@
 (declare-function company-indent-or-complete-common 'company)
 
 ;;;###autoload
+(defun maple-ht-to-alist (ht)
+  "Hash table HT to alist."
+  (cl-loop for k being the hash-keys in ht using (hash-value v)
+           collect (if (keywordp k) k
+                     (intern (format ":%s" k)))
+           collect (if (hash-table-p v) (maple-ht-to-alist v) v)))
+
+;;;###autoload
+(defun maple-ht-put(ht key value)
+  "Push HT with KEY and VALUE."
+  (let ((path (string-split key "\\.")))
+    (if (> (length path) 1)
+        (let ((result (gethash (car path) ht)))
+          (unless result
+            (setq result (make-hash-table :test 'equal))
+            (puthash (car path) result ht))
+          (maple-ht-put result (string-join (cdr path) ".") value))
+      (puthash key value ht))))
+
+;;;###autoload
+(defun maple-ht(props)
+  "Use dot string create hash table PROPS."
+  (let ((setting (make-hash-table :test 'equal)))
+    (mapc
+     (lambda (prop)
+       (maple-ht-put setting (car prop) (cadr prop)))
+     props)
+    (maple-ht-to-alist setting)))
+
+;;;###autoload
 (defun maple-plist-get(args key &optional default)
   "Custom `plist-get` with ARGS and KEY DEFAULT."
   (or (plist-get args key)

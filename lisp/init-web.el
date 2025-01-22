@@ -29,7 +29,7 @@
   ("\\.vue\\'" . vue-mode)
   ("\\.\\(xml\\|html?\\)$" . web-mode)
   :custom
-  (web-mode-code-indent-offset 4)
+  (web-mode-code-indent-offset 2)
   (web-mode-markup-indent-offset 2)
   (web-mode-enable-auto-closing t) ; enable auto close tag in text-mode
   (web-mode-enable-auto-indentation nil)
@@ -72,14 +72,28 @@
   :commands (web-beautify-html web-beautify-css web-beautify-js))
 
 (use-package emmet-mode
-  :hook ((html-mode sgml-mode web-mode) . emmet-mode)
-  :keybind
-  (:states insert :map emmet-mode-keymap
-           ([tab] . (lambda() (interactive)
-                      (if (bound-and-true-p yas-minor-mode)
-                          (call-interactively 'emmet-expand-yas)
-                        (call-interactively 'emmet-expand-line)))))
+  :hook ((html-mode web-mode) . emmet-mode)
   :diminish emmet-mode)
+
+(use-package mmm-mode
+  ;; :hook (web-mode . mmm-mode)
+  :custom
+  (mmm-global-mode nil)
+  (mmm-mode-ext-classes-alist nil)
+  (mmm-submode-decoration-level 0)
+  :config
+  (define-derived-mode tailwindcss-mode css-mode "Tailwindcss")
+
+  (with-no-warnings
+    (mmm-add-group
+     'html-tailwindcss
+     '((tailwindcss
+        :submode tailwindcss-mode
+        :face mmm-code-submode-face
+        :front "class=\"*"
+        :back "\""
+        :back-offset -1)))
+    (mmm-add-mode-ext-class 'web-mode nil 'html-tailwindcss)))
 
 (provide 'init-web)
 ;;; init-web.el ends here

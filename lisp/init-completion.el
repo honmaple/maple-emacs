@@ -96,8 +96,20 @@
         (propertize file 'face 'dired-directory)
       file))
 
+  (defun maple/vertico-highlight-mode (cmd)
+    (let ((sym (intern cmd)))
+      (if (or (eq sym major-mode)
+              (and
+               (memq sym minor-mode-list)
+               (boundp sym)))
+          (propertize cmd 'face 'font-lock-constant-face)
+        cmd)))
+
   (let ((cand '(vertico-transform-function . maple/vertico-highlight-directory)))
-    (add-to-list 'vertico-multiform-categories (list 'file cand))))
+    (add-to-list 'vertico-multiform-categories (list 'file cand)))
+
+  (add-to-list 'vertico-multiform-commands
+               '(execute-extended-command ignore (vertico-transform-function . maple/vertico-highlight-mode))))
 
 (use-package consult
   :commands (consult-recent-file maple/find-file maple/project-find-file maple/consult-grep maple/consult-project-grep)
@@ -124,6 +136,7 @@
    :preview-key "<tab>"
    consult-line
    consult-imenu
+   :keymap maple/consult-preview-map
    :initial (maple-region-string)
    :preview-key '(:debounce 0.2 any))
 
@@ -222,11 +235,12 @@
   (corfu-auto-prefix 1)
   (corfu-cycle t)
   (corfu-preview-current nil)
-  :keybind (:map corfu-map
-                 ("TAB" . corfu-next)
-                 ([tab] . corfu-next)
-                 ("S-TAB" . corfu-previous)
-                 ([backtab] . corfu-previous)))
+  :keybind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)))
 
 (use-package corfu-popupinfo
   :ensure corfu

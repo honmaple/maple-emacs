@@ -24,11 +24,25 @@
 ;;
 
 ;;; Code:
+(defvar maple-lsp-major-modes
+  '(python-mode go-mode dart-mode html-mode css-mode js-mode web-mode vue-mode typescript-mode))
+
+(defvar maple-lsp-minor-modes
+  '(:not magit-blob-mode))
+
+(defun maple-lsp-around(oldfunc &rest args)
+  (when (and (memq major-mode maple-lsp-major-modes)
+             (cl-loop for mode in maple-lsp-minor-modes
+                      if (and (not (keywordp mode)) (boundp mode) (symbol-value mode))
+                      return (not (eq (car maple-lsp-minor-modes) :not))
+                      finally return t))
+    (apply oldfunc args)))
+
 (pcase maple-lsp
   ('eglot
    ;; eglot 补全速度太慢了
    (use-package eglot
-     :hook ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode) . eglot-ensure)
+     :hook (prog-mode . eglot-ensure)
      :custom
      (read-process-output-max (* 256 1024)) ;; 改善性能
      (eglot-autoshutdown t)
@@ -40,19 +54,18 @@
      (eglot-ignored-server-capabilities
       '(:inlayHintProvider :hoverProvider :documentHighlightProvider))
      (eglot-workspace-configuration
-      (maple-ht '(("pyls.plugins.flake8.enabled" t)
-                  ("pyls.plugins.pyflakes.enabled" :json-false)
-                  ("pyls.plugins.pycodestyle.enabled" :json-false)
-                  ("pyls.plugins.maccabe.enabled" :json-false)
-                  ("pyls.plugins.yapf.enabled" t)
-                  ("gopls.staticcheck" t))))
+      (lambda (server)
+        (maple-ht '(("pyls.plugins.flake8.enabled" t)
+                    ("pyls.plugins.pyflakes.enabled" :json-false)
+                    ("pyls.plugins.pycodestyle.enabled" :json-false)
+                    ("pyls.plugins.maccabe.enabled" :json-false)
+                    ("pyls.plugins.yapf.enabled" t)
+                    ("gopls.staticcheck" t)))))
      :config
      (defvar maple/eglot-init-hook nil)
 
      (defvar maple/eglot-ignored-modes
        '(magit-blob-mode))
-
-     (defvar maple/eglot-ignored-major-modes nil)
 
      (maple-add-hook 'go-mode-hook
        (setq-local eglot-stay-out-of '(eldoc imenu)))
@@ -63,25 +76,14 @@
           (setq-local eglot-stay-out-of '(eldoc imenu)))))
 
      ;; 无法使用around eglot-ensure, magit-blob-mode总是为nil
-     ;; 可以使用(memq this-command '(magit-blob-previous magit-blob-next))判断
-     (defun eglot-ensure@override ()
-       (let ((buffer (current-buffer)))
-         (cl-labels
-             ((maybe-connect
-                ()
-                (eglot--when-live-buffer buffer
-                  (remove-hook 'post-command-hook #'maybe-connect t)
-                  (unless (or eglot--managed-mode
-                              (memq major-mode maple/eglot-ignored-major-modes)
-                              (cl-loop for mode in maple/eglot-ignored-modes
-                                       if (and (boundp mode) (symbol-value mode))
-                                       return t))
-                    (run-hooks 'maple/eglot-init-hook)
-                    (apply #'eglot--connect (eglot--guess-contact))))))
-           (when buffer-file-name
-             (add-hook 'post-command-hook #'maybe-connect 'append t)))))
+     ;; 或者可以使用(memq this-command '(magit-blob-previous magit-blob-next))判断
+     (defun eglot--contact@around (oldfunc &rest args)
+       (when args
+         (run-hooks 'maple/eglot-init-hook)
+         (apply oldfunc args)))
 
-     (advice-add 'eglot-ensure :override 'eglot-ensure@override)
+     (advice-add 'eglot--connect :around 'eglot--contact@around)
+     (advice-add 'eglot--guess-contact :around 'maple-lsp-around)
 
      (defun eglot-volar-find (package &optional global)
        (let ((path (string-trim-right
@@ -90,21 +92,29 @@
          (if (or global (not (string= path ""))) path
            (eglot-volar-find package t))))
 
-     (add-to-list 'eglot-server-programs
-                  `((web-mode :language-id "html") . ,(eglot-alternatives '(("vscode-html-language-server" "--stdio")
-                                                                            ("vscode-css-language-server" "--stdio")
-                                                                            ("typescript-language-server" "--stdio")))))
-     (add-to-list 'eglot-server-programs
-                  `(vue-mode . ("vue-language-server" "--stdio"
-                                :initializationOptions
-                                ,(maple-ht
-                                  `(("vue.hybridMode" :json-false)
-                                    ("typescript.tsdk" ,(expand-file-name "lib" (eglot-volar-find "typescript"))))))))
+     (defun eglot-volar-options (server)
+       (maple-ht
+        `(("vue.hybridMode" :json-false)
+          ("typescript.tsdk" ,(expand-file-name "lib" (eglot-volar-find "typescript"))))))
 
+     (defun eglot-tailwindcss-options (server)
+       (maple-ht
+        `(("suggestions" t)
+          ("codeActions" t)
+          ("emmetCompletions" t)
+          ("experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server)))))))
+
+     (add-to-list 'eglot-server-programs
+                  '(web-mode . ("vscode-html-language-server" "--stdio")))
+
+     (add-to-list 'eglot-server-programs
+                  '(vue-mode . ("vue-language-server" "--stdio" :initializationOptions eglot-volar-options)))
+
+     (add-to-list 'eglot-server-programs
+                  '(tailwindcss-mode . ("tailwindcss-language-server" "--stdio" :initializationOptions eglot-tailwindcss-options)))
      :language
-     ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode)
-      :format 'eglot-format)
      (eglot-managed-mode
+      :format 'eglot-format
       :complete '(:buster eglot-completion-at-point))
      :keybind
      (:prefix "," :states normal :map (dart-mode-map go-mode-map)
@@ -117,11 +127,10 @@
      :hook (maple/eglot-init . (lambda() (when (executable-find "emacs-lsp-booster") (eglot-booster-mode))))
      :custom
      (eglot-booster-no-remote-boost t)))
-
   ('lsp-mode
    (use-package lsp-mode
      :diminish "LSP"
-     :hook ((python-mode go-mode dart-mode js-mode web-mode vue-mode typescript-mode) . lsp-deferred)
+     :hook (prog-mode . lsp-deferred)
      :custom
      (read-process-output-max (* 256 1024)) ;; 改善lsp-dart性能
      (lsp-restart 'auto-restart)
@@ -156,6 +165,8 @@
                           (lsp--session-workspaces (lsp-session))))
               (lsp--cur-workspace (cdr (assoc (completing-read "Shutdown workspace: " ws) ws))))
          (lsp--shutdown-workspace)))
+
+     (advice-add 'lsp :around 'maple-lsp-around)
 
      ;; pip install python-language-server
      (use-package lsp-pyls
@@ -225,6 +236,12 @@
      (lsp-mode
       :definition 'lsp-find-definition))
 
+   (use-package lsp-tailwindcss
+     :hook (web-mode . (lambda () (require 'lsp-tailwindcss)))
+     :custom
+     (lsp-tailwindcss-add-on-mode t)
+     (lsp-tailwindcss-major-modes '(web-mode html-mode css-mode)))
+
    (use-package lsp-ui
      :hook (lsp-mode . lsp-ui-mode)
      :custom
@@ -243,7 +260,22 @@
      :keybind
      (:map lsp-ui-mode-map
            ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-           ([remap xref-find-references] . lsp-ui-peek-find-references)))))
+           ([remap xref-find-references] . lsp-ui-peek-find-references))))
+  ('lsp-bridge
+   (use-package lsp-bridge
+     :quelpa (:fetcher github
+                       :repo "manateelazycat/lsp-bridge"
+                       :files ("*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources"))
+     :autoload (lsp-bridge-mode)
+     :hook (prog-mode . (lambda()
+                          (when (bound-and-true-p corfu-mode) (corfu-mode -1))
+                          (lsp-bridge-mode)))
+     :custom
+     (acm-enable-yas nil)
+     (lsp-bridge-enable-log nil)
+     (lsp-bridge-python-command (expand-file-name "versions/lsp-bridge/bin/python3" (getenv "PYENV_ROOT")))
+     (lsp-bridge-multi-lang-server-mode-list
+      '(((web-mode) . "html_tailwindcss"))))))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here

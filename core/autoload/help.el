@@ -37,7 +37,7 @@
 
 ;;;###autoload
 (defun maple-ht-put(ht key value)
-  "Push HT with KEY and VALUE."
+  "Put HT with KEY and VALUE."
   (let ((path (string-split key "\\.")))
     (if (> (length path) 1)
         (let ((result (gethash (car path) ht)))
@@ -49,7 +49,7 @@
 
 ;;;###autoload
 (defun maple-ht(props)
-  "Use dot string create hash table PROPS."
+  "Use dot string create hash table with PROPS."
   (let ((setting (make-hash-table :test 'equal)))
     (mapc
      (lambda (prop)

@@ -30,13 +30,15 @@
 (defvar maple-lsp-minor-modes
   '(:not magit-blob-mode))
 
-(defun maple-lsp-around(oldfunc &rest args)
-  (when (and (memq major-mode maple-lsp-major-modes)
-             (cl-loop for mode in maple-lsp-minor-modes
-                      if (and (not (keywordp mode)) (boundp mode) (symbol-value mode))
-                      return (not (eq (car maple-lsp-minor-modes) :not))
-                      finally return t))
-    (apply oldfunc args)))
+(defmacro maple-lsp-with(&rest body)
+  "Start lsp server and execute BODY within special major modes or minor modes."
+  (declare (indent 0) (debug t))
+  `(when (and (memq major-mode maple-lsp-major-modes)
+              (cl-loop for mode in maple-lsp-minor-modes
+                       if (and (not (keywordp mode)) (boundp mode) (symbol-value mode))
+                       return (not (eq (car maple-lsp-minor-modes) :not))
+                       finally return t))
+     ,@body))
 
 (pcase maple-lsp
   ('eglot
@@ -55,17 +57,16 @@
       '(:inlayHintProvider :hoverProvider :documentHighlightProvider))
      (eglot-workspace-configuration
       (lambda (server)
-        (maple-ht '(("pyls.plugins.flake8.enabled" t)
+        (maple-ht `(("pyls.plugins.flake8.enabled" t)
                     ("pyls.plugins.pyflakes.enabled" :json-false)
                     ("pyls.plugins.pycodestyle.enabled" :json-false)
                     ("pyls.plugins.maccabe.enabled" :json-false)
                     ("pyls.plugins.yapf.enabled" t)
-                    ("gopls.staticcheck" t)))))
+                    ("gopls.staticcheck" t)
+                    ("tailwindCSS.emmetCompletions" t)
+                    ("tailwindCSS.experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server))))))))
      :config
      (defvar maple/eglot-init-hook nil)
-
-     (defvar maple/eglot-ignored-modes
-       '(magit-blob-mode))
 
      (maple-add-hook 'go-mode-hook
        (setq-local eglot-stay-out-of '(eldoc imenu)))
@@ -77,13 +78,21 @@
 
      ;; 无法使用around eglot-ensure, magit-blob-mode总是为nil
      ;; 或者可以使用(memq this-command '(magit-blob-previous magit-blob-next))判断
-     (defun eglot--contact@around (oldfunc &rest args)
-       (when args
-         (run-hooks 'maple/eglot-init-hook)
-         (apply oldfunc args)))
+     (defun eglot-ensure@override ()
+       (let ((buffer (current-buffer)))
+         (cl-labels
+             ((maybe-connect
+                ()
+                (eglot--when-live-buffer buffer
+                  (remove-hook 'post-command-hook #'maybe-connect t)
+                  (unless eglot--managed-mode
+                    (maple-lsp-with
+                      (run-hooks 'maple/eglot-init-hook)
+                      (apply #'eglot--connect (eglot--guess-contact)))))))
+           (when buffer-file-name
+             (add-hook 'post-command-hook #'maybe-connect 'append t)))))
 
-     (advice-add 'eglot--connect :around 'eglot--contact@around)
-     (advice-add 'eglot--guess-contact :around 'maple-lsp-around)
+     (advice-add 'eglot-ensure :override 'eglot-ensure@override)
 
      (defun eglot-volar-find (package &optional global)
        (let ((path (string-trim-right
@@ -97,13 +106,6 @@
         `(("vue.hybridMode" :json-false)
           ("typescript.tsdk" ,(expand-file-name "lib" (eglot-volar-find "typescript"))))))
 
-     (defun eglot-tailwindcss-options (server)
-       (maple-ht
-        `(("suggestions" t)
-          ("codeActions" t)
-          ("emmetCompletions" t)
-          ("experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server)))))))
-
      (add-to-list 'eglot-server-programs
                   '(web-mode . ("vscode-html-language-server" "--stdio")))
 
@@ -111,7 +113,7 @@
                   '(vue-mode . ("vue-language-server" "--stdio" :initializationOptions eglot-volar-options)))
 
      (add-to-list 'eglot-server-programs
-                  '(tailwindcss-mode . ("tailwindcss-language-server" "--stdio" :initializationOptions eglot-tailwindcss-options)))
+                  '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio")))
      :language
      (eglot-managed-mode
       :format 'eglot-format
@@ -166,7 +168,11 @@
               (lsp--cur-workspace (cdr (assoc (completing-read "Shutdown workspace: " ws) ws))))
          (lsp--shutdown-workspace)))
 
-     (advice-add 'lsp :around 'maple-lsp-around)
+
+     (defun lsp@around(oldfunc &rest args)
+       (maple-lsp-with (apply oldfunc args)))
+
+     (advice-add 'lsp :around 'lsp@around)
 
      ;; pip install python-language-server
      (use-package lsp-pyls
@@ -239,8 +245,7 @@
    (use-package lsp-tailwindcss
      :hook (web-mode . (lambda () (require 'lsp-tailwindcss)))
      :custom
-     (lsp-tailwindcss-add-on-mode t)
-     (lsp-tailwindcss-major-modes '(web-mode html-mode css-mode)))
+     (lsp-tailwindcss-add-on-mode t))
 
    (use-package lsp-ui
      :hook (lsp-mode . lsp-ui-mode)

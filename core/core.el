@@ -45,7 +45,7 @@
 (defvar maple-syntax-checker 'flymake
   "Syntax checker.")
 
-(defvar maple-package-archive 'tuna
+(defvar maple-package-archive 'emacs
   "Elpa package mirror.")
 
 (defvar maple-init-hook nil

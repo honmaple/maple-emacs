@@ -33,6 +33,9 @@
   :ensure nil
   :hook (diff-mode . (lambda() (setq indent-region-function 'ignore))))
 
+(use-package valign
+  :hook ((org-mode markdown) . valign-mode))
+
 (use-package markdown-mode
   :config
   (use-package org-table
@@ -90,7 +93,7 @@
   (defun maple/yaml-indent-region(func &rest args)
     (if (derived-mode-p 'yaml-mode)
         (letf (((symbol-function 'yaml-compute-indentation) 'maple/yaml-compute-indentation))
-          (apply func args))
+              (apply func args))
       (apply func args)))
 
   (advice-add 'indent-region :around 'maple/yaml-indent-region)

@@ -30,6 +30,17 @@
 (defvar maple-lsp-minor-modes
   '(:not magit-blob-mode))
 
+(defvar maple-lsp-format-indent-alist
+  '((web-mode . 2)
+    (yaml-mode . 2)))
+
+(defun maple-lsp-indent-width (mode)
+  "Get indent width with MODE."
+  (let ((value (or (alist-get mode maple-lsp-format-indent-alist)
+                   (when-let ((parent-mode (get mode 'derived-mode-parent)))
+                     (maple-lsp-indent-width parent-mode)))))
+    (or (if (symbolp value) (symbol-value value) value) tab-width)))
+
 (defmacro maple-lsp-with(&rest body)
   "Start lsp server and execute BODY within special major modes or minor modes."
   (declare (indent 0) (debug t))
@@ -63,6 +74,10 @@
                     ("pyls.plugins.maccabe.enabled" :json-false)
                     ("pyls.plugins.yapf.enabled" t)
                     ("gopls.staticcheck" t)
+                    ("emmet.showExpandedAbbreviation" "always")
+                    ("emmet.showAbbreviationSuggestions" t)
+                    ("emmet.showSuggestionsAsSnippets" t)
+                    ;; https://github.com/microsoft/vscode-html-languageservice/blob/main/src/htmlLanguageTypes.ts
                     ("tailwindCSS.emmetCompletions" t)
                     ("tailwindCSS.experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server))))))))
      :config
@@ -94,6 +109,12 @@
 
      (advice-add 'eglot-ensure :override 'eglot-ensure@override)
 
+     (defun eglot-format@around(oldfunc &rest args)
+       (let ((tab-width (maple-lsp-indent-width major-mode)))
+         (apply oldfunc args)))
+
+     (advice-add 'eglot-format :around 'eglot-format@around)
+
      (defun eglot-volar-find (package &optional global)
        (let ((path (string-trim-right
                     (shell-command-to-string
@@ -107,11 +128,14 @@
           ("typescript.tsdk" ,(expand-file-name "lib" (eglot-volar-find "typescript"))))))
 
      (add-to-list 'eglot-server-programs
-                  '(web-mode . ("vscode-html-language-server" "--stdio")))
+                  '((web-mode :language-id "html") . ("vscode-html-language-server" "--stdio")))
 
      (add-to-list 'eglot-server-programs
                   '(vue-mode . ("vue-language-server" "--stdio" :initializationOptions eglot-volar-options)))
 
+     (define-derived-mode tailwindcss-mode css-mode "TailwindCSS")
+
+     ;; https://github.com/tailwindlabs/tailwindcss-intellisense/blob/main/packages/tailwindcss-language-service/src/util/languages.ts
      (add-to-list 'eglot-server-programs
                   '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio")))
      :language
@@ -143,15 +167,14 @@
      (lsp-enable-file-watchers nil)
      (lsp-enable-symbol-highlighting nil)
      (lsp-completion-provider :none)
-     (lsp-diagnostics-provider :flymake)
+     (lsp-diagnostics-provider (pcase maple-syntax-checker ('flymake :flymake) ('flycheck :flycheck)))
      (lsp-headerline-breadcrumb-enable nil)
      (lsp-modeline-code-actions-enable nil)
      (lsp-modeline-diagnostics-enable nil)
      (lsp-session-file (maple-cache-file "lsp-session-v1"))
+     (lsp-server-install-dir (maple-cache-file "lsp"))
+     (lsp-disabled-clients '(emmet-ls))
      :config
-     (defun maple/lsp-restart-workspace(&rest _)
-       (call-interactively 'lsp-restart-workspace))
-
      (defun maple/lsp-shutdown-all()
        (interactive)
        (dolist (workspace (lsp--session-workspaces (lsp-session)))
@@ -202,11 +225,6 @@
          (advice-add 'pyenv-mode-set :after 'maple/lsp-restart-workspace)
          (advice-add 'pyenv-mode-unset :after 'maple/lsp-restart-workspace)))
 
-     ;; go get -u github.com/sourcegraph/go-langserver
-     ;; go get golang.org/x/tools/cmd/gopls
-     (use-package lsp-go
-       :ensure nil
-       :keybind (:prefix "," :states normal :map go-mode-map ("rI" . lsp-organize-imports)))
 
      ;; npm install -g yaml-language-server
      (use-package lsp-yaml
@@ -237,13 +255,15 @@
        (lsp-clients-typescript-log-verbosity "off"))
 
      :language
-     ((python-mode js-mode)
-      :format 'lsp-format-buffer)
      (lsp-mode
-      :definition 'lsp-find-definition))
+      :format 'lsp-format-buffer
+      :definition 'lsp-find-definition)
+     :keybind
+     (:prefix "," :states normal :map (dart-mode-map go-mode-map)
+              ("rI" . lsp-organize-imports)))
 
    (use-package lsp-tailwindcss
-     :hook (web-mode . (lambda () (require 'lsp-tailwindcss)))
+     :hook (lsp-mode . (lambda () (require 'lsp-tailwindcss)))
      :custom
      (lsp-tailwindcss-add-on-mode t))
 
@@ -277,10 +297,17 @@
                           (lsp-bridge-mode)))
      :custom
      (acm-enable-yas nil)
-     (lsp-bridge-enable-log nil)
      (lsp-bridge-python-command (expand-file-name "versions/lsp-bridge/bin/python3" (getenv "PYENV_ROOT")))
      (lsp-bridge-multi-lang-server-mode-list
-      '(((web-mode) . "html_tailwindcss"))))))
+      '(((web-mode) . "html_tailwindcss")))
+     (lsp-bridge-multi-lang-server-extension-list nil)
+     (lsp-bridge-completion-in-string-file-types '("vue" "dart" "html"))
+     :keybind
+     (:map acm-mode-map
+           ("TAB" . acm-select-next)
+           ([tab] . acm-select-next)
+           ("S-TAB" . acm-select-prev)
+           ([backtab] . acm-select-prev)))))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here

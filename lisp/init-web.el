@@ -72,8 +72,8 @@
   :commands (web-beautify-html web-beautify-css web-beautify-js))
 
 (use-package emmet-mode
-  :hook ((html-mode web-mode) . emmet-mode)
-  :diminish emmet-mode)
+  :diminish emmet-mode
+  :hook ((html-mode web-mode) . emmet-mode))
 
 (use-package mmm-mode
   ;; :hook (web-mode . mmm-mode)

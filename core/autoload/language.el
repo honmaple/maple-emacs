@@ -31,6 +31,7 @@
 (declare-function cape-capf-super 'cape)
 (declare-function cape-capf-buster 'cape)
 (declare-function cape-capf-predicate 'cape)
+(declare-function cape-company-to-capf 'cape)
 
 (defgroup maple-language nil
   "Display minibuffer with another frame."
@@ -70,11 +71,20 @@
     (let ((args (apply 'append (mapcar 'maple-language--complete-backend (cdr backend)))))
       (pcase (car backend)
         (:super
-         (list (apply 'cape-capf-super (append args (default-value 'completion-at-point-functions)))))
+         (list (apply 'cape-capf-super args)))
         (:buster
          (list (apply 'cape-capf-buster args)))
         (:predicate
          (list (apply 'cape-capf-predicate args)))
+        (:company
+         (mapcar 'cape-company-to-capf args))
+        (:default
+         (append (default-value 'completion-at-point-functions) args))
+        (:yasnippet
+         (append
+          (cond ((featurep 'yasnippet-capf) (list 'yasnippet-capf))
+                ((featurep 'company-yasnippet (list (cape-company-to-capf 'company-yasnippet)))))
+          args))
         (_
          (append (list (car backend)) args))))))
 

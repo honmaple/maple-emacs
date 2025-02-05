@@ -28,22 +28,24 @@
 
 (setq package-archives
       (pcase maple-package-archive
+        ('163  '(("gnu"    . "https://mirrors.163.com/elpa/gnu/")
+                 ("nongnu" . "https://mirrors.163.com/elpa/nongnu/")
+                 ("melpa"  . "https://mirrors.163.com/elpa/melpa/")))
         ('tuna '(("gnu"    . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                  ("nongnu" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-                 ("melpa"  . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-                 ("melpa-stable" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/stable-melpa/")))
+                 ("melpa"  . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
         ('ustc '(("gnu"    . "https://mirrors.ustc.edu.cn/elpa/gnu/")
                  ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")
-                 ("melpa"  . "https://mirrors.ustc.edu.cn/elpa/melpa/")
-                 ("melpa-stable" . "https://mirrors.ustc.edu.cn/elpa/stable-melpa/")))
+                 ("melpa"  . "https://mirrors.ustc.edu.cn/elpa/melpa/")))
+        ('sjtu '(("gnu"    . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
+                 ("nongnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/nongnu/")
+                 ("melpa"  . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
         ('emacs-china '(("gnu"    . "http://1.15.88.122/gnu/")
                         ("nongnu" . "http://1.15.88.122/nongnu/")
-                        ("melpa"  . "http://1.15.88.122/melpa/")
-                        ("melpa-stable" . "http://1.15.88.122/stable-melpa/")))
+                        ("melpa"  . "http://1.15.88.122/melpa/")))
         (_ '(("gnu"    . "https://elpa.gnu.org/packages/")
              ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-             ("melpa"  . "https://melpa.org/packages/")
-             ("melpa-stable" . "https://stable.melpa.org/packages/"))))
+             ("melpa"  . "https://melpa.org/packages/"))))
       package-enable-at-startup nil)
 
 (eval-when-compile

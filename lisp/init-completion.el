@@ -82,6 +82,12 @@
 (use-package vertico-multiform
   :ensure vertico
   :hook (vertico-mode . vertico-multiform-mode)
+  :custom
+  (vertico-multiform-commands
+   '((execute-extended-command
+      (vertico-transform-function . maple/vertico-highlight-mode))))
+  (vertico-multiform-categories
+   '((file (vertico-transform-function . maple/vertico-highlight-directory))))
   :config
   (defvar vertico-transform-function nil)
 
@@ -99,17 +105,9 @@
   (defun maple/vertico-highlight-mode (cmd)
     (let ((sym (intern cmd)))
       (if (or (eq sym major-mode)
-              (and
-               (memq sym minor-mode-list)
-               (boundp sym)))
+              (and (memq sym minor-mode-list) (boundp sym)))
           (propertize cmd 'face 'font-lock-constant-face)
-        cmd)))
-
-  (let ((cand '(vertico-transform-function . maple/vertico-highlight-directory)))
-    (add-to-list 'vertico-multiform-categories (list 'file cand)))
-
-  (add-to-list 'vertico-multiform-commands
-               '(execute-extended-command ignore (vertico-transform-function . maple/vertico-highlight-mode))))
+        cmd))))
 
 (use-package consult
   :commands (consult-recent-file maple/find-file maple/project-find-file maple/consult-grep maple/consult-project-grep)
@@ -267,7 +265,11 @@
   (yas-triggers-in-field t)
   (yas-prompt-functions '(yas-completing-prompt))
   :dependencies
-  (yasnippet-snippets))
+  (yasnippet-snippets)
+  (yasnippet-capf
+   :after-call yas-global-mode
+   :config
+   (add-to-list 'completion-at-point-functions #'yasnippet-capf t)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

@@ -40,11 +40,13 @@
   "Put HT with KEY and VALUE."
   (let ((path (string-split key "\\.")))
     (if (> (length path) 1)
-        (let ((result (gethash (car path) ht)))
+        (let* ((first-key (car path))
+               (next-key (string-join (cdr path) "."))
+               (result (gethash first-key ht)))
           (unless result
             (setq result (make-hash-table :test 'equal))
-            (puthash (car path) result ht))
-          (maple-ht-put result (string-join (cdr path) ".") value))
+            (puthash first-key result ht))
+          (maple-ht-put result next-key value))
       (puthash key value ht))))
 
 ;;;###autoload

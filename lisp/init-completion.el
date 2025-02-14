@@ -1,6 +1,6 @@
 ;;; init-completion.el --- Initialize completion configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2024 lin.jiang
+;; Copyright (C) 2015-2025 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -76,8 +76,7 @@
                  ("C-j" . vertico-next)
                  ("C-k" . vertico-previous)
                  ("C-h" . maple/vertico-delete)
-                 ([tab] . maple/vertico-done)
-                 ([escape] . minibuffer-keyboard-quit)))
+                 ([escape] . keyboard-escape-quit)))
 
 (use-package vertico-multiform
   :ensure vertico

@@ -1,6 +1,6 @@
 ;;; init-maple.el --- Initialize maple configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2024 lin.jiang
+;; Copyright (C) 2015-2025 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs
@@ -67,7 +67,11 @@
   (maple-translate-google-proxies
    '(("http" . "127.0.0.1:1086")
      ("https" . "127.0.0.1:1086")))
-  :commands (maple-translate maple-translate+))
+  (maple-translate-display-alist
+   (when (display-graphic-p)
+     '((maple-translate . maple-translate-show-in-posframe)
+       (maple-translate-offline . maple-translate-show-in-posframe))))
+  :commands (maple-translate maple-translate+ maple-translate-offline))
 
 (use-package maple-note
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")

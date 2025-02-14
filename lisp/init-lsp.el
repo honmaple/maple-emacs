@@ -1,6 +1,6 @@
 ;;; init-lsp.el --- Initialize lsp configurations.	-*- lexical-binding: t -*-
 
-;; Copyright (C) 2015-2024 lin.jiang
+;; Copyright (C) 2015-2025 lin.jiang
 
 ;; Author: lin.jiang <mail@honmaple.com>
 ;; URL: https://github.com/honmaple/maple-emacs

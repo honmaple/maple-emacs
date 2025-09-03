@@ -57,8 +57,6 @@
   (go-rename)
   (go-add-tags))
 
-(use-package rust-mode)
-
 (use-package cc-mode
   :custom
   (c-default-style "linux")
@@ -70,6 +68,9 @@
   (lua-indent-string-contents t))
 
 (use-package dart-mode)
+(use-package rust-mode)
+(use-package swift-mode)
+(use-package kotlin-mode)
 
 (use-package protobuf-mode
   :dependencies

@@ -145,6 +145,14 @@
           (indent-region (point-min) (point-max) nil))))))
 
 ;;;###autoload
+(defun maple-language-rename()
+  "Rename variable."
+  (interactive)
+  (let ((fn (maple-language--plist-get major-mode :rename)))
+    (if fn (call-interactively fn)
+      (error "No rename function"))))
+
+;;;###autoload
 (defun maple-language-find-definition()
   "Call definition."
   (interactive)

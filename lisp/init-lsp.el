@@ -140,6 +140,7 @@
                   '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio")))
      :language
      (eglot-managed-mode
+      :rename 'eglot-rename
       :format 'eglot-format
       :complete '(:buster eglot-completion-at-point))
      :keybind

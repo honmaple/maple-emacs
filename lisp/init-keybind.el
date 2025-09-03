@@ -193,6 +193,15 @@
   "w4"  'select-window-4
   "w5"  'select-window-5
 
+  "l"  '(:ignore t :desc "language")
+  "la" 'maple-language-fold
+  "lf" 'maple-language-format
+  "lr" 'maple-language-rename
+  "lc" 'maple-language-comment
+  "lC" 'maple-language-comment-and-copy
+  "ld" 'maple-language-find-definition
+  "lD" 'maple-language-find-documentation
+
   "c"  '(:ignore t :desc "comment")
   "cc" 'maple-language-comment
   "cC" 'maple-language-comment-and-copy

@@ -133,6 +133,9 @@
            (end (if p (region-end) (point-max))))
       (pangu-spacing-search-buffer regexp start end (replace-match match nil nil)))))
 
+(use-package apheleia
+  :commands (apheleia-format-buffer))
+
 (use-package edit-indirect
   :commands (edit-indirect-region))
 

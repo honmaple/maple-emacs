@@ -90,20 +90,14 @@
   :hook (maple-init . global-hl-line-mode))
 
 ;; 显示缩进
-(use-package highlight-indent-guides
+(use-package indent-bars
   :if (display-graphic-p)
-  :hook ((prog-mode yaml-mode) . highlight-indent-guides-mode)
+  :hook ((python-base-mode yaml-mode) . indent-bars-mode)
   :custom
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-character ?\|)
-  :diminish highlight-indent-guides-mode)
+  (indent-bars-display-on-blank-lines nil))
 
 (use-package default-text-scale
   :commands (default-text-scale-increase default-text-scale-decrease))
-
-(use-package all-the-icons
-  :if maple-icon
-  :commands (all-the-icons-insert all-the-icons-insert-faicon all-the-icons-insert-material))
 
 (use-package nerd-icons
   :if maple-icon

@@ -64,12 +64,10 @@
    (concat dired-omit-files "\\|^\\..+$\\|\\.pdf$\\|\\.tex$\\|\\*~$"))
   :keybind (:map dired-mode-map ("H" . dired-omit-mode)))
 
-(use-package all-the-icons-dired
+(use-package nerd-icons-dired
   :defines maple-icon
   :if (and (display-graphic-p) maple-icon)
-  :hook (dired-mode . all-the-icons-dired-mode)
-  :custom
-  (all-the-icons-dired-monochrome nil))
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package image-dired
   :ensure nil

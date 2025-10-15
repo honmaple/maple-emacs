@@ -77,8 +77,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
   :commands (maple-note)
   :config
-  (setq maple-note-base-directory "~/Git/pelican/content/posts/"
-        maple-note-draft-directory "~/Git/pelican/content/drafts/")
+  (setq maple-note-basedir "~/ssd/Git/pelican/content/")
   (maple-evil-map maple-note-mode-map))
 
 (use-package maple-line

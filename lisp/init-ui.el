@@ -25,6 +25,7 @@
 
 ;;; Code:
 (use-package monokai-theme)
+(use-package dracula-theme)
 (use-package solarized-theme)
 (use-package spacemacs-theme)
 (use-package doom-themes
@@ -92,8 +93,9 @@
 ;; 显示缩进
 (use-package indent-bars
   :if (display-graphic-p)
-  :hook ((python-base-mode yaml-mode) . indent-bars-mode)
+  :hook ((python-mode dart-mode yaml-mode) . indent-bars-mode)
   :custom
+  (indent-bars-width-frac 0.1)
   (indent-bars-display-on-blank-lines nil))
 
 (use-package default-text-scale

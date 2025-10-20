@@ -24,6 +24,7 @@
 ;;
 
 ;;; Code:
+(declare-function cl-position 'cl-seq)
 (declare-function powerline-reset 'powerline)
 
 ;; (defvar maple-theme/alist (custom-available-themes))
@@ -33,6 +34,7 @@
 
 (defvar maple-theme/alist
   '(monokai
+    dracula
     spacemacs-dark
     solarized-light
     solarized-dark
@@ -46,15 +48,13 @@
 (defun maple-theme/cycle (&optional backward)
   "Theme switch with BACKWARD."
   (let* ((themes (if backward (reverse maple-theme/alist) maple-theme/alist))
-         (theme  (car custom-enabled-themes))
-         (index  (cl-loop for i in themes and index from 0
-                          when (eq i theme) return index))
-         (ntheme (nth (if (= index (- (length themes) 1)) 0 (+ index 1)) themes)))
+         (index  (cl-position (car custom-enabled-themes) themes))
+         (theme  (nth (if (or (not index) (= index (- (length themes) 1))) 0 (+ index 1)) themes)))
     (mapc 'disable-theme custom-enabled-themes)
     (let ((progress-reporter
            (make-progress-reporter
-            (format "Loading theme %s..." ntheme))))
-      (load-theme ntheme t)
+            (format "Loading theme %s..." theme))))
+      (load-theme theme t)
       (when (featurep 'powerline)
         (powerline-reset))
       (progress-reporter-done progress-reporter))))

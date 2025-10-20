@@ -35,8 +35,8 @@
 (use-package maple-run
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-run")
   :commands (maple-run)
-  :config
-  (setq maple-run:auto-clear t))
+  :custom
+  (maple-run:auto-clear t))
 
 (use-package maple-diff
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-diff")
@@ -60,6 +60,7 @@
 
 (use-package maple-translate
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-translate")
+  :commands (maple-translate maple-translate+ maple-translate-offline)
   :custom
   (maple-translate-sdcv-dicts
    '(("lazyworm-ec" . "stardict/stardict-lazyworm-ec-2.4.2")
@@ -70,15 +71,13 @@
   (maple-translate-display-alist
    (when (display-graphic-p)
      '((maple-translate . maple-translate-show-in-posframe)
-       (maple-translate-offline . maple-translate-show-in-posframe))))
-  :commands (maple-translate maple-translate+ maple-translate-offline))
+       (maple-translate-offline . maple-translate-show-in-posframe)))))
 
 (use-package maple-note
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-note")
   :commands (maple-note)
-  :config
-  (setq maple-note-basedir "~/ssd/Git/pelican/content/")
-  (maple-evil-map maple-note-mode-map))
+  :custom
+  (maple-note-basedir "~/ssd/Git/pelican/content/"))
 
 (use-package maple-line
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-line")
@@ -91,10 +90,10 @@
 (use-package maple-modeline
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
   :hook (maple-theme . maple-modeline-mode)
+  :custom
+  (maple-modeline-icon (and (display-graphic-p) maple-icon))
+  (maple-modeline-separator (if (display-graphic-p) 'wave 'default))
   :config
-  (setq maple-modeline-message-p nil)
-  (setq maple-modeline-icon (and (display-graphic-p) maple-icon))
-
   (defun maple-modeline-reset-face(color &optional frame)
     "Reset face when theme change with FRAME."
     (set-face-background 'maple-modeline-active1 color frame)
@@ -114,19 +113,13 @@
   (advice-add 'load-theme :after #'maple/modeline-theme)
   :custom-face
   (mode-line ((t (:box nil))))
-  (mode-line-inactive ((t (:box nil))))
-  :dependencies
-  (maple-xpm
-   :quelpa (:fetcher github :repo "honmaple/emacs-maple-xpm" :files ("*.el"))
-   :config
-   (setq maple-xpm-height 20
-         maple-xpm-style (if (display-graphic-p) 'wave 'default))))
+  (mode-line-inactive ((t (:box nil)))))
 
 (use-package maple-minibuffer
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-minibuffer")
   :commands (maple-minibuffer-mode)
-  :config
-  (setq maple-minibuffer:position-type 'window-center))
+  :custom
+  (maple-minibuffer:position-type 'window-center))
 
 (use-package maple-iedit
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-iedit" :files ("*.el"))
@@ -153,11 +146,12 @@
   :hook (maple-theme . maple-scratch-init)
   :config
   (maple-evil-map maple-scratch-mode-map)
-  (setq maple-scratch-source nil
-        maple-scratch-items '(maple-scratch-banner
-                              maple-scratch-navbar
-                              maple-scratch-default
-                              maple-scratch-startup)))
+  :custom
+  (maple-scratch-source nil)
+  (maple-scratch-items '(maple-scratch-banner
+                         maple-scratch-navbar
+                         maple-scratch-default
+                         maple-scratch-startup)))
 
 (use-package maple-echoarea
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-echoarea")
@@ -176,21 +170,21 @@
 (use-package maple-env
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-env")
   :hook (maple-init . maple-env-mode)
-  :config
-  (setq maple-env:path (substitute-in-file-name "$HOME/repo")
-        maple-env:python-command (if (eq maple-python 'python3) "pip3" "pip")
-        ;; https://github.com/davidhalter/jedi/issues/1423
-        maple-env:python-packages
-        '("flake8" "isort" "yapf" "python-language-server[all]" "jedi==0.15.2")
-        maple-env:golang-packages
-        '("github.com/nsf/gocode"
-          "github.com/rogpeppe/godef"
-          "github.com/golang/lint/golint"
-          "github.com/haya14busa/gopkgs/cmd/gopkgs"
-          "golang.org/x/tools/cmd/gopls"
-          "github.com/cweill/gotests/...")
-        maple-env:npm-packages
-        '("js-beautify" "tern" "yaml-language-server")))
+  :custom
+  (maple-env:path (substitute-in-file-name "$HOME/repo"))
+  (maple-env:python-command (if (eq maple-python 'python3) "pip3" "pip"))
+  ;; https://github.com/davidhalter/jedi/issues/1423
+  (maple-env:python-packages
+   '("flake8" "isort" "yapf" "python-language-server[all]" "jedi==0.15.2"))
+  (maple-env:golang-packages
+   '("github.com/nsf/gocode"
+     "github.com/rogpeppe/godef"
+     "github.com/golang/lint/golint"
+     "github.com/haya14busa/gopkgs/cmd/gopkgs"
+     "golang.org/x/tools/cmd/gopls"
+     "github.com/cweill/gotests/..."))
+  (maple-env:npm-packages
+   '("js-beautify" "tern" "yaml-language-server")))
 
 (provide 'init-maple)
 ;;; init-maple.el ends here

@@ -25,7 +25,10 @@
 
 ;;; Code:
 (defvar maple-lsp-major-modes
-  '(python-mode go-mode dart-mode html-mode css-mode js-mode web-mode vue-mode typescript-mode))
+  '(python-mode
+    go-mode dart-mode
+    html-mode css-mode scss-mode js-mode
+    web-mode vue-mode typescript-mode))
 
 (defvar maple-lsp-minor-modes
   '(:not magit-blob-mode))
@@ -68,18 +71,24 @@
       '(:inlayHintProvider :hoverProvider :documentHighlightProvider))
      (eglot-workspace-configuration
       (lambda (server)
-        (maple-ht `(("pyls.plugins.flake8.enabled" t)
-                    ("pyls.plugins.pyflakes.enabled" :json-false)
-                    ("pyls.plugins.pycodestyle.enabled" :json-false)
-                    ("pyls.plugins.maccabe.enabled" :json-false)
-                    ("pyls.plugins.yapf.enabled" t)
-                    ("gopls.staticcheck" t)
-                    ("emmet.showExpandedAbbreviation" "always")
-                    ("emmet.showAbbreviationSuggestions" t)
-                    ("emmet.showSuggestionsAsSnippets" t)
-                    ;; https://github.com/microsoft/vscode-html-languageservice/blob/main/src/htmlLanguageTypes.ts
-                    ("tailwindCSS.emmetCompletions" t)
-                    ("tailwindCSS.experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server))))))))
+        (maple-ht
+         (pcase (car (eglot--major-modes server))
+           ('web-mode
+            `(("emmet.showExpandedAbbreviation" "always")
+              ("emmet.showAbbreviationSuggestions" t)
+              ("emmet.showSuggestionsAsSnippets" t)
+              ;; https://github.com/microsoft/vscode-html-languageservice/blob/main/src/htmlLanguageTypes.ts
+              ("tailwindCSS.emmetCompletions" t)
+              ("tailwindCSS.experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server))))))
+           ('go-mode
+            '(("gopls.staticcheck" t)))
+           ('python-mode
+            '(("pylsp.plugins.flake8.enabled" :json-false)
+              ("pylsp.plugins.pyflakes.enabled" :json-false)
+              ("pylsp.plugins.pycodestyle.enabled" :json-false)
+              ("pylsp.plugins.maccabe.enabled" :json-false)
+              ("pylsp.plugins.yapf.enabled" :json-false)
+              ("pylsp.plugins.ruff.enabled" t)))))))
      :config
      (defvar maple/eglot-init-hook nil)
 

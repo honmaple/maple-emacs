@@ -16,6 +16,7 @@ init.el~
 newsticker/
 recentf~
 url/
+bin/
 tmp/
 stardict/
 tramp

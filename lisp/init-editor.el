@@ -41,7 +41,9 @@
   :hook (maple-init . electric-pair-mode)
   :custom
   ;; (electric-pair-pairs '((?\' . ?\')))
-  (electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+  ;; 只允许html-mode/web-mode补全尖括号
+  (electric-pair-inhibit-predicate (lambda (c) (or (and (char-equal c ?<) (not (derived-mode-p 'html-mode 'web-mode)))
+                                                   (electric-pair-conservative-inhibit c)))))
 
 (use-package align
   :ensure nil

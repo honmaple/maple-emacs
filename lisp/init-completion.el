@@ -177,6 +177,14 @@
     (let ((this-command 'consult-flymake))
       (consult-flymake t)))
 
+  (defun maple/consult-process()
+    (interactive)
+    (let* ((name (completing-read "Process list: " (mapcar 'process-name (process-list)) nil t))
+           (proc (get-process name))
+           (buf (and proc (process-buffer proc))))
+      (if buf (switch-to-buffer buf)
+        (message "Process %s doesn't have a buffer" name))))
+
   :keybind
   (([remap imenu]                    . consult-imenu)
    ([remap yank]                     . consult-yank-from-kill-ring)

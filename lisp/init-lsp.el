@@ -142,11 +142,16 @@
      (add-to-list 'eglot-server-programs
                   '(vue-mode . ("vue-language-server" "--stdio" :initializationOptions eglot-volar-options)))
 
-     (define-derived-mode tailwindcss-mode css-mode "TailwindCSS")
+     (define-derived-mode web-emmet-mode web-mode "Emmet"
+       "Custom emmet mode."
+       (add-to-list 'eglot-server-programs
+                    '((web-emmet-mode :language-id "html") . ("emmet-ls" "--stdio"))))
 
      ;; https://github.com/tailwindlabs/tailwindcss-intellisense/blob/main/packages/tailwindcss-language-service/src/util/languages.ts
-     (add-to-list 'eglot-server-programs
-                  '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio")))
+     (define-derived-mode tailwindcss-mode web-mode "TailwindCSS"
+       "Custom tailwindcss mode."
+       (add-to-list 'eglot-server-programs
+                    '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio"))))
      :language
      (eglot-managed-mode
       :rename 'eglot-rename

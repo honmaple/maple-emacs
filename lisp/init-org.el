@@ -74,10 +74,7 @@
   (when (string> (org-version) "9.5")
     (add-to-list 'org-modules 'org-tempo t)
     ;; disable auto add comma prepended
-    (fset 'org-escape-code-in-region 'ignore)
-    (maple-add-hook 'org-mode-hook
-      (setq electric-pair-inhibit-predicate
-            (lambda (c) (if (char-equal c ?<) t (electric-pair-default-inhibit c))))))
+    (fset 'org-escape-code-in-region 'ignore))
   :keybind
   (:states normal :map org-mode-map
            ("RET" . org-open-at-point)

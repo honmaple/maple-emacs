@@ -229,7 +229,6 @@
   "gb" 'web-mode-element-beginning
   "gc" 'web-mode-element-child
   "gp" 'web-mode-element-parent
-  ;; "gs" 'web-mode-element-sibling-next
 
   :map 'python-mode-map
   "va" 'pyenv-mode-set
@@ -246,6 +245,7 @@
   "ot" 'org-set-tags
   "o." 'org-time-stamp
   "or" 'org-decrypt-entry
+  "os" 'org-insert-structure-template
   "ow" 'org-refile
   "td" 'org-deadline
   "ts" 'org-schedule

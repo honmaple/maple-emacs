@@ -24,6 +24,8 @@
 ;;
 
 ;;; Code:
+(require 'cl-lib)
+
 (defvar xref-prompt-for-identifier)
 
 (declare-function imenu--make-index-alist 'imenu)
@@ -42,6 +44,11 @@
   :type 'list
   :group 'maple-language)
 
+(defcustom maple-language-fallback t
+  "Fallback command when error happen."
+  :type 'boolean
+  :group 'maple-language)
+
 (defvar maple-language--alist nil)
 
 (make-variable-buffer-local 'maple-language--alist)
@@ -52,6 +59,20 @@
                   (cdr (assoc mode maple-language-alist))
                   (cdr (assoc t maple-language-alist)))))
     (or (plist-get args key) default)))
+
+(defun maple-language--plist-combine (&rest plists)
+  "Combine multi PLISTS."
+  (let ((rtn (copy-sequence (pop plists)))
+        p v ls)
+    (while plists
+      (setq ls (pop plists))
+      (while ls
+        (setq p (pop ls) v (pop ls))
+
+        (when-let ((prev (plist-get rtn p)))
+          (setq v (append (list v) (if (listp prev) prev (list prev)))))
+        (setq rtn (plist-put rtn p v))))
+    rtn))
 
 (defun maple-language--checker-backend(backend)
   "Return checker BACKEND."
@@ -88,6 +109,16 @@
         (_
          (append (list (car backend)) args))))))
 
+(defun maple-language--execute(fns)
+  "Execute FNS, call next fn when error happen NO-FALLBACK."
+  (unless (listp fns) (setq fns (list fns)))
+  (if maple-language-fallback
+      (cl-loop for fn in fns
+               with result do
+               (setq result (ignore-errors (or (call-interactively fn) t)))
+               when result return result)
+    (and (car fns) (call-interactively (car fns)))))
+
 (defun maple-language--comment(&optional paste)
   "Call comment.Yank selected region if PASTE."
   (save-excursion
@@ -113,68 +144,68 @@
   "Call fold."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :comment)))
-    (if fn (call-interactively fn)
-      (maple-language--comment))))
+    (or (and fn (maple-language--execute fn))
+        (maple-language--comment))))
 
 ;;;###autoload
 (defun maple-language-run()
   "Call run."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :run)))
-    (call-interactively fn)))
+    (and fn (maple-language--execute fn))))
 
 ;;;###autoload
 (defun maple-language-fold()
   "Call fold."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :fold)))
-    (call-interactively
-     (or fn (cond ((bound-and-true-p evil-mode)
-                   'evil-toggle-fold)
-                  (t 'hs-toggle-hiding))))))
+    (or (and fn (maple-language--execute fn))
+        (cond ((bound-and-true-p evil-mode)
+               'evil-toggle-fold)
+              (t 'hs-toggle-hiding)))))
 
 ;;;###autoload
 (defun maple-language-format()
   "Call indent format."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :format)))
-    (if fn (call-interactively fn)
-      (save-excursion
-        (if (use-region-p)
-            (indent-region (region-beginning) (region-end) nil)
-          (indent-region (point-min) (point-max) nil))))))
+    (or (and fn (maple-language--execute fn))
+        (save-excursion
+          (if (use-region-p)
+              (indent-region (region-beginning) (region-end) nil)
+            (indent-region (point-min) (point-max) nil))))))
 
 ;;;###autoload
 (defun maple-language-rename()
   "Rename variable."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :rename)))
-    (if fn (call-interactively fn)
-      (error "No rename function"))))
+    (or (and fn (maple-language--execute fn))
+        (error "No rename function"))))
 
 ;;;###autoload
 (defun maple-language-find-definition()
   "Call definition."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :definition)))
-    (if fn (call-interactively fn)
-      (let (xref-prompt-for-identifier)
-        (call-interactively #'xref-find-definitions)))))
+    (or (and fn (maple-language--execute fn))
+        (let (xref-prompt-for-identifier)
+          (call-interactively #'xref-find-definitions)))))
 
 ;;;###autoload
 (defun maple-language-find-references()
   "Call references."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :references)))
-    (call-interactively
-     (or fn 'xref-find-references))))
+    (or (and fn (maple-language--execute fn))
+        (call-interactively #'xref-find-references))))
 
 ;;;###autoload
 (defun maple-language-find-documentation()
   "Call documentation."
   (interactive)
   (let ((fn (maple-language--plist-get major-mode :documentation)))
-    (call-interactively fn)))
+    (and fn (maple-language--execute fn))))
 
 ;;;###autoload
 (defun maple-language-define (mode &rest args)
@@ -182,7 +213,7 @@
   (let ((tab (plist-get args :tab))
         (checker (plist-get args :checker))
         (complete (plist-get args :complete))
-        (forms `((setq maple-language--alist (append ',args maple-language--alist)))))
+        (forms `((setq maple-language--alist (maple-language--plist-combine maple-language--alist ',args)))))
     (when tab
       (push
        (if tab `(setq tab-width ,tab) `(setq indent-tabs-mode nil))

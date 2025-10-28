@@ -94,23 +94,12 @@
   (maple-modeline-icon (and (display-graphic-p) maple-icon))
   (maple-modeline-separator (if (display-graphic-p) 'wave 'default))
   :config
-  (defun maple-modeline-reset-face(color &optional frame)
-    "Reset face when theme change with FRAME."
-    (set-face-background 'maple-modeline-active1 color frame)
-    (set-face-background 'maple-modeline-inactive1 color frame))
+  (defun maple/modeline-reset-face(theme &rest args)
+    ;; (set-face-background 'maple-modeline-active0 (face-attribute 'default :background nil t))
+    (set-face-background 'maple-modeline-active1 (color-lighten-name (face-attribute 'mode-line :background nil t) 25))
+    (set-face-background 'maple-modeline-inactive1 (color-lighten-name (face-attribute 'mode-line-inactive :background nil t) 25)))
 
-  (defun maple/modeline-theme(theme &rest args)
-    (pcase theme
-      ('doom-one
-       (maple-modeline-reset-face (if (display-graphic-p) "#282c2f" "#444444")))
-      ('doom-vibrant
-       (maple-modeline-reset-face (if (display-graphic-p) "#242730" "#444444")))
-      ('spacemacs-dark
-       (maple-modeline-reset-face (if (display-graphic-p) "#5d4d7a" "#444444")))
-      (_
-       (maple-modeline-reset-face (if (display-graphic-p) "#35331D" "#333333")))))
-
-  (advice-add 'load-theme :after #'maple/modeline-theme)
+  (advice-add 'load-theme :after #'maple/modeline-reset-face)
   :custom-face
   (mode-line ((t (:box nil))))
   (mode-line-inactive ((t (:box nil)))))

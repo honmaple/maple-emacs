@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: type-multiline-comment
+# key: *ty
+# --
+* @type {${type}}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: return-comment
+# key: *@r
+# --
+* @return {${type}}

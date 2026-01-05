@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: param-comment
+# key: *@p
+# --
+* @param {${type}} ${comment}.

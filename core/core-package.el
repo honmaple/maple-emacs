@@ -140,7 +140,7 @@
 
 (use-package exec-path-from-shell
   :if maple-system-is-mac
-  :hook (maple-init . exec-path-from-shell-initialize)
+  :hook (after-init . exec-path-from-shell-initialize)
   :config
   (define-advice exec-path-from-shell-initialize (:after (&rest _) custom-exec-path)
     (add-to-list 'exec-path (expand-file-name "bin" user-emacs-directory) t)))

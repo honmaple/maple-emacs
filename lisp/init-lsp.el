@@ -56,7 +56,6 @@
 
 (pcase maple-lsp
   ('eglot
-   ;; eglot 补全速度太慢了
    (use-package eglot
      :hook (prog-mode . eglot-ensure)
      :custom
@@ -81,7 +80,7 @@
               ("tailwindCSS.emmetCompletions" t)
               ("tailwindCSS.experimental.configFile" ,(expand-file-name "tailwind.config.js" (project-root (eglot--project server))))))
            ('go-mode
-            '(("gopls.staticcheck" t)))
+            '(("gopls.staticcheck" :json-false)))
            ('python-mode
             '(("pylsp.plugins.flake8.enabled" :json-false)
               ("pylsp.plugins.pyflakes.enabled" :json-false)
@@ -152,6 +151,25 @@
        "Custom tailwindcss mode."
        (add-to-list 'eglot-server-programs
                     '((tailwindcss-mode :language-id "html") . ("tailwindcss-language-server" "--stdio"))))
+
+     (defvar eglot-lspx-command (executable-find "eglot-lspx"))
+
+     (when eglot-lspx-command
+       (add-to-list 'eglot-server-programs `((web-mode :language-id "html")
+                                             . (,eglot-lspx-command
+                                                "--" "vscode-html-language-server" "--stdio"
+                                                "--" "tailwindcss-language-server" "--stdio")))
+       (add-to-list 'eglot-server-programs `((vue-mode :language-id "html")
+                                             . (,eglot-lspx-command
+                                                "--" "vue-language-server" "--stdio"
+                                                "--" "vscode-html-language-server" "--stdio"
+                                                "--" "tailwindcss-language-server" "--stdio"
+                                                :initializationOptions
+                                                (lambda (server) (list :vue-language-server (eglot-volar-options server))))))
+       (add-to-list 'eglot-server-programs `(((js-mode :language-id "javascript") (typescript-mode :language-id "typescript"))
+                                             . (,eglot-lspx-command
+                                                "--" "typescript-language-server" "--stdio"
+                                                "--" "vscode-eslint-language-server" "--stdio"))))
      :language
      (eglot-managed-mode
       :rename 'eglot-rename
@@ -165,142 +183,9 @@
 
    (use-package eglot-booster
      :quelpa (:fetcher github :repo "jdtsmith/eglot-booster")
-     :hook (maple/eglot-init . (lambda() (when (executable-find "emacs-lsp-booster") (eglot-booster-mode))))
+     ;; :hook (maple/eglot-init . (lambda() (when (executable-find "emacs-lsp-booster") (eglot-booster-mode))))
      :custom
      (eglot-booster-no-remote-boost t)))
-  ('lsp-mode
-   (use-package lsp-mode
-     :diminish "LSP"
-     :hook (prog-mode . lsp-deferred)
-     :custom
-     (read-process-output-max (* 256 1024)) ;; 改善lsp-dart性能
-     (lsp-restart 'auto-restart)
-     (lsp-auto-guess-root t)
-     (lsp-signature-auto-activate nil)
-     (lsp-keep-workspace-alive nil)
-     (lsp-enable-snippet nil)
-     (lsp-enable-file-watchers nil)
-     (lsp-enable-symbol-highlighting nil)
-     (lsp-completion-provider :none)
-     (lsp-diagnostics-provider (pcase maple-syntax-checker ('flymake :flymake) ('flycheck :flycheck)))
-     (lsp-headerline-breadcrumb-enable nil)
-     (lsp-modeline-code-actions-enable nil)
-     (lsp-modeline-diagnostics-enable nil)
-     (lsp-session-file (maple-cache-file "lsp-session-v1"))
-     (lsp-server-install-dir (maple-cache-file "lsp"))
-     (lsp-disabled-clients '(emmet-ls))
-     :config
-     (defun maple/lsp-shutdown-all()
-       (interactive)
-       (dolist (workspace (lsp--session-workspaces (lsp-session)))
-         (let ((lsp--cur-workspace workspace))
-           (lsp--shutdown-workspace))))
-
-     (defun maple/lsp-shutdown()
-       (interactive)
-       (let* ((ws (mapcar (lambda(w) (cons (format "%s --> %s"
-                                                   (lsp--workspace-root w)
-                                                   (lsp--workspace-print w))
-                                           w))
-                          (lsp--session-workspaces (lsp-session))))
-              (lsp--cur-workspace (cdr (assoc (completing-read "Shutdown workspace: " ws) ws))))
-         (lsp--shutdown-workspace)))
-
-
-     (defun lsp@around(oldfunc &rest args)
-       (maple-lsp-with (apply oldfunc args)))
-
-     (advice-add 'lsp :around 'lsp@around)
-
-     ;; pip install python-language-server
-     (use-package lsp-pyls
-       :ensure nil
-       :custom
-       (lsp-pyls-configuration-sources ["flake8"])
-       ;; synax check
-       (lsp-pyls-plugins-flake8-enabled t)
-       (lsp-pyls-plugins-mccabe-enabled nil)
-       (lsp-pyls-plugins-pyflakes-enabled nil)
-       (lsp-pyls-plugins-pycodestyle-enabled nil)
-       ;; format
-       (lsp-pyls-plugins-autopep8-enabled nil)
-       (lsp-pyls-plugins-yapf-enabled t)
-       (lsp-pyls-disable-warning t)
-       :config
-       (defun lsp-pyls-get-pyenv-environment()
-         (if lsp-pyls-plugins-jedi-environment
-             lsp-pyls-plugins-jedi-environment
-           (let ((version (getenv "PYENV_VERSION")))
-             (when (and version (not (string= version "system")))
-               (concat (replace-regexp-in-string
-                        "\n" "" (shell-command-to-string "pyenv root"))
-                       "/versions/" version)))))
-
-       (with-eval-after-load 'pyenv-mode
-         (advice-add 'pyenv-mode-set :after 'maple/lsp-restart-workspace)
-         (advice-add 'pyenv-mode-unset :after 'maple/lsp-restart-workspace)))
-
-
-     ;; npm install -g yaml-language-server
-     (use-package lsp-yaml
-       :ensure nil
-       :config
-       (add-to-list 'lsp--formatting-indent-alist '(yaml-mode . tab-width)))
-
-     (use-package lsp-rust
-       :ensure nil
-       :custom
-       (lsp-rust-server 'rls)
-       (lsp-rust-library-directories
-        (list (expand-file-name "registry/src" (or (getenv "CARGO_HOME") "~/.cargo"))
-              (expand-file-name "toolchains" (or (getenv "RUSTUP_HOME") "~/.rustup")))))
-
-     (use-package lsp-dart
-       :custom
-       (lsp-dart-flutter-fringe-colors nil)
-       (lsp-dart-flutter-widget-guides nil))
-
-     ;; npm install -g vls
-     ;; npm install -g typescript-language-server
-     ;; npm install -g typescript
-     (use-package lsp-javascript
-       :ensure nil
-       :custom
-       (lsp-vetur-ignore-project-warning t)
-       (lsp-clients-typescript-log-verbosity "off"))
-
-     :language
-     (lsp-mode
-      :format 'lsp-format-buffer
-      :definition 'lsp-find-definition)
-     :keybind
-     (:prefix "," :states normal :map (dart-mode-map go-mode-map)
-              ("rI" . lsp-organize-imports)))
-
-   (use-package lsp-tailwindcss
-     :hook (lsp-mode . (lambda () (require 'lsp-tailwindcss)))
-     :custom
-     (lsp-tailwindcss-add-on-mode t))
-
-   (use-package lsp-ui
-     :hook (lsp-mode . lsp-ui-mode)
-     :custom
-     (lsp-ui-doc-enable t)
-     (lsp-ui-doc-border (face-foreground 'default))
-     (lsp-ui-doc-position 'top)
-     (lsp-ui-imenu-enable nil)
-     (lsp-ui-sideline-enable nil)
-     :config
-     (defun maple/lsp-ui-doc-format(func string symbol)
-       (funcall func (replace-regexp-in-string "^\s*\n" "" string) symbol))
-
-     (advice-add 'lsp-ui-doc--render-buffer :around 'maple/lsp-ui-doc-format)
-     :custom-face
-     (lsp-ui-doc-background ((t (:background unspecified))))
-     :keybind
-     (:map lsp-ui-mode-map
-           ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-           ([remap xref-find-references] . lsp-ui-peek-find-references))))
   ('lsp-bridge
    (use-package lsp-bridge
      :quelpa (:fetcher github

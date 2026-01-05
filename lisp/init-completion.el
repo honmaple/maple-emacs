@@ -104,7 +104,7 @@
   (defun maple/vertico-highlight-mode (cmd)
     (let ((sym (intern cmd)))
       (if (or (eq sym major-mode)
-              (and (memq sym minor-mode-list) (boundp sym)))
+              (and (memq sym minor-mode-list) (boundp sym) (symbol-value sym)))
           (propertize cmd 'face 'font-lock-constant-face)
         cmd))))
 
@@ -240,6 +240,14 @@
   (corfu-auto-prefix 1)
   (corfu-cycle t)
   (corfu-preview-current nil)
+  (corfu-on-exact-match nil)
+  :config
+  ;; 避免输入字符过程中就自动插入模版
+  ;; https://emacs-china.org/t/corfu-tab-and-go-eglot-snippet/24473
+  (defun corfu--insert@exact(status)
+    (if (eq status 'exact) nil status))
+
+  (advice-add 'corfu--insert :filter-args 'corfu--insert@exact)
   :keybind
   (:map corfu-map
         ("TAB" . corfu-next)

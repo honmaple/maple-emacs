@@ -29,7 +29,7 @@
 (eval-and-compile
   (setq maple-user "lin.jiang"
         maple-mail "mail@honmaple.com"
-        maple-theme 'monokai))
+        maple-custom-theme 'monokai))
 
 (autoload 'maple-initialize (expand-file-name "core/core" user-emacs-directory))
 (maple-initialize)

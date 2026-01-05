@@ -1,4 +1,4 @@
-;;; maple-theme.el ---  theme configuration.	-*- lexical-binding: t -*-
+;;; theme.el ---  theme configuration.	-*- lexical-binding: t -*-
 
 ;; Copyright (C) 2015-2025 lin.jiang
 
@@ -34,6 +34,7 @@
     dracula
     spacemacs-dark
     doom-molokai
+    doom-monokai-classic
     doom-gruvbox
     doom-one
     doom-horizon

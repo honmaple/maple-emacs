@@ -33,7 +33,7 @@
 (defvar maple-mail user-mail-address
   "Emacs mail address.")
 
-(defvar maple-theme 'monokai
+(defvar maple-custom-theme 'monokai
   "Emacs theme.")
 
 (defvar maple-python 'python3
@@ -121,7 +121,7 @@
       'maple-finish)
 
     (maple-add-hook 'after-init-hook
-      (load-theme maple-theme t))
+      (load-theme maple-custom-theme t))
 
     (maple-add-hook 'find-file-hook
       'maple-file/check-large)

@@ -35,6 +35,8 @@
     spacemacs-dark
     doom-molokai
     doom-monokai-classic
+    doom-monokai-pro
+    doom-dracula
     doom-gruvbox
     doom-one
     doom-horizon

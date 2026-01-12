@@ -91,8 +91,10 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
   :hook (maple-theme . maple-modeline-mode)
   :custom
-  (maple-modeline-icon (and (display-graphic-p) maple-icon))
-  (maple-modeline-separator (if (display-graphic-p) 'wave 'default))
+  (maple-modeline-icon maple-icon)
+  (maple-modeline-height 22)
+  (maple-modeline-direction '(right . left))
+  (maple-modeline-separator (if (display-graphic-p) 'arrow nil))
   :config
   (defun maple/modeline-reset-face(theme &rest args)
     ;; (set-face-background 'maple-modeline-active0 (face-attribute 'default :background nil t))

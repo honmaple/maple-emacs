@@ -94,6 +94,11 @@
   :config
   (org-crypt-use-before-save-magic))
 
+(use-package org-persist
+  :ensure nil
+  :custom
+  (org-persist-directory (maple-cache-file "org-persist")))
+
 (use-package ob-python
   :ensure nil
   :config

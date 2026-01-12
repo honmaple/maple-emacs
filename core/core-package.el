@@ -104,6 +104,11 @@
   ;; blink-cursor-interval 0.4
   :init (blink-cursor-mode -1))
 
+(use-package url
+  :ensure nil
+  :custom
+  (url-configuration-directory (maple-cache-file "url")))
+
 ;; 设置默认浏览器
 (use-package browse-url
   :ensure nil

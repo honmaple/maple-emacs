@@ -26,6 +26,15 @@
 ;;; Code:
 (use-package figlet)
 
+(use-package gptel
+  :custom
+  (gptel-model 'qwen3:0.6b)
+  (gptel-backend (gptel-make-ollama "ollama"
+                   :protocol "https"
+                   :host "ollama.nas.honmaple.com"
+                   :stream t
+                   :models '(qwen3:0.6b))))
+
 (use-package esup
   :config
   (maple-evil-map esup-mode-map))

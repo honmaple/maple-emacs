@@ -28,7 +28,6 @@
 (use-package magit
   :commands (magit-status)
   :custom
-  (magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
   (magit-process-popup-time 3)
   (magit-diff-refine-hunk t)
   (magit-show-long-lines-warning nil)

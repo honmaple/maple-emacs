@@ -137,19 +137,19 @@
    :initial (maple-region-string)
    :preview-key '(:debounce 0.2 any))
 
-  (defun maple/completion-table (cands &optional category)
-    (lambda (string pred action)
-      (cond
-       ((eq action 'metadata)
-        (cons 'metadata (list (cons 'category (or category 'file)))))
-       (t
-        (complete-with-action action cands string pred)))))
+  (defun maple/completion-with-metadata (collection &optional metadata)
+    (lambda (str pred flag)
+      (pcase flag
+        ('metadata
+         (cons 'metadata metadata))
+        (_
+         (all-completions str collection pred)))))
 
   (defun maple/find-file ()
     (interactive)
     (let* ((cmd "rg --files --color=never")
            (cands (split-string (shell-command-to-string cmd) "\n" t))
-           (file (completing-read "Find file: " (maple/completion-table cands) nil t)))
+           (file (completing-read "Find file: " (maple/completion-with-metadata cands '((category . file))) nil t)))
       (find-file file)))
 
   (defun maple/project-find-file ()
@@ -177,13 +177,21 @@
     (let ((this-command 'consult-flymake))
       (consult-flymake t)))
 
-  (defun maple/consult-process()
+  (defun maple/consult-process-annotation(name)
+    (when-let* ((proc (get-process name))
+                (metadata (mapconcat 'identity (process-command proc) " ")))
+      (concat "\t"
+              (propertize " " 'display `(space :align-to (- right ,(+ (string-width metadata) 3))))
+              (propertize metadata 'face 'shadow))))
+
+  (defun maple/consult-process ()
     (interactive)
-    (let* ((name (completing-read "Process list: " (mapcar 'process-name (process-list)) nil t))
-           (proc (get-process name))
-           (buf (and proc (process-buffer proc))))
-      (if buf (switch-to-buffer buf)
-        (message "Process %s doesn't have a buffer" name))))
+    (let* ((name (completing-read
+                  "Process list: "
+                  (maple/completion-with-metadata (mapcar 'process-name (process-list)) '((annotation-function . maple/consult-process-annotation))) nil t))
+           (proc (get-process name)))
+      (when proc
+        (delete-process proc))))
 
   :keybind
   (([remap imenu]                    . consult-imenu)

@@ -99,6 +99,9 @@
   "fw"  'maple-file/grep
   "fW"  'maple-file/grep-prompt
 
+  "i"  '(:ignore t :desc "insert")
+  "iy" 'yas-insert-snippet
+
   "in" '(:ignore t :desc "insert nerd icon")
   "ini" 'nerd-icons-insert
   "inf" 'nerd-icons-insert-faicon

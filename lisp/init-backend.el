@@ -32,6 +32,13 @@
 ;;
 
 ;;; Code:
+(use-package elisp-mode
+  :ensure nil
+  :dependencies
+  (package-lint-flymake
+   :if (eq maple-syntax-checker 'flymake)
+   :hook (emacs-lisp-mode . package-lint-flymake-setup)))
+
 (use-package python
   :ensure nil
   :custom

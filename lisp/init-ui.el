@@ -25,16 +25,19 @@
 
 ;;; Code:
 (use-package monokai-theme)
-(use-package dracula-theme)
-(use-package solarized-theme)
 (use-package spacemacs-theme)
+
 (use-package doom-themes
   :custom-face (show-paren-match ((t (:background "#51afef")))))
 
+(use-package dracula-theme
+  :config
+  (custom-theme-set-faces
+   'dracula
+   '(corfu-default ((t (:inherit tooltip :background unspecified))))))
+
 (use-package maple-theme
   :ensure nil
-  :custom-face
-  (region ((t (:background "gray" :foreground "#272822"))))
   :transient
   (maple-theme/switch
    ()

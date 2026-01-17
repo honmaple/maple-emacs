@@ -35,6 +35,7 @@
         evil-normal-state-cursor '(box "DarkGoldenrod2")
         evil-visual-state-cursor '((hbox . 2) "gray")
         evil-emacs-state-cursor '(box "SkyBlue2")
+        evil-motion-state-cursor '(box "plum3")
         evil-replace-state-cursor '((hbox . 2) "chocolate"))
 
   (evil-set-undo-system 'undo-tree)

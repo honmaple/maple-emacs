@@ -38,7 +38,7 @@
   (add-to-list 'winner-boring-buffers-regexp "[^\s]\\*.*\\*"))
 
 (use-package window-numbering
-  :hook (maple-theme . window-numbering-mode)
+  :hook (maple-load-theme . window-numbering-mode)
   :config
   (fset 'window-numbering-install-mode-line 'ignore))
 

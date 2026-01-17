@@ -89,12 +89,12 @@
 
 (use-package maple-modeline
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-modeline" :files ("*.el"))
-  :hook (maple-theme . maple-modeline-mode)
+  :hook (maple-load-theme . maple-modeline-mode)
   :custom
   (maple-modeline-icon maple-icon)
   (maple-modeline-height 22)
   (maple-modeline-direction '(right . left))
-  (maple-modeline-separator (if (display-graphic-p) 'arrow nil))
+  (maple-modeline-separator (if (display-graphic-p) 'arrow 'icon-arrow))
   :config
   (defun maple/modeline-reset-face(theme &rest args)
     ;; (set-face-background 'maple-modeline-active0 (face-attribute 'default :background nil t))
@@ -134,7 +134,7 @@
 
 (use-package maple-scratch
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-scratch")
-  :hook (maple-theme . maple-scratch-init)
+  :hook (maple-load-theme . maple-scratch-init)
   :config
   (maple-evil-map maple-scratch-mode-map)
   :custom
@@ -156,7 +156,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-explorer")
   :commands (maple-explorer-file maple-explorer-buffer maple-explorer-imenu maple-explorer-recentf maple-explorer-search)
   :config
-  (when (and (display-graphic-p) maple-icon) (maple-explorer-icon-mode)))
+  (when maple-icon (maple-explorer-icon-mode)))
 
 (use-package maple-env
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-env")

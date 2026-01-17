@@ -65,8 +65,7 @@
   :keybind (:map dired-mode-map ("H" . dired-omit-mode)))
 
 (use-package nerd-icons-dired
-  :defines maple-icon
-  :if (and (display-graphic-p) maple-icon)
+  :if maple-icon
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package image-dired

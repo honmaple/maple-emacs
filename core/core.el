@@ -33,7 +33,7 @@
 (defvar maple-mail user-mail-address
   "Emacs mail address.")
 
-(defvar maple-custom-theme 'monokai
+(defvar maple-theme 'monokai
   "Emacs theme.")
 
 (defvar maple-python 'python3
@@ -51,8 +51,9 @@
 (defvar maple-init-hook nil
   "Custom init hook.")
 
-(defvar maple-theme-hook nil
-  "Custom theme hook.")
+;; Fix in Emacs30: use-package关键字:hook会检查hook变量是否存在，导致maple-theme和maple-theme-hook冲突
+(defvar maple-load-theme-hook nil
+  "Run hooks after load theme.")
 
 (defvar maple-cache-directory
   (expand-file-name "cache/" user-emacs-directory)
@@ -77,9 +78,9 @@
 
 (defvar user-handler-alist file-name-handler-alist)
 
-(defadvice load-theme (after run-maple-theme-hook activate)
-  "Run `maple-theme-hook'."
-  (run-hooks 'maple-theme-hook))
+(defadvice load-theme (after run-maple-load-theme-hook activate)
+  "Run `maple-load-theme-hook'."
+  (run-hooks 'maple-load-theme-hook))
 
 (defun maple-cache-file(file &optional isdir)
   "Get cache FILE name with ISDIR."
@@ -121,7 +122,7 @@
       'maple-finish)
 
     (maple-add-hook 'after-init-hook
-      (load-theme maple-custom-theme t))
+      (load-theme maple-theme t))
 
     (maple-add-hook 'find-file-hook
       'maple-file/check-large)

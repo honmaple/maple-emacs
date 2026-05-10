@@ -127,6 +127,7 @@
   :hook (maple-init . ace-pinyin-global-mode))
 
 (use-package pangu-spacing
+  :functions (pangu-spacing-search-buffer)
   :commands (pangu-spacing-space-current-buffer)
   :config
   (defun pangu-spacing-search-and-replace (match regexp)
@@ -136,7 +137,11 @@
       (pangu-spacing-search-buffer regexp start end (replace-match match nil nil)))))
 
 (use-package apheleia
-  :commands (apheleia-format-buffer))
+  :defines (apheleia-formatters apheleia-mode-alist)
+  :commands (apheleia-format-buffer)
+  :config
+  (setf (alist-get 'custom-taplo apheleia-formatters) '("taplo" "format" "--option" "indent_tables=true" "--colors" "never" "-"))
+  (setf (alist-get 'conf-toml-mode apheleia-mode-alist) 'custom-taplo))
 
 (use-package edit-indirect
   :commands (edit-indirect-region))

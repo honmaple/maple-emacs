@@ -30,6 +30,7 @@
   :after-call maple-init-hook
   :custom
   (completion-ignore-case t)
+  (completion-category-defaults nil)
   ;; 不要添加这一行，会导致目录搜索有问题
   ;; (completion-category-overrides '((file (styles basic partial-completion))))
   (completion-styles '(orderless basic)))
@@ -249,13 +250,6 @@
   (corfu-cycle t)
   (corfu-preview-current nil)
   (corfu-on-exact-match nil)
-  :config
-  ;; 避免输入字符过程中就自动插入模版
-  ;; https://emacs-china.org/t/corfu-tab-and-go-eglot-snippet/24473
-  (defun corfu--insert@exact(status)
-    (if (eq status 'exact) nil status))
-
-  (advice-add 'corfu--insert :filter-args 'corfu--insert@exact)
   :keybind
   (:map corfu-map
         ("TAB" . corfu-next)

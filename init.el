@@ -29,7 +29,8 @@
 (eval-and-compile
   (setq maple-user "lin.jiang"
         maple-mail "mail@honmaple.com"
-        maple-theme (if (display-graphic-p) 'dracula 'monokai)))
+        maple-icon t ;; 终端也能用，需要设置字体font-maple-mono-nf
+        maple-theme 'monokai))
 
 (autoload 'maple-initialize (expand-file-name "core/core" user-emacs-directory))
 (maple-initialize)

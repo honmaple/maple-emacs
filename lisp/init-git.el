@@ -31,7 +31,7 @@
   (magit-process-popup-time 3)
   (magit-diff-refine-hunk t)
   (magit-show-long-lines-warning nil)
-  (magit-section-visibility-indicator nil)
+  (magit-section-visibility-indicators nil)
   :config
   (with-eval-after-load 'evil
     (add-hook 'magit-blob-mode-hook 'evil-normalize-keymaps))

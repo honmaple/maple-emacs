@@ -96,7 +96,7 @@
 ;; 显示缩进
 (use-package indent-bars
   :if (display-graphic-p)
-  :hook ((python-mode dart-mode yaml-mode) . indent-bars-mode)
+  :hook ((python-mode dart-mode yaml-mode nginx-mode) . indent-bars-mode)
   :custom
   (indent-bars-width-frac 0.1)
   (indent-bars-display-on-blank-lines nil))

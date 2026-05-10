@@ -174,7 +174,7 @@
      (eglot-managed-mode
       :rename 'eglot-rename
       :format 'eglot-format
-      :complete '(:super (:buster eglot-completion-at-point) :yasnippet))
+      :complete '(:buster eglot-completion-at-point))
      :keybind
      (:prefix "," :states normal :map (dart-mode-map go-mode-map)
               ("ra" . eglot-code-actions)

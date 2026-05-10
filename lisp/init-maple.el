@@ -92,7 +92,7 @@
   :hook (maple-load-theme . maple-modeline-mode)
   :custom
   (maple-modeline-icon maple-icon)
-  (maple-modeline-height 22)
+  (maple-modeline-height 24)
   (maple-modeline-direction '(right . left))
   (maple-modeline-separator (if (display-graphic-p) 'arrow 'icon-arrow))
   :config
@@ -102,6 +102,10 @@
     (set-face-background 'maple-modeline-inactive1 (color-lighten-name (face-attribute 'mode-line-inactive :background nil t) 25)))
 
   (advice-add 'load-theme :after #'maple/modeline-reset-face)
+
+  ;; https://www.ditig.com/256-colors-cheat-sheet
+  (add-to-list 'maple-modeline-face-alist '(count . (:background "#87005f")))
+  (add-to-list 'maple-modeline-face-alist '(version-control . (:background "#87005f")))
   :custom-face
   (mode-line ((t (:box nil))))
   (mode-line-inactive ((t (:box nil)))))
@@ -116,7 +120,7 @@
   :quelpa (:fetcher github :repo "honmaple/emacs-maple-iedit" :files ("*.el"))
   :commands (maple-iedit-match-all maple-iedit-match-next maple-iedit-match-previous)
   :custom-face
-  (iedit-occurrence ((t (:background "chocolate" :foreground "#272822"))))
+  (iedit-occurrence ((t (:background "chocolate" :foreground "#fff"))))
   :transient
   (maple/iedit
    ()
